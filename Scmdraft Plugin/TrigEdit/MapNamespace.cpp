@@ -1,6 +1,7 @@
 #include "MapNamespace.h"
-#include "../TriggerEditor.h"
-#include "../StringUtils/StringCast.h"
+#include "TriggerEditor.h"
+#include "StringUtils/StringCast.h"
+#include <map>
 
 // Simple bimap structure.
 template <typename U, typename V>
@@ -222,33 +223,21 @@ MapNamespaceImpl::~MapNamespaceImpl() {}
 int MapNamespaceImpl::GetSwitchID(const std::string& str) const {
 	int ret;
 	bool isconverted = _switchmap.r2l(str, ret);
-	if(!isconverted) {
-		char errmsg[512];
-		sprintf(errmsg, "Cannot parse string \"%.30s\" as switch.", str);
-		throw EncodeError(errmsg);
-	}
+	if(!isconverted) return -1;
 	return ret;
 }
 
 int MapNamespaceImpl::GetLocationID(const std::string& str) const {
 	int ret;
 	bool isconverted = _locationmap.r2l(str, ret);
-	if(!isconverted) {
-		char errmsg[512];
-		sprintf(errmsg, "Cannot parse string \"%.30s\" as location.", str);
-		throw EncodeError(errmsg);
-	}
+	if(!isconverted) return -1;
 	return ret;
 }
 
 int MapNamespaceImpl::GetUnitID(const std::string& str) const {
 	int ret;
 	bool isconverted = _unitmap.r2l(str, ret);
-	if(!isconverted) {
-		char errmsg[512];
-		sprintf(errmsg, "Cannot parse string \"%.30s\" as unit.", str);
-		throw EncodeError(errmsg);
-	}
+	if(!isconverted) return -1;
 	return ret;
 }
 
@@ -307,35 +296,4 @@ std::string MapNamespace::GetLocationName(int ID) const {
 
 std::string MapNamespace::GetUnitName(int ID) const {
 	return _impl->GetUnitName(ID);
-}
-
-
-// Map Namespace
-
-
-// Encoder part
-int TriggerEditor::EncodeUnit(const std::string& str) const {
-	return _namespace->GetUnitID(str);
-}
-
-int TriggerEditor::EncodeLocation(const std::string& str) const {
-	return _namespace->GetLocationID(str);
-}
-
-int TriggerEditor::EncodeSwitchName(const std::string& str) const{
-	return _namespace->GetSwitchID(str);
-}
-
-
-// Decoder part
-std::string TriggerEditor::DecodeUnit(int value) const {
-	return _namespace->GetUnitName(value);
-}
-
-std::string TriggerEditor::DecodeLocation(int value) const {
-	return _namespace->GetLocationName(value);
-}
-
-std::string TriggerEditor::DecodeSwitchName(int value) const {
-	return _namespace->GetSwitchName(value);
 }

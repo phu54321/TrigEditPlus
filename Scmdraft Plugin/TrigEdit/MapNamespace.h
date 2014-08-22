@@ -1,10 +1,6 @@
 #pragma once
 
 #include <string>
-#include <functional>
-#include <map>
-#include "../../PluginBase/SCMDPlugin.h"
-
 
 class MapNamespaceImpl;
 struct TriggerEditor_Arg;

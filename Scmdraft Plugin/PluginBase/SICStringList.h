@@ -24,7 +24,7 @@ const char*   __stdcall StringTable_GetString(SI_VirtSCStringList *strtb, int st
 
 
 // Add string to stringtable. If string table is full. this function increases string table's capacity for new string.
-// If ForceAdd is False, then StringTable_AddString recycles existing strings if possible.
+// If AlwaysCreate is False, then StringTable_AddString recycles existing strings if possible.
 // This function never fails. No 65536byte restriction, no 1024 string count restriction.
 // return : corresponding string number.
 // Blank string -> return 0. (Blank string)

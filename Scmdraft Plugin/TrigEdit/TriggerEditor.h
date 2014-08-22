@@ -12,7 +12,6 @@
 #include "../PluginBase/SCMDPlugin.h"
 
 #include "StringUtils/stringbuffer.h"
-#include "EncodeError.h"
 
 //Trigger structure
 #include <packon.h>
@@ -83,45 +82,10 @@ private:
 	TriggerEditor_Arg* _editordata;
 	MapNamespace* _namespace;
 
-private:
-	// Encode part : Text -> Binary Data
-	int EncodeTrigger(const std::string& string);
-
-	int BeginEncode();
-	std::vector<Trig> EndEncode();
-	void RevertDecode();
-	
-	CChunkData* _oldTrig;
-	std::vector<Trig> _trigbuffer;
-	int _currenttrigger, _current_condition, _current_action;
-
-	int EncodeTrigger();
-	int EncodeAction(int index, const std::string& str);
-	int EncodeCondition(int index, const std::string& str);
-
-	int EncodeNumber(const std::string& str) const;
-	int EncodeAllyStatus(const std::string& str) const;
-	int EncodeComparison(const std::string& str) const;
-	int EncodeModifier(const std::string& str) const;
-	int EncodeOrder(const std::string& str) const;
-	int EncodePlayer(const std::string& str) const;
-	int EncodePropState(const std::string& str) const;
-	int EncodeResource(const std::string& str) const;
-	int EncodeScore(const std::string& str) const;
-	int EncodeSwitchAction(const std::string& str) const;
-	int EncodeSwitchState(const std::string& str) const;
-	int EncodeAIScript(const std::string& str) const;
-	int EncodeCount(const std::string& str) const;
-	int EncodeUnit(const std::string& str) const;
-	int EncodeLocation(const std::string& str) const;
-	int EncodeString(const std::string& str) const;
-	int EncodeSwitchName(const std::string& str) const;
-
 
 private:
 	// Decode part : Binary Data -> Text
-	int BeginDecode();
-	std::string EndDecode();
+	void DecodeTriggers();
 	
 	StringBuffer _decode_out;
 
@@ -148,10 +112,36 @@ private:
 	std::string DecodeSwitchName(int value) const;
 
 
+public:
+	// Encode part : Text -> Binary Data
+	bool EncodeTriggerCode();
+	std::vector<Trig> _trigbuffer;
+
+	void DerefStrings();
+
+public:
+	// These functions are used by lua
+	int EncodeUnit(const std::string& str) const;
+	int EncodeLocation(const std::string& str) const;
+	int EncodeString(const std::string& str) const;
+	int EncodeSwitchName(const std::string& str) const;
+	
+	void ClearErrors();
+	void PrintErrorMessage(const std::string& str);
+
+	void Encode_AddTrigger(const Trig& t);
+	
 private:
 	// Window part
 	HWND hTrigDlg;
 	HWND hScintilla;
+
+	std::string GetEditorText() const;
+	void SetEditorText(const std::string& str);
+
+	
+
+	std::string _tmp_content;
 
 private:
 	// Private members.

@@ -5,24 +5,19 @@
 #include "TrigEdit/TriggerEditor.h"
 
 
+const char* PluginMenuName = "Trigger Editor Plus";
+
 
 // This function is called when the DLL is loaded.
 void Initialize() {
-	/* Your code here */
-
-	// Example code. Delete this.
-	freopen("output.txt", "wb", stdout);
-	setvbuf(stdout, NULL, _IONBF, 0);
-	// Example code. Delete this.
+	freopen("log.txt", "w", stderr);
+	freopen("output.txt", "w", stdout);
 }
 
 // This function is called when the DLL is unloaded.
 void Finalize() {
-	/* Your code here */
-
-	// Example code. Delete this.
+	fclose(stderr);
 	fclose(stdout);
-	// Example code. Delete this.
 }
 
 
@@ -39,22 +34,6 @@ BOOL WINAPI RunPlugin(	TEngineData*	EngineData,		//	Struct containing engine dat
 		return FALSE;
 
 	if (CurSection == 'GIRT') {
-		// Dump triggers into vector.
-		int trign = Triggers->ChunkSize / 2400;
-		BYTE* p = Triggers->ChunkData;
-
-		// Trigger I/O
-		/*
-		// Argument supplied fro trigger editor
-		struct TriggerEditor_Arg {
-			TEngineData*    EngineData;
-			CChunkData* Triggers;
-			CChunkData* SwitchRenaming;
-			CChunkData* UnitProperties;
-			CChunkData* UnitPropUsage;
-		};
-		*/
-
 		TriggerEditor_Arg arg = {
 			EngineData,
 			Triggers,
@@ -64,7 +43,7 @@ BOOL WINAPI RunPlugin(	TEngineData*	EngineData,		//	Struct containing engine dat
 		};
 
 		TriggerEditor te;
-		te.RunEditor(hMainWindow, arg);
+		te.RunEditor(hSCMD2MainWindow, arg);
 	}
 	return TRUE;
 }

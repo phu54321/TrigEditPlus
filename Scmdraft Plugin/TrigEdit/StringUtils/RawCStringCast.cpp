@@ -1,5 +1,4 @@
 #include "StringCast.h"
-#include "../EncodeError.h"
 
 
 static int ParseXDigit(int ch) {
@@ -53,20 +52,4 @@ std::string Raw2CString(const std::string& str) {
 	*p = '\0';
 	std::string s(output);
 	return s;
-}
-
-
-// C-style escaped string -> Raw string
-std::string CString2Raw(const std::string& str) {
-	const size_t slen = str.size();
-	
-	// Check " at each side of the string
-	if(slen <= 1 || str[0] != '\"' || str[slen - 1] != '\"') {
-		char errmsg[512];
-		sprintf(errmsg, "Cannot parse %.30s as string", str.c_str());
-		throw EncodeError(errmsg);
-	}
-
-	/* TODO : IMPLEMENT THIS */
-	return "";
 }

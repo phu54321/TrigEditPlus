@@ -1,7 +1,8 @@
 #include "SCMDPlugin.h"
 
-HWND hMainWindow;
-HINSTANCE hMainInstance;
+HWND hSCMD2MainWindow;
+HINSTANCE hSCMD2Instance;
+HINSTANCE hInstance;
 
 AllocRam scmd2_malloc;
 DeAllocRam scmd2_free; 
@@ -16,6 +17,8 @@ BOOL APIENTRY DllMain( HANDLE hModule,
                        LPVOID lpReserved
 					 )
 {
+	hInstance = (HINSTANCE)hModule;
+
 	switch(ul_reason_for_call) {
 	case DLL_PROCESS_DETACH:
 		Finalize();
@@ -44,8 +47,8 @@ BOOL WINAPI InitPlugin(	HWND MainWindow,
 						ReAllocRam ResizeMem, 
 						DWORD* RequestedSections	)	//	DWORD[8]
 {
-	hMainWindow = MainWindow;
-	hMainInstance = MainInstance;
+	hSCMD2MainWindow = MainWindow;
+	hSCMD2Instance = MainInstance;
 
 	//	Do Stuff
 	scmd2_malloc = AllocMem;
@@ -61,14 +64,16 @@ BOOL WINAPI InitPlugin(	HWND MainWindow,
 }
 
 
+extern const char* PluginMenuName;
+
 //	Change these names to whatever you wanna call it
 BOOL WINAPI PluginGetMenuString(DWORD Section, CHAR* MenuStr, WORD StrLen)
 {
 	if(Section == 'GIRT')
 	{
-		if(StrLen<strlen("Test plugin"))
+		if(StrLen < strlen(PluginMenuName))
 			return FALSE;
-		strcpy(MenuStr,"Test plugin");
+		strcpy(MenuStr, PluginMenuName);
 		return TRUE;
 	}
 	return FALSE;

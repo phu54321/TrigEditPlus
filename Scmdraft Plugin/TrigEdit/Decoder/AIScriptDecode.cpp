@@ -309,18 +309,3 @@ std::string TriggerEditor::DecodeAIScript(int value) const {
 
 	return Int2String(value);
 }
-
-int TriggerEditor::EncodeAIScript(const std::string& str) const {
-	if(str.size() == 4) {
-		return *(DWORD*)str.data(); //parse as-is
-	}
-
-	for(auto it : AIScriptList) {
-		if(str == it.str) return it.aidw;
-	}
-
-	// error
-	char errmsg[512];
-	sprintf(errmsg, "Cannot decode AIScript %.30s", str.c_str());
-	throw EncodeError(errmsg);
-}

@@ -10,14 +10,17 @@
     <Filter Include="TrigEdit\scintilla">
       <UniqueIdentifier>{3e993f7b-4ed7-4532-a28b-7c520093d8d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TrigEdit\EncDec">
-      <UniqueIdentifier>{dc4226e9-93fa-4cf8-b85c-794cf9ea3031}</UniqueIdentifier>
-    </Filter>
     <Filter Include="TrigEdit\StringUtils">
       <UniqueIdentifier>{14aa99ea-43b4-462d-bf4a-a814b8c74b50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TrigEdit\Tokenizer">
-      <UniqueIdentifier>{1f2696d3-8a07-42c7-a722-6fb7cc721420}</UniqueIdentifier>
+    <Filter Include="TrigEdit\Decoder">
+      <UniqueIdentifier>{dc4226e9-93fa-4cf8-b85c-794cf9ea3031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrigEdit\Encoder">
+      <UniqueIdentifier>{7f11da6a-5372-46f6-a9a8-d2a9c1514036}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrigEdit\Encoder\Lua">
+      <UniqueIdentifier>{8582ca1f-3f55-403c-bf35-c2786cf7e17b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -28,29 +31,8 @@
       <Filter>PluginBase</Filter>
     </ClCompile>
     <ClCompile Include="PluginMain.cpp" />
-    <ClCompile Include="TrigEdit\EncDec\AIScriptEncDec.cpp">
-      <Filter>TrigEdit\EncDec</Filter>
-    </ClCompile>
-    <ClCompile Include="TrigEdit\EncDec\ConstDecoder.cpp">
-      <Filter>TrigEdit\EncDec</Filter>
-    </ClCompile>
-    <ClCompile Include="TrigEdit\EncDec\ConstEncoder.cpp">
-      <Filter>TrigEdit\EncDec</Filter>
-    </ClCompile>
-    <ClCompile Include="TrigEdit\EncDec\TriggerActionEncDec.cpp">
-      <Filter>TrigEdit\EncDec</Filter>
-    </ClCompile>
-    <ClCompile Include="TrigEdit\EncDec\TriggerConditionEncDec.cpp">
-      <Filter>TrigEdit\EncDec</Filter>
-    </ClCompile>
-    <ClCompile Include="TrigEdit\EncDec\TriggerEncDec.cpp">
-      <Filter>TrigEdit\EncDec</Filter>
-    </ClCompile>
     <ClCompile Include="TrigEdit\TriggerEditor.cpp">
       <Filter>TrigEdit</Filter>
-    </ClCompile>
-    <ClCompile Include="TrigEdit\EncDec\TriggerEncDecData.cpp">
-      <Filter>TrigEdit\EncDec</Filter>
     </ClCompile>
     <ClCompile Include="TrigEdit\StringUtils\stringbuffer.cpp">
       <Filter>TrigEdit\StringUtils</Filter>
@@ -58,14 +40,143 @@
     <ClCompile Include="TrigEdit\StringUtils\StringIntCast.cpp">
       <Filter>TrigEdit\StringUtils</Filter>
     </ClCompile>
-    <ClCompile Include="TrigEdit\EncDec\MapNamespace.cpp">
-      <Filter>TrigEdit\EncDec</Filter>
-    </ClCompile>
-    <ClCompile Include="TrigEdit\EncDec\MapStrings.cpp">
-      <Filter>TrigEdit\EncDec</Filter>
-    </ClCompile>
     <ClCompile Include="TrigEdit\StringUtils\RawCStringCast.cpp">
       <Filter>TrigEdit\StringUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Decoder\TriggerActionEncDec.cpp">
+      <Filter>TrigEdit\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Decoder\TriggerConditionEncDec.cpp">
+      <Filter>TrigEdit\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\MapNamespace.cpp">
+      <Filter>TrigEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Decoder\StringDecoder.cpp">
+      <Filter>TrigEdit\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Decoder\AIScriptDecode.cpp">
+      <Filter>TrigEdit\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Decoder\ConstDecoder.cpp">
+      <Filter>TrigEdit\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lapi.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lauxlib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lbaselib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lbitlib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lcode.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lcorolib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lctype.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\ldblib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\ldebug.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\ldo.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\ldump.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lfunc.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lgc.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\linit.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\liolib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\llex.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lmathlib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lmem.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\loadlib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lobject.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lopcodes.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\loslib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lparser.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lstate.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lstring.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lstrlib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\ltable.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\ltablib.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\ltm.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\luac.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lundump.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lvm.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\Lua\lzio.c">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\StringEncoder.cpp">
+      <Filter>TrigEdit\Encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\StringDeref.cpp">
+      <Filter>TrigEdit\Encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Decoder\TriggerDecode.cpp">
+      <Filter>TrigEdit\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\TriggerEncDecData.cpp">
+      <Filter>TrigEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\TriggerEncode.cpp">
+      <Filter>TrigEdit\Encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\LuaParseString.cpp">
+      <Filter>TrigEdit\Encoder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,21 +207,94 @@
     <ClInclude Include="TrigEdit\condact.h">
       <Filter>TrigEdit</Filter>
     </ClInclude>
-    <ClInclude Include="TrigEdit\EncDec\TriggerEncDec.h">
-      <Filter>TrigEdit\EncDec</Filter>
-    </ClInclude>
     <ClInclude Include="TrigEdit\StringUtils\stringbuffer.h">
       <Filter>TrigEdit\StringUtils</Filter>
     </ClInclude>
     <ClInclude Include="TrigEdit\StringUtils\StringCast.h">
       <Filter>TrigEdit\StringUtils</Filter>
     </ClInclude>
-    <ClInclude Include="TrigEdit\EncodeError.h">
+    <ClInclude Include="TrigEdit\MapNamespace.h">
       <Filter>TrigEdit</Filter>
     </ClInclude>
-    <ClInclude Include="TrigEdit\EncDec\MapNamespace.h">
-      <Filter>TrigEdit\EncDec</Filter>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lapi.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
     </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lauxlib.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lcode.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lctype.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\ldebug.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\ldo.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lfunc.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lgc.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\llex.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\llimits.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lmem.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lobject.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lopcodes.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lparser.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lstate.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lstring.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\ltable.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\ltm.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lua.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lua.hpp">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\luaconf.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lualib.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lundump.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lvm.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Encoder\Lua\lzio.h">
+      <Filter>TrigEdit\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\TriggerEncDec.h">
+      <Filter>TrigEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PluginBase\DllMain.def">
@@ -137,6 +321,9 @@
     <None Include="TrigEdit\scintilla\Scintilla.pdb">
       <Filter>TrigEdit\scintilla</Filter>
     </None>
+    <None Include="TrigEdit\Encoder\basescript.lua">
+      <Filter>TrigEdit\Encoder</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Library Include="TrigEdit\scintilla\SciLexer.lib">
@@ -145,5 +332,8 @@
     <Library Include="TrigEdit\scintilla\Scintilla.lib">
       <Filter>TrigEdit\scintilla</Filter>
     </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TrigEditPlus.rc" />
   </ItemGroup>
 </Project>

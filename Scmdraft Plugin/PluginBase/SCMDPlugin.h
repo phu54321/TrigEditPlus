@@ -10,8 +10,10 @@ typedef void*	(*AllocRam)(DWORD Size);
 typedef void	(*DeAllocRam)(void*	Ram);
 typedef void*	(*ReAllocRam)(void*	Ram, DWORD Size);
 
-extern HWND hMainWindow;
-extern HINSTANCE hMainInstance;
+extern HWND hSCMD2MainWindow;
+extern HINSTANCE hSCMD2Instance;
+extern HINSTANCE hInstance;
+
 
 extern AllocRam scmd2_malloc;
 extern DeAllocRam scmd2_free; 

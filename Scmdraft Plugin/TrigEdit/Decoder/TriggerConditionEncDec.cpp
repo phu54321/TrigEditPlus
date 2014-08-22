@@ -1,12 +1,18 @@
 #include "../TriggerEditor.h"
-#include "TriggerEncDec.h"
+#include "../TriggerEncDec.h"
 
 extern TriggerStatementDecl ConditionFields[23];
 
 void TriggerEditor::DecodeCondition(const TrigCond& content) {
-	if(content.condtype == 0) return;
+	_decode_out << "\t\t";
+
+	if(content.prop & 0x2) {
+		_decode_out << "Disabled(";
+	}
+
+	if(content.condtype == 0);
 	else if(content.condtype > 23) {
-		_decode_out << "\t\tCustom("
+		_decode_out << "Custom("
 			<< content.locid << ", "
 			<< content.player << ", "
 			<< content.res << ", "
@@ -16,35 +22,34 @@ void TriggerEditor::DecodeCondition(const TrigCond& content) {
 			<< content.res_setting << ", "
 			<< content.prop
 			<< ")\r\n";
-		return;
 	}
+	else {
+		int condtype = content.condtype;
+		TriggerStatementDecl &decl = ConditionFields[condtype - 1];
 
-	int condtype = content.condtype;
-	TriggerStatementDecl &decl = ConditionFields[condtype - 1];
-
-	_decode_out << "\t\t" << decl.stmt_name << "(";
+		_decode_out << decl.stmt_name << "(";
 	
-	bool firstfield = true;
+		bool firstfield = true;
 
-	for(int i = 0 ; decl.fields[i].Type != 0 ; i++) {
-		// Get value
-		int value;
-		switch(decl.fields[i].Field) {
-		case CONDFIELD_LOCID:        value = content.locid; break;
-		case CONDFIELD_PLAYER:       value = content.player; break;
-		case CONDFIELD_RES:          value = content.res; break;
-		case CONDFIELD_UID:          value = content.uid; break;
-		case CONDFIELD_SETTING:      value = content.setting; break;
-		case CONDFIELD_CONDTYPE:     value = content.condtype; break;
-		case CONDFIELD_RES_SETTING:  value = content.res_setting; break;
-		case CONDFIELD_PROP:         value = content.prop; break;
-		default: throw std::bad_exception("TT");
-		}
+		for(int i = 0 ; decl.fields[i].Type != 0 ; i++) {
+			// Get value
+			int value;
+			switch(decl.fields[i].Field) {
+			case CONDFIELD_LOCID:        value = content.locid; break;
+			case CONDFIELD_PLAYER:       value = content.player; break;
+			case CONDFIELD_RES:          value = content.res; break;
+			case CONDFIELD_UID:          value = content.uid; break;
+			case CONDFIELD_SETTING:      value = content.setting; break;
+			case CONDFIELD_CONDTYPE:     value = content.condtype; break;
+			case CONDFIELD_RES_SETTING:  value = content.res_setting; break;
+			case CONDFIELD_PROP:         value = content.prop; break;
+			default: throw -1;
+			}
 
-		// Decode value according to field type.
-		std::string str;
-		switch(decl.fields[i].Type) {
-		    case FIELDTYPE_NUMBER:       str = DecodeNumber(value); break;
+			// Decode value according to field type.
+			std::string str;
+			switch(decl.fields[i].Type) {
+			case FIELDTYPE_NUMBER:       str = DecodeNumber(value); break;
 			case FIELDTYPE_ALLYSTATUS:   str = DecodeAllyStatus(value); break;
 			case FIELDTYPE_COMPARISON:   str = DecodeComparison(value); break;
 			case FIELDTYPE_MODIFIER:     str = DecodeModifier(value); break;
@@ -61,13 +66,22 @@ void TriggerEditor::DecodeCondition(const TrigCond& content) {
 			case FIELDTYPE_LOCATION:     str = DecodeLocation(value); break;
 			case FIELDTYPE_STRING:       str = DecodeString(value); break;
 			case FIELDTYPE_SWITCHNAME:   str = DecodeSwitchName(value); break;
-			default: throw std::bad_exception("TT");
+			default: throw -1;
+			}
+
+			if(firstfield) firstfield = false;
+			else _decode_out << ", ";
+			_decode_out << str;
 		}
 
-		if(firstfield) firstfield = false;
-		else _decode_out << ", ";
-		_decode_out << str;
+		_decode_out << ")";
 	}
 
-	_decode_out << ")\r\n";
+	if(content.prop & 0x2) {
+		_decode_out << ");\r\n";
+	}
+
+	else {
+		_decode_out << ";\r\n";
+	}
 }

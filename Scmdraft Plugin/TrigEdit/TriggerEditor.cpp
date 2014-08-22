@@ -1,46 +1,63 @@
 #include "TriggerEditor.h"
-#include "EncDec/MapNamespace.h"
+#include "MapNamespace.h"
+#include <fstream>
+
 #include <iostream>
 
-TriggerEditor::TriggerEditor() : hTrigDlg(NULL), hScintilla(NULL),
-	_currenttrigger(0), _current_condition(0), _current_action(0) {}
+TriggerEditor::TriggerEditor() : hTrigDlg(NULL), hScintilla(NULL) {}
 
 TriggerEditor::~TriggerEditor() {}
 
 int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 	_editordata = &arg;
-
-	// Decode TRIG chunk into trigger array
 	_namespace = new MapNamespace(arg);
 
-	// Queue deletion of _namespace
-	class _remover{
-	public:
-		_remover(TriggerEditor* t) : _t(t) {}
-		~_remover() { delete _t->_namespace; }
-	private:
-		TriggerEditor* _t;
-	} A(this);
+	DecodeTriggers();
 
+	std::ofstream os("output.lua", std::ios::binary);
+	os << GetEditorText();
+	os.close();
 
+	MessageBox(hSCMD2MainWindow, "Press OK when you've modified your triggers.", "Waiting", MB_OK);
 
-	std::vector<Trig> trigv;
-	{
-		size_t trign = arg.Triggers->ChunkSize / 2400;
-		BYTE* trigdata = arg.Triggers->ChunkData;
-		for(size_t i = 0 ; i < trign ; i++) {
-			trigv.push_back(*(Trig*)trigdata);
-			trigdata += 2400;
-		}
+	std::ifstream is("output.lua", std::ios::binary);
+	is.seekg(0, std::ios::end);
+	size_t fsize = (size_t)is.tellg();
+	is.seekg(0);
+	char* data = new char[fsize + 1];
+	is.read(data, fsize);
+	is.close();
+	data[fsize] = '\0';
+	SetEditorText(data);
+	delete[] data;
+
+	if(EncodeTriggerCode()) {
+		MessageBox(hSCMD2MainWindow, "Trigger successfully updated", "OK", MB_OK);
 	}
 
-
-	BeginDecode();
-	
-	for(auto trig : trigv) {
-		DecodeTrigger(trig);
+	else {
+		MessageBox(hSCMD2MainWindow, "Compile failed", "Error", MB_OK);
 	}
 
-	std::cout << EndDecode();
+	delete _namespace;
 	return 0;
+}
+
+
+void TriggerEditor::SetEditorText(const std::string& str) {
+	_tmp_content = str;
+}
+
+std::string TriggerEditor::GetEditorText() const {
+	return _tmp_content;
+}
+
+
+void TriggerEditor::ClearErrors() {
+	;
+}
+
+
+void TriggerEditor::PrintErrorMessage(const std::string& msg) {
+	std::cerr << msg.c_str() << "\n";
 }
