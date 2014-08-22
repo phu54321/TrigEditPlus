@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="PluginBase">
+      <UniqueIdentifier>{cba0d2df-44fd-42bc-b99c-d64e4d35d55a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrigEdit">
+      <UniqueIdentifier>{4d8a6a16-7976-4717-b622-c52586c25b14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrigEdit\scintilla">
+      <UniqueIdentifier>{3e993f7b-4ed7-4532-a28b-7c520093d8d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrigEdit\EncDec">
+      <UniqueIdentifier>{dc4226e9-93fa-4cf8-b85c-794cf9ea3031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrigEdit\StringUtils">
+      <UniqueIdentifier>{14aa99ea-43b4-462d-bf4a-a814b8c74b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrigEdit\Tokenizer">
+      <UniqueIdentifier>{1f2696d3-8a07-42c7-a722-6fb7cc721420}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PluginBase\DllMain.cpp">
+      <Filter>PluginBase</Filter>
+    </ClCompile>
+    <ClCompile Include="PluginBase\SICStringList.cpp">
+      <Filter>PluginBase</Filter>
+    </ClCompile>
+    <ClCompile Include="PluginMain.cpp" />
+    <ClCompile Include="TrigEdit\EncDec\AIScriptEncDec.cpp">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\EncDec\ConstDecoder.cpp">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\EncDec\ConstEncoder.cpp">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\EncDec\TriggerActionEncDec.cpp">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\EncDec\TriggerConditionEncDec.cpp">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\EncDec\TriggerEncDec.cpp">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\TriggerEditor.cpp">
+      <Filter>TrigEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\EncDec\TriggerEncDecData.cpp">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\StringUtils\stringbuffer.cpp">
+      <Filter>TrigEdit\StringUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\StringUtils\StringIntCast.cpp">
+      <Filter>TrigEdit\StringUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\EncDec\MapNamespace.cpp">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\EncDec\MapStrings.cpp">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\StringUtils\RawCStringCast.cpp">
+      <Filter>TrigEdit\StringUtils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PluginBase\SCMDPlugin.h">
+      <Filter>PluginBase</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginBase\SICStringList.h">
+      <Filter>PluginBase</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\TriggerEditor.h">
+      <Filter>TrigEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\scintilla\ILexer.h">
+      <Filter>TrigEdit\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\scintilla\Platform.h">
+      <Filter>TrigEdit\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\scintilla\SciLexer.h">
+      <Filter>TrigEdit\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\scintilla\Scintilla.h">
+      <Filter>TrigEdit\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\scintilla\ScintillaWidget.h">
+      <Filter>TrigEdit\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\condact.h">
+      <Filter>TrigEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\EncDec\TriggerEncDec.h">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\StringUtils\stringbuffer.h">
+      <Filter>TrigEdit\StringUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\StringUtils\StringCast.h">
+      <Filter>TrigEdit\StringUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\EncodeError.h">
+      <Filter>TrigEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\EncDec\MapNamespace.h">
+      <Filter>TrigEdit\EncDec</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginBase\DllMain.def">
+      <Filter>PluginBase</Filter>
+    </None>
+    <None Include="TrigEdit\scintilla\SciLexer.dll">
+      <Filter>TrigEdit\scintilla</Filter>
+    </None>
+    <None Include="TrigEdit\scintilla\SciLexer.exp">
+      <Filter>TrigEdit\scintilla</Filter>
+    </None>
+    <None Include="TrigEdit\scintilla\SciLexer.pdb">
+      <Filter>TrigEdit\scintilla</Filter>
+    </None>
+    <None Include="TrigEdit\scintilla\Scintilla.dll">
+      <Filter>TrigEdit\scintilla</Filter>
+    </None>
+    <None Include="TrigEdit\scintilla\Scintilla.exp">
+      <Filter>TrigEdit\scintilla</Filter>
+    </None>
+    <None Include="TrigEdit\scintilla\Scintilla.iface">
+      <Filter>TrigEdit\scintilla</Filter>
+    </None>
+    <None Include="TrigEdit\scintilla\Scintilla.pdb">
+      <Filter>TrigEdit\scintilla</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="TrigEdit\scintilla\SciLexer.lib">
+      <Filter>TrigEdit\scintilla</Filter>
+    </Library>
+    <Library Include="TrigEdit\scintilla\Scintilla.lib">
+      <Filter>TrigEdit\scintilla</Filter>
+    </Library>
+  </ItemGroup>
+</Project>

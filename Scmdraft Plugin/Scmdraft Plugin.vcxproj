@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PluginBase\DllMain.cpp" />
+    <ClCompile Include="PluginBase\SICStringList.cpp" />
+    <ClCompile Include="PluginMain.cpp" />
+    <ClCompile Include="TrigEdit\EncDec\AIScriptEncDec.cpp" />
+    <ClCompile Include="TrigEdit\EncDec\ConstDecoder.cpp" />
+    <ClCompile Include="TrigEdit\EncDec\ConstEncoder.cpp" />
+    <ClCompile Include="TrigEdit\EncDec\MapStrings.cpp" />
+    <ClCompile Include="TrigEdit\EncDec\TriggerActionEncDec.cpp" />
+    <ClCompile Include="TrigEdit\EncDec\TriggerConditionEncDec.cpp" />
+    <ClCompile Include="TrigEdit\EncDec\TriggerEncDec.cpp" />
+    <ClCompile Include="TrigEdit\EncDec\TriggerEncDecData.cpp" />
+    <ClCompile Include="TrigEdit\EncDec\MapNamespace.cpp" />
+    <ClCompile Include="TrigEdit\StringUtils\RawCStringCast.cpp" />
+    <ClCompile Include="TrigEdit\StringUtils\stringbuffer.cpp" />
+    <ClCompile Include="TrigEdit\StringUtils\StringIntCast.cpp" />
+    <ClCompile Include="TrigEdit\TriggerEditor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PluginBase\SCMDPlugin.h" />
+    <ClInclude Include="PluginBase\SICStringList.h" />
+    <ClInclude Include="TrigEdit\condact.h" />
+    <ClInclude Include="TrigEdit\EncDec\TriggerEncDec.h" />
+    <ClInclude Include="TrigEdit\EncDec\MapNamespace.h" />
+    <ClInclude Include="TrigEdit\EncodeError.h" />
+    <ClInclude Include="TrigEdit\scintilla\ILexer.h" />
+    <ClInclude Include="TrigEdit\scintilla\Platform.h" />
+    <ClInclude Include="TrigEdit\scintilla\SciLexer.h" />
+    <ClInclude Include="TrigEdit\scintilla\Scintilla.h" />
+    <ClInclude Include="TrigEdit\scintilla\ScintillaWidget.h" />
+    <ClInclude Include="TrigEdit\StringUtils\StringCast.h" />
+    <ClInclude Include="TrigEdit\StringUtils\stringbuffer.h" />
+    <ClInclude Include="TrigEdit\TriggerEditor.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginBase\DllMain.def" />
+    <None Include="TrigEdit\scintilla\SciLexer.dll" />
+    <None Include="TrigEdit\scintilla\SciLexer.exp" />
+    <None Include="TrigEdit\scintilla\SciLexer.pdb" />
+    <None Include="TrigEdit\scintilla\Scintilla.dll" />
+    <None Include="TrigEdit\scintilla\Scintilla.exp" />
+    <None Include="TrigEdit\scintilla\Scintilla.iface" />
+    <None Include="TrigEdit\scintilla\Scintilla.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="TrigEdit\scintilla\SciLexer.lib" />
+    <Library Include="TrigEdit\scintilla\Scintilla.lib" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D577A097-70FD-4B22-A758-2451721BF5EB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>TrigEditPlus</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\Debug\</OutDir>
+    <IntDir>Debug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.sdp</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\Release\</OutDir>
+    <IntDir>Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.sdp</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)TrigEditPlus.sdp</OutputFile>
+      <ModuleDefinitionFile>PluginBase\DllMain.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)Scmdraft Plugin.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)TrigEditPlus.sdp</OutputFile>
+      <ModuleDefinitionFile>PluginBase\DllMain.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

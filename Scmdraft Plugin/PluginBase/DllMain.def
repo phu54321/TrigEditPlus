@@ -1,0 +1,6 @@
+LIBRARY	"Scmdraft Plugin"
+EXPORTS
+	InitPlugin
+	RunPlugin
+	PluginGetMenuString
+	GetPluginVersion
