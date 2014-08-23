@@ -5,7 +5,7 @@
 #include "TrigEdit/TriggerEditor.h"
 
 
-const char* PluginMenuName = "Trigger Editor Plus";
+const char* PluginMenuName = "TrigEdit++";
 
 
 // This function is called when the DLL is loaded.

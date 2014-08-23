@@ -14,13 +14,18 @@ int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 
 	DecodeTriggers();
 
-	std::ofstream os("output.lua", std::ios::binary);
+	std::ofstream os("trigeditplus.lua", std::ios::binary);
 	os << GetEditorText();
 	os.close();
 
-	MessageBox(hSCMD2MainWindow, "Press OK when you've modified your triggers.", "Waiting", MB_OK);
+	if((int)ShellExecute(hMain, "edit", "trigeditplus.lua", NULL, NULL, SW_SHOW) == SE_ERR_ASSOCINCOMPLETE) {
+		ShellExecute(hMain, "open", "trigeditplus.lua", NULL, NULL, SW_SHOW);
+	}
+	MessageBox(hSCMD2MainWindow, "Press OK when you completed modifying your triggers.", "Waiting", MB_OK);
 
-	std::ifstream is("output.lua", std::ios::binary);
+compile_retry:
+
+	std::ifstream is("trigeditplus.lua2", std::ios::binary);
 	is.seekg(0, std::ios::end);
 	size_t fsize = (size_t)is.tellg();
 	is.seekg(0);
@@ -36,7 +41,9 @@ int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 	}
 
 	else {
-		MessageBox(hSCMD2MainWindow, "Compile failed", "Error", MB_OK);
+		_errlist << "Retry compile?";
+		int retry = MessageBox(hSCMD2MainWindow, _errlist.str().c_str(), NULL, MB_YESNO);
+		if(retry == IDYES) goto compile_retry;
 	}
 
 	delete _namespace;
@@ -54,10 +61,11 @@ std::string TriggerEditor::GetEditorText() const {
 
 
 void TriggerEditor::ClearErrors() {
-	;
+	_errlist.clear();
+	_errlist << "Compile failed because of the following reason:\r\n";
 }
 
 
 void TriggerEditor::PrintErrorMessage(const std::string& msg) {
-	std::cerr << msg.c_str() << "\n";
+	_errlist << msg.c_str() << "\r\n";
 }

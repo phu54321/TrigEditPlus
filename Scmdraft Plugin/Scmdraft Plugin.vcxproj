@@ -95,11 +95,6 @@
     <ClInclude Include="TrigEdit\Encoder\Lua\lvm.h" />
     <ClInclude Include="TrigEdit\Encoder\Lua\lzio.h" />
     <ClInclude Include="TrigEdit\MapNamespace.h" />
-    <ClInclude Include="TrigEdit\scintilla\ILexer.h" />
-    <ClInclude Include="TrigEdit\scintilla\Platform.h" />
-    <ClInclude Include="TrigEdit\scintilla\SciLexer.h" />
-    <ClInclude Include="TrigEdit\scintilla\Scintilla.h" />
-    <ClInclude Include="TrigEdit\scintilla\ScintillaWidget.h" />
     <ClInclude Include="TrigEdit\StringUtils\StringCast.h" />
     <ClInclude Include="TrigEdit\StringUtils\stringbuffer.h" />
     <ClInclude Include="TrigEdit\TriggerEditor.h" />
@@ -108,17 +103,6 @@
   <ItemGroup>
     <None Include="PluginBase\DllMain.def" />
     <None Include="TrigEdit\Encoder\basescript.lua" />
-    <None Include="TrigEdit\scintilla\SciLexer.dll" />
-    <None Include="TrigEdit\scintilla\SciLexer.exp" />
-    <None Include="TrigEdit\scintilla\SciLexer.pdb" />
-    <None Include="TrigEdit\scintilla\Scintilla.dll" />
-    <None Include="TrigEdit\scintilla\Scintilla.exp" />
-    <None Include="TrigEdit\scintilla\Scintilla.iface" />
-    <None Include="TrigEdit\scintilla\Scintilla.pdb" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="TrigEdit\scintilla\SciLexer.lib" />
-    <Library Include="TrigEdit\scintilla\Scintilla.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TrigEditPlus.rc" />

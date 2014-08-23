@@ -142,7 +142,7 @@ private:
 	
 
 	std::string _tmp_content;
-
+	StringBuffer _errlist;
 private:
 	// Private members.
 };

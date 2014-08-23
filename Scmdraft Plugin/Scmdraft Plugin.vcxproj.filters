@@ -7,9 +7,6 @@
     <Filter Include="TrigEdit">
       <UniqueIdentifier>{4d8a6a16-7976-4717-b622-c52586c25b14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TrigEdit\scintilla">
-      <UniqueIdentifier>{3e993f7b-4ed7-4532-a28b-7c520093d8d9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="TrigEdit\StringUtils">
       <UniqueIdentifier>{14aa99ea-43b4-462d-bf4a-a814b8c74b50}</UniqueIdentifier>
     </Filter>
@@ -189,21 +186,6 @@
     <ClInclude Include="TrigEdit\TriggerEditor.h">
       <Filter>TrigEdit</Filter>
     </ClInclude>
-    <ClInclude Include="TrigEdit\scintilla\ILexer.h">
-      <Filter>TrigEdit\scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="TrigEdit\scintilla\Platform.h">
-      <Filter>TrigEdit\scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="TrigEdit\scintilla\SciLexer.h">
-      <Filter>TrigEdit\scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="TrigEdit\scintilla\Scintilla.h">
-      <Filter>TrigEdit\scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="TrigEdit\scintilla\ScintillaWidget.h">
-      <Filter>TrigEdit\scintilla</Filter>
-    </ClInclude>
     <ClInclude Include="TrigEdit\condact.h">
       <Filter>TrigEdit</Filter>
     </ClInclude>
@@ -300,38 +282,9 @@
     <None Include="PluginBase\DllMain.def">
       <Filter>PluginBase</Filter>
     </None>
-    <None Include="TrigEdit\scintilla\SciLexer.dll">
-      <Filter>TrigEdit\scintilla</Filter>
-    </None>
-    <None Include="TrigEdit\scintilla\SciLexer.exp">
-      <Filter>TrigEdit\scintilla</Filter>
-    </None>
-    <None Include="TrigEdit\scintilla\SciLexer.pdb">
-      <Filter>TrigEdit\scintilla</Filter>
-    </None>
-    <None Include="TrigEdit\scintilla\Scintilla.dll">
-      <Filter>TrigEdit\scintilla</Filter>
-    </None>
-    <None Include="TrigEdit\scintilla\Scintilla.exp">
-      <Filter>TrigEdit\scintilla</Filter>
-    </None>
-    <None Include="TrigEdit\scintilla\Scintilla.iface">
-      <Filter>TrigEdit\scintilla</Filter>
-    </None>
-    <None Include="TrigEdit\scintilla\Scintilla.pdb">
-      <Filter>TrigEdit\scintilla</Filter>
-    </None>
     <None Include="TrigEdit\Encoder\basescript.lua">
       <Filter>TrigEdit\Encoder</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="TrigEdit\scintilla\SciLexer.lib">
-      <Filter>TrigEdit\scintilla</Filter>
-    </Library>
-    <Library Include="TrigEdit\scintilla\Scintilla.lib">
-      <Filter>TrigEdit\scintilla</Filter>
-    </Library>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TrigEditPlus.rc" />
