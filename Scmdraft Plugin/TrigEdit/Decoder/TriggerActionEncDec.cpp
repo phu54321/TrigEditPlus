@@ -3,16 +3,16 @@
 
 extern TriggerStatementDecl ActionFields[57];
 
-void TriggerEditor::DecodeAction(const TrigAct& content) {
-	_decode_out << "\t\t";
+void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) const {
+	buf << "\t\t";
 
 	if(content.prop & 0x2) {
-		_decode_out << "Disabled(";
+		buf << "Disabled(";
 	}
 
 	if(content.acttype == 0);
 	else if(content.acttype > 57) {
-		_decode_out << "Custom("
+		buf << "Custom("
 			<< content.locid << ", "
 			<< content.strid << ", "
 			<< content.wavid << ", "
@@ -30,7 +30,7 @@ void TriggerEditor::DecodeAction(const TrigAct& content) {
 		int acttype = content.acttype;
 		TriggerStatementDecl &decl = ActionFields[acttype - 1];
 
-		_decode_out << decl.stmt_name << "(";
+		buf << decl.stmt_name << "(";
 
 		bool firstfield = true;
 
@@ -75,18 +75,18 @@ void TriggerEditor::DecodeAction(const TrigAct& content) {
 			}
 
 			if(firstfield) firstfield = false;
-			else _decode_out << ", ";
-			_decode_out << str;
+			else buf << ", ";
+			buf << str;
 		}
 
-		_decode_out << ")";
+		buf << ")";
 	}
 
 	if(content.prop & 0x2) {
-		_decode_out << ");\r\n";
+		buf << ");\r\n";
 	}
 
 	else {
-		_decode_out << ";\r\n";
+		buf << ";\r\n";
 	}
 }

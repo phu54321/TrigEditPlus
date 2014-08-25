@@ -23,7 +23,8 @@ void LuaRunResource(lua_State* L, LPCSTR respath) {
 		str[fsize] = '\0';
 		UnlockResource(resd);
 
-		luaL_dostring(L, str);
+		luaL_loadbuffer(L, str, fsize, "basescript");
+		lua_pcall(L, 0, LUA_MULTRET, 0);
 
 		delete[] str;
 	}
@@ -219,7 +220,7 @@ int LuaParseTrigger(lua_State* L) {
 	lua_pushstring(L, "flag");
 	lua_gettable(L, -2); // < t.flag
 	if(lua_istable(L, -1)) {
-		int flagn = lua_rawlen(L, 1);
+		int flagn = lua_rawlen(L, -1);
 		int flag = 0;
 
 		lua_getglobal(L, "actexec");    // 0x1
@@ -228,7 +229,7 @@ int LuaParseTrigger(lua_State* L) {
 		
 		for(int i = 1 ; i <= flagn ; i++) {
 			lua_pushnumber(L, i);
-			lua_gettable(L, -2); // < t.flag[i]
+			lua_gettable(L, -5); // < t.flag[i]
 
 			/**/ if(lua_compare(L, -1, -4, LUA_OPEQ)) flag |= 0x1; //actexec
 			else if(lua_compare(L, -1, -3, LUA_OPEQ)) flag |= 0x4; //preserved
@@ -239,6 +240,8 @@ int LuaParseTrigger(lua_State* L) {
 
 			lua_pop(L, 1); // > t.flag[i]
 		}
+
+		t.flag = flag;
 
 		lua_pop(L, 3); // actexec, preserved, disabled
 	}

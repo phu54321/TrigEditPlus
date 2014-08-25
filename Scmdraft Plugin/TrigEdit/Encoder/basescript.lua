@@ -820,7 +820,7 @@ end
 function LeaderBoardScore(ScoreType, Label)
     ScoreType = ParseScore(ScoreType)
     Label = ParseString(Label)
-    return Action(0, Label, 0, 0, 0, 0, Score, 21, 0, 4)
+    return Action(0, Label, 0, 0, 0, 0, ScoreType, 21, 0, 4)
 end
 
 

@@ -12,6 +12,9 @@ ReAllocRam scmd2_realloc;
 void Initialize();
 void Finalize();
 
+extern const char* PluginMenuName;
+
+
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
                        LPVOID lpReserved
@@ -55,26 +58,29 @@ BOOL WINAPI InitPlugin(	HWND MainWindow,
 	scmd2_free = DeleteMem;
 	scmd2_realloc = ResizeMem;
 
-	// Change these to get your own sections.
-	RequestedSections[0] = 'GIRT';
-	
 	Initialize();
+
+	// Change these to get your own sections.
+	if(PluginMenuName != NULL) {
+		RequestedSections[0] = 'GIRT';	
+	}
 
 	return true;
 }
 
 
-extern const char* PluginMenuName;
-
 //	Change these names to whatever you wanna call it
-BOOL WINAPI PluginGetMenuString(DWORD Section, CHAR* MenuStr, WORD StrLen)
+BOOL WINAPI PluginGetMenuString(DWORD Section, CHAR* MenuStr, WORD sLen)
 {
 	if(Section == 'GIRT')
 	{
-		if(StrLen < strlen(PluginMenuName))
-			return FALSE;
-		strcpy(MenuStr, PluginMenuName);
-		return TRUE;
+		if(PluginMenuName != NULL) {
+			if(sLen < strlen(PluginMenuName))
+				return FALSE;
+			strcpy(MenuStr, PluginMenuName);
+			return TRUE;
+		}
+		else return FALSE;
 	}
 	return FALSE;
 }

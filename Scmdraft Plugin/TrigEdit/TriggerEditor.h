@@ -9,8 +9,9 @@
 #include <Windows.h>
 #include <stdint.h>
 
-#include "../PluginBase/SCMDPlugin.h"
+#include "Scintilla/Scintilla.h"
 
+#include "../PluginBase/SCMDPlugin.h"
 #include "StringUtils/stringbuffer.h"
 
 //Trigger structure
@@ -69,9 +70,12 @@ struct TriggerEditor_Arg {
 };
 
 class MapNamespace;
+LRESULT CALLBACK TrigEditDlgProc(HWND, UINT, WPARAM, LPARAM);
 
 // Trigger editor def
 class TriggerEditor {
+	friend LRESULT CALLBACK TrigEditDlgProc(HWND, UINT, WPARAM, LPARAM);
+
 public:
 	TriggerEditor();
 	~TriggerEditor();
@@ -85,13 +89,11 @@ private:
 
 private:
 	// Decode part : Binary Data -> Text
-	void DecodeTriggers();
-	
-	StringBuffer _decode_out;
+	std::string DecodeTriggers(CChunkData* input) const;
 
-	void DecodeTrigger(const Trig& content);
-	void DecodeCondition(const TrigCond& content);
-	void DecodeAction(const TrigAct& content);
+	void DecodeTrigger(StringBuffer& buf, const Trig& content) const;
+	void DecodeCondition(StringBuffer& buf, const TrigCond& content) const;
+	void DecodeAction(StringBuffer& buf, const TrigAct& content) const;
 
 	std::string DecodeNumber(int value) const;
 	std::string DecodeAllyStatus(int value) const;
@@ -128,21 +130,23 @@ public:
 	
 	void ClearErrors();
 	void PrintErrorMessage(const std::string& str);
-
-	void Encode_AddTrigger(const Trig& t);
 	
 private:
 	// Window part
 	HWND hTrigDlg;
 	HWND hScintilla;
+	HWND hFindDlg;
+	bool _textedited;
+
+	SciFnDirect _pSciMsg;
+	sptr_t _pSciWndData;
+	int SendSciMessage(int msg, WPARAM, LPARAM);
 
 	std::string GetEditorText() const;
 	void SetEditorText(const std::string& str);
 
-	
-
-	std::string _tmp_content;
 	StringBuffer _errlist;
+
 private:
 	// Private members.
 };

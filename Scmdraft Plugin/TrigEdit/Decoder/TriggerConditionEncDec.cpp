@@ -3,16 +3,16 @@
 
 extern TriggerStatementDecl ConditionFields[23];
 
-void TriggerEditor::DecodeCondition(const TrigCond& content) {
-	_decode_out << "\t\t";
+void TriggerEditor::DecodeCondition(StringBuffer& buf, const TrigCond& content) const {
+	buf << "\t\t";
 
 	if(content.prop & 0x2) {
-		_decode_out << "Disabled(";
+		buf << "Disabled(";
 	}
 
 	if(content.condtype == 0);
 	else if(content.condtype > 23) {
-		_decode_out << "Custom("
+		buf << "Custom("
 			<< content.locid << ", "
 			<< content.player << ", "
 			<< content.res << ", "
@@ -27,7 +27,7 @@ void TriggerEditor::DecodeCondition(const TrigCond& content) {
 		int condtype = content.condtype;
 		TriggerStatementDecl &decl = ConditionFields[condtype - 1];
 
-		_decode_out << decl.stmt_name << "(";
+		buf << decl.stmt_name << "(";
 	
 		bool firstfield = true;
 
@@ -70,18 +70,18 @@ void TriggerEditor::DecodeCondition(const TrigCond& content) {
 			}
 
 			if(firstfield) firstfield = false;
-			else _decode_out << ", ";
-			_decode_out << str;
+			else buf << ", ";
+			buf << str;
 		}
 
-		_decode_out << ")";
+		buf << ")";
 	}
 
 	if(content.prop & 0x2) {
-		_decode_out << ");\r\n";
+		buf << ");\r\n";
 	}
 
 	else {
-		_decode_out << ";\r\n";
+		buf << ";\r\n";
 	}
 }

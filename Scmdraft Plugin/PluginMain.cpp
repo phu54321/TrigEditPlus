@@ -7,17 +7,29 @@
 
 const char* PluginMenuName = "TrigEdit++";
 
+static HMODULE hScintillaDLL;
 
-// This function is called when the DLL is loaded.
+
 void Initialize() {
-	freopen("log.txt", "w", stderr);
-	freopen("output.txt", "w", stdout);
+	WNDCLASSEX wc;
+	memset(&wc, 0, sizeof(wc));
+	wc.cbSize = sizeof(wc);
+	wc.lpszClassName = "TrigEditPlusDlg";
+	wc.hInstance = hInstance;
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = (HBRUSH)GetStockObject(GRAY_BRUSH);
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = TrigEditDlgProc;
+	RegisterClassEx(&wc);
+
+	RegisterWindowMessage(FINDMSGSTRING);
+
+	Scintilla_RegisterClasses(hInstance);
+	Scintilla_LinkLexers();
 }
 
 // This function is called when the DLL is unloaded.
 void Finalize() {
-	fclose(stderr);
-	fclose(stdout);
 }
 
 

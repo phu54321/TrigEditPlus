@@ -95,10 +95,13 @@
     <ClInclude Include="TrigEdit\Encoder\Lua\lvm.h" />
     <ClInclude Include="TrigEdit\Encoder\Lua\lzio.h" />
     <ClInclude Include="TrigEdit\MapNamespace.h" />
+    <ClInclude Include="TrigEdit\Scintilla\SciLexer.h" />
+    <ClInclude Include="TrigEdit\Scintilla\Scintilla.h" />
     <ClInclude Include="TrigEdit\StringUtils\StringCast.h" />
     <ClInclude Include="TrigEdit\StringUtils\stringbuffer.h" />
     <ClInclude Include="TrigEdit\TriggerEditor.h" />
     <ClInclude Include="TrigEdit\TriggerEncDec.h" />
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PluginBase\DllMain.def" />
@@ -106,6 +109,17 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TrigEditPlus.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="toolbar.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="TrigEdit\Scintilla\SciLexer.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="TrigEdit\Scintilla\SciLexerd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </Library>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D577A097-70FD-4B22-A758-2451721BF5EB}</ProjectGuid>
@@ -115,8 +129,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v110_xp</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -152,12 +167,13 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)TrigEditPlus.sdp</OutputFile>

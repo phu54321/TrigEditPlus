@@ -19,6 +19,9 @@
     <Filter Include="TrigEdit\Encoder\Lua">
       <UniqueIdentifier>{8582ca1f-3f55-403c-bf35-c2786cf7e17b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TrigEdit\Scintilla">
+      <UniqueIdentifier>{7ec25cb2-026e-4d1f-aac0-cc0878743288}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PluginBase\DllMain.cpp">
@@ -277,6 +280,13 @@
       <Filter>TrigEdit</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TrigEdit\Scintilla\SciLexer.h">
+      <Filter>TrigEdit\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Scintilla\Scintilla.h">
+      <Filter>TrigEdit\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PluginBase\DllMain.def">
@@ -288,5 +298,16 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TrigEditPlus.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="toolbar.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="TrigEdit\Scintilla\SciLexer.lib">
+      <Filter>TrigEdit\Scintilla</Filter>
+    </Library>
+    <Library Include="TrigEdit\Scintilla\SciLexerd.lib">
+      <Filter>TrigEdit\Scintilla</Filter>
+    </Library>
   </ItemGroup>
 </Project>
