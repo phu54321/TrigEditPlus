@@ -5,7 +5,6 @@
 #include <exception>
 #include <functional>
 #include <memory>
-
 #include <Windows.h>
 #include <stdint.h>
 
@@ -13,6 +12,7 @@
 
 #include "../PluginBase/SCMDPlugin.h"
 #include "StringUtils/stringbuffer.h"
+#include "TriggerEncDec.h"
 
 //Trigger structure
 #include <packon.h>
@@ -82,12 +82,9 @@ public:
 
 	int RunEditor(HWND hMain, TriggerEditor_Arg& data);
 
-private:
 	TriggerEditor_Arg* _editordata;
 	MapNamespace* _namespace;
 
-
-private:
 	// Decode part : Binary Data -> Text
 	std::string DecodeTriggers(CChunkData* input) const;
 
@@ -113,15 +110,12 @@ private:
 	std::string DecodeString(int value) const;
 	std::string DecodeSwitchName(int value) const;
 
-
-public:
 	// Encode part : Text -> Binary Data
 	bool EncodeTriggerCode();
 	std::vector<Trig> _trigbuffer;
 
 	void DerefStrings();
 
-public:
 	// These functions are used by lua
 	int EncodeUnit(const std::string& str) const;
 	int EncodeLocation(const std::string& str) const;
@@ -130,20 +124,22 @@ public:
 	
 	void ClearErrors();
 	void PrintErrorMessage(const std::string& str);
-	
-private:
-	// Window part
-	HWND hTrigDlg;
-	HWND hScintilla;
-	HWND hFindDlg;
-	bool _textedited;
-
-	SciFnDirect _pSciMsg;
-	sptr_t _pSciWndData;
 	int SendSciMessage(int msg, WPARAM, LPARAM);
 
 	std::string GetEditorText() const;
 	void SetEditorText(const std::string& str);
+
+	// Window part
+	HWND hTrigDlg;
+	HWND hScintilla;
+	HWND hFindDlg;
+	HWND hElmnTable;
+	FINDREPLACE fr;
+	FieldType currentft;
+	bool _textedited;
+
+	SciFnDirect _pSciMsg;
+	sptr_t _pSciWndData;
 
 	StringBuffer _errlist;
 

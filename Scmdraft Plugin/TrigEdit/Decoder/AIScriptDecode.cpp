@@ -6,7 +6,7 @@ struct AIScriptEntry{
 	const char* str;
 };
 
-static AIScriptEntry AIScriptList[] = {
+AIScriptEntry AIScriptList[] = {
 	{'uCMT', "Terran Custom Level"},
 	{'uCMZ', "Zerg Custom Level"},
 	{'uCMP', "Protoss Custom Level"},
@@ -300,6 +300,7 @@ static AIScriptEntry AIScriptList[] = {
 	{'D0BZ', "Brood Wars Zerg 10 - Town D"},
 	{'E0BZ', "Brood Wars Zerg 10 - Town E"},
 	{'F0BZ', "Brood Wars Zerg 10 - Town F"},
+	{0, NULL}
 };
 
 std::string TriggerEditor::DecodeAIScript(int value) const {

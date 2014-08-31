@@ -150,3 +150,6 @@ struct TriggerStatementDecl {
 	const char* stmt_name;
 	FieldTypePair fields[MAX_FIELD_NUM];
 };
+
+extern TriggerStatementDecl ConditionFields[23];
+extern TriggerStatementDecl ActionFields[57];

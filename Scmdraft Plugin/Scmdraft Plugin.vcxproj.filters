@@ -178,6 +178,18 @@
     <ClCompile Include="TrigEdit\Encoder\LuaParseString.cpp">
       <Filter>TrigEdit\Encoder</Filter>
     </ClCompile>
+    <ClCompile Include="TrigEdit\LuaStyle.cpp">
+      <Filter>TrigEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\EditorCharAdded.cpp">
+      <Filter>TrigEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Decoder\SpecialCommentDec.cpp">
+      <Filter>TrigEdit\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\SetAutocomplete.cpp">
+      <Filter>TrigEdit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PluginBase\SCMDPlugin.h">
@@ -187,9 +199,6 @@
       <Filter>PluginBase</Filter>
     </ClInclude>
     <ClInclude Include="TrigEdit\TriggerEditor.h">
-      <Filter>TrigEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="TrigEdit\condact.h">
       <Filter>TrigEdit</Filter>
     </ClInclude>
     <ClInclude Include="TrigEdit\StringUtils\stringbuffer.h">
@@ -303,11 +312,7 @@
     <Image Include="toolbar.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="TrigEdit\Scintilla\SciLexer.lib">
-      <Filter>TrigEdit\Scintilla</Filter>
-    </Library>
-    <Library Include="TrigEdit\Scintilla\SciLexerd.lib">
-      <Filter>TrigEdit\Scintilla</Filter>
-    </Library>
+    <Text Include="License\license_lua.txt" />
+    <Text Include="License\license_scintilla.txt" />
   </ItemGroup>
 </Project>

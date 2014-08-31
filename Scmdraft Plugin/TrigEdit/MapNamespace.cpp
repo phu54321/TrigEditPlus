@@ -141,7 +141,7 @@ MapNamespaceImpl::MapNamespaceImpl(const TriggerEditor_Arg& data) {
 		unitname[i].assign(RemoveColorFromString(uname));
 	}
 
-	unitname[228] = "None";
+	unitname[228] = "Unused unit 228";
 	unitname[229] = "Any unit";
 	unitname[230] = "Men";
 	unitname[231] = "Buildings";

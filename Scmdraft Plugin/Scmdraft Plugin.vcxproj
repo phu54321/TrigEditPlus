@@ -16,10 +16,12 @@
     <ClCompile Include="PluginMain.cpp" />
     <ClCompile Include="TrigEdit\Decoder\AIScriptDecode.cpp" />
     <ClCompile Include="TrigEdit\Decoder\ConstDecoder.cpp" />
+    <ClCompile Include="TrigEdit\Decoder\SpecialCommentDec.cpp" />
     <ClCompile Include="TrigEdit\Decoder\StringDecoder.cpp" />
     <ClCompile Include="TrigEdit\Decoder\TriggerActionEncDec.cpp" />
     <ClCompile Include="TrigEdit\Decoder\TriggerConditionEncDec.cpp" />
     <ClCompile Include="TrigEdit\Decoder\TriggerDecode.cpp" />
+    <ClCompile Include="TrigEdit\EditorCharAdded.cpp" />
     <ClCompile Include="TrigEdit\Encoder\LuaParseString.cpp" />
     <ClCompile Include="TrigEdit\Encoder\Lua\lapi.c" />
     <ClCompile Include="TrigEdit\Encoder\Lua\lauxlib.c" />
@@ -57,7 +59,9 @@
     <ClCompile Include="TrigEdit\Encoder\StringDeref.cpp" />
     <ClCompile Include="TrigEdit\Encoder\StringEncoder.cpp" />
     <ClCompile Include="TrigEdit\Encoder\TriggerEncode.cpp" />
+    <ClCompile Include="TrigEdit\LuaStyle.cpp" />
     <ClCompile Include="TrigEdit\MapNamespace.cpp" />
+    <ClCompile Include="TrigEdit\SetAutocomplete.cpp" />
     <ClCompile Include="TrigEdit\StringUtils\RawCStringCast.cpp" />
     <ClCompile Include="TrigEdit\StringUtils\stringbuffer.cpp" />
     <ClCompile Include="TrigEdit\StringUtils\StringIntCast.cpp" />
@@ -68,7 +72,6 @@
     <ClInclude Include="PluginBase\SCMDPlugin.h" />
     <ClInclude Include="PluginBase\SICStringList.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="TrigEdit\condact.h" />
     <ClInclude Include="TrigEdit\Encoder\Lua\lapi.h" />
     <ClInclude Include="TrigEdit\Encoder\Lua\lauxlib.h" />
     <ClInclude Include="TrigEdit\Encoder\Lua\lcode.h" />
@@ -114,12 +117,8 @@
     <Image Include="toolbar.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="TrigEdit\Scintilla\SciLexer.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="TrigEdit\Scintilla\SciLexerd.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
+    <Text Include="License\license_lua.txt" />
+    <Text Include="License\license_scintilla.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D577A097-70FD-4B22-A758-2451721BF5EB}</ProjectGuid>
@@ -162,6 +161,8 @@
     <IntDir>Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.sdp</TargetExt>
+    <GenerateManifest>false</GenerateManifest>
+    <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -185,6 +186,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>false</DataExecutionPrevention>
+      <AdditionalDependencies>Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -193,20 +195,23 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>None</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)TrigEditPlus.sdp</OutputFile>
       <ModuleDefinitionFile>PluginBase\DllMain.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <Profile>true</Profile>
+      <Profile>false</Profile>
+      <AdditionalDependencies>Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

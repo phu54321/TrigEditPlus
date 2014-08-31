@@ -203,10 +203,10 @@ typedef lu_int32 Instruction;
 #if defined(MS_ASMTRICK) || defined(LUA_MSASMTRICK)	/* { */
 /* trick with Microsoft assembler for X86 */
 
-#define lua_number2int(i,n)  __asm {__asm fld n   __asm fistp i}
+//#define lua_number2int(i,n)  __asm {__asm fld n   __asm fistp i}
+#define lua_number2int(i,n) ((i) = (int)(long long)(n))
 #define lua_number2integer(i,n)		lua_number2int(i, n)
-#define lua_number2unsigned(i,n)  \
-  {__int64 l; __asm {__asm fld n   __asm fistp l} i = (unsigned int)l;}
+#define lua_number2unsigned(i,n) ((i) = (unsigned int)(long long)(n))
 
 
 #elif defined(LUA_IEEE754TRICK)		/* }{ */

@@ -73,7 +73,6 @@ int LuaErrorf(lua_State* L, const char* format, ...) {
 	return lua_error(L);
 }
 
-
 // Trigger getter
 int LuaParseTrigger(lua_State* L) {
 	Trig t;
@@ -116,7 +115,8 @@ int LuaParseTrigger(lua_State* L) {
 
 	// Conditions.
 	lua_pushstring(L, "conditions");
-	lua_gettable(L, -2); // < t.conditions
+	lua_gettable(L, -2); // < t.players
+
 	if(lua_istable(L, -1)) {
 		int condn = lua_rawlen(L, -1);
 		if(condn > 16) {
@@ -166,7 +166,8 @@ int LuaParseTrigger(lua_State* L) {
 
 	// Actions
 	lua_pushstring(L, "actions");
-	lua_gettable(L, -2); // < t.actions
+	lua_gettable(L, -2); // < t.players
+
 	if(lua_istable(L, -1)) {
 		int actn = lua_rawlen(L, -1);
 		if(actn > 64) {
@@ -218,7 +219,8 @@ int LuaParseTrigger(lua_State* L) {
 
 	// Flag
 	lua_pushstring(L, "flag");
-	lua_gettable(L, -2); // < t.flag
+	lua_gettable(L, -2); // < t.players
+
 	if(lua_istable(L, -1)) {
 		int flagn = lua_rawlen(L, -1);
 		int flag = 0;
@@ -264,6 +266,14 @@ int LuaParseTrigger(lua_State* L) {
 }
 
 
+int LuaExtraComment(lua_State* L) {
+	const char* str = luaL_checkstring(L, -1);
+	// Encode str.
+
+	return 0;
+}
+
+
 
 bool TriggerEditor::EncodeTriggerCode() {
 	//Prepare for encode.
@@ -282,12 +292,8 @@ bool TriggerEditor::EncodeTriggerCode() {
 	// Init
 	lua_pushlightuserdata(L, this);
 	lua_setglobal(L, "__inst_global_TriggerEditor");
-	
-	// Load safe standard libaries.
-	luaopen_string(L);
-	luaopen_table(L);
-	luaopen_math(L);
-	luaopen_bit32(L);
+	luaL_openlibs(L);
+
 
 	// Load basic functions.
 	lua_register(L, "ParseUnit", LuaParseUnit);
@@ -316,6 +322,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 		lua_close(L);
 		StringTable_RestoreBackup(_editordata->EngineData->MapStrings);
 		PrintErrorMessage("Compile failed.");
+		_trigbuffer.clear();
 		return false;
 	}
 
@@ -324,6 +331,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 	// Compile Done.
 
 	StringTable_ClearBackup(_editordata->EngineData->MapStrings);
+
 
 	// Replace trigger data
 	scmd2_free(_editordata->Triggers->ChunkData);

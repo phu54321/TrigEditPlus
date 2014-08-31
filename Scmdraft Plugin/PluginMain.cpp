@@ -1,4 +1,6 @@
 // Basic interface I/O for plugin.
+#include <Windows.h>
+#include <CommCtrl.h>
 #include <stdio.h>
 
 #include "PluginBase/SCMDPlugin.h"
@@ -11,6 +13,15 @@ static HMODULE hScintillaDLL;
 
 
 void Initialize() {
+	// Initialize common controls.
+	hScintillaDLL = LoadLibrary("SciLexer");
+	if(!hScintillaDLL) {
+		PluginMenuName = NULL;
+		return;
+	}
+
+	InitCommonControls();
+
 	WNDCLASSEX wc;
 	memset(&wc, 0, sizeof(wc));
 	wc.cbSize = sizeof(wc);
@@ -23,13 +34,11 @@ void Initialize() {
 	RegisterClassEx(&wc);
 
 	RegisterWindowMessage(FINDMSGSTRING);
-
-	Scintilla_RegisterClasses(hInstance);
-	Scintilla_LinkLexers();
 }
 
 // This function is called when the DLL is unloaded.
 void Finalize() {
+	if(hScintillaDLL) FreeLibrary(hScintillaDLL);
 }
 
 

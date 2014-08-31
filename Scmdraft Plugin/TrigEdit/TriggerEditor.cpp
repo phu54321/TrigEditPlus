@@ -1,20 +1,23 @@
-#include "TriggerEditor.h"
+﻿#include "TriggerEditor.h"
 #include "MapNamespace.h"
 #include "../resource.h"
 #include "../version.h"
 #include "Scintilla/Scintilla.h"
 #include "Scintilla/SciLexer.h"
+#include <CommCtrl.h>
+#include <windowsx.h>
 
+#define SCMD2_IDM_SAVE 32903
 
-#define MARGIN_SCRIPT_FOLD_INDEX 2
-
-
-TriggerEditor::TriggerEditor() : hTrigDlg(NULL), hScintilla(NULL), hFindDlg(NULL), _textedited(false) {}
+TriggerEditor::TriggerEditor() : hTrigDlg(NULL), hScintilla(NULL),
+	hFindDlg(NULL), _textedited(false) {}
 TriggerEditor::~TriggerEditor() {}
 
 int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 	_editordata = &arg;
 	_namespace = new MapNamespace(arg);
+
+	currentft = FIELDTYPE_NONE;
 
 	HMENU hMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDR_MAINMENU));
 	HACCEL hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCELERATOR));
@@ -37,7 +40,7 @@ int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 	SetEditorText(DecodeTriggers(arg.Triggers));
 	SendSciMessage(SCI_SETSAVEPOINT, 0, 0);
 	SendSciMessage(SCI_EMPTYUNDOBUFFER, 0, 0);
-	//SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_CONTRACT, 0);
+	SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_CONTRACT, 0);
 	_textedited = false;
 
 	ShowWindow(hTrigDlg, SW_SHOW);
@@ -91,35 +94,46 @@ int TriggerEditor::SendSciMessage(int msg, WPARAM wParam, LPARAM lParam) {
 }
 
 
+
+
 char szFindText[4096];
 char szReplaceText[4096];
+
+
+void Editor_CharAdded(SCNotification* ne, TriggerEditor* te);
+void ApplyEditorStyle(TriggerEditor* te);
+
+void ApplyAutocomplete(TriggerEditor* te);
+
 
 LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	TriggerEditor* te = reinterpret_cast<TriggerEditor*>(GetWindowLong(hWnd, GWL_USERDATA));
 	const int ScintillaID = 1000;
+	const int TabID = 1001;
+	const int ElmnTableID = 1002;
 	const static int FindReplaceMsg = RegisterWindowMessage(FINDMSGSTRING);
+	static FINDREPLACE fr;
 
-	
+
 	if(msg == FindReplaceMsg) {
-		FINDREPLACE* fr = (FINDREPLACE*)lParam;
+		LPFINDREPLACE lpfr = (LPFINDREPLACE)lParam;
 
-		if(fr->Flags & FR_DIALOGTERM) {
-			MessageBox(hWnd, "dsjhfadkjs", "asdjhb", MB_OK);
+		if(lpfr->Flags & FR_DIALOGTERM) {
 			te->hFindDlg = NULL;
 		}
 
-		else if(fr->Flags & FR_FINDNEXT || fr->Flags & FR_REPLACE) { // Find/replace
+		else if(lpfr->Flags & FR_FINDNEXT || lpfr->Flags & FR_REPLACE) { // Find/replace
 			int searchflag = 
-				((fr->Flags & FR_MATCHCASE) ? SCFIND_MATCHCASE : 0) |
-				((fr->Flags & FR_WHOLEWORD) ? SCFIND_WHOLEWORD : 0);
+				((lpfr->Flags & FR_MATCHCASE) ? SCFIND_MATCHCASE : 0) |
+				((lpfr->Flags & FR_WHOLEWORD) ? SCFIND_WHOLEWORD : 0);
 
 			int retv;
 
 			// Init ttf
 			Sci_TextToFind ttf;
-			ttf.lpstrText = fr->lpstrFindWhat;
-			
-			if(fr->Flags & FR_DOWN) {
+			ttf.lpstrText = lpfr->lpstrFindWhat;
+
+			if(lpfr->Flags & FR_DOWN) {
 				ttf.chrg.cpMin = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
 				ttf.chrg.cpMax = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
 			}
@@ -140,32 +154,35 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			te->SendSciMessage(SCI_SETSEL, ttf.chrgText.cpMin, ttf.chrgText.cpMax);
 
 			// Replace if needed.
-			if(fr->Flags & FR_REPLACE) {
-				te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)fr->lpstrReplaceWith);
+			if(lpfr->Flags & FR_REPLACE) {
+				te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)lpfr->lpstrReplaceWith);
 			}
 		}
 
-		else if(fr->Flags & FR_REPLACEALL) {
-			int textLen = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
+		else if(lpfr->Flags & FR_REPLACEALL) {
+			const int docLen = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
 			int replacedn = 0;
 
-			int searchflag = 
-				((fr->Flags & FR_MATCHCASE) ? SCFIND_MATCHCASE : 0) |
-				((fr->Flags & FR_WHOLEWORD) ? SCFIND_WHOLEWORD : 0);
+			const int searchflag = 
+				((lpfr->Flags & FR_MATCHCASE) ? SCFIND_MATCHCASE : 0) |
+				((lpfr->Flags & FR_WHOLEWORD) ? SCFIND_WHOLEWORD : 0);
 
+			const int searchlen = strlen(lpfr->lpstrFindWhat);
+			const int replen = strlen(lpfr->lpstrReplaceWith);
 
 			te->SendSciMessage(SCI_SETTARGETSTART, 0, 0);
 			te->SendSciMessage(SCI_SETSEARCHFLAGS, searchflag, 0);
+			
 
 			while(1) {
 				// find next text
-				te->SendSciMessage(SCI_SETTARGETEND, textLen, 0);
-				if(te->SendSciMessage(SCI_SEARCHINTARGET, -1, (LPARAM)fr->lpstrFindWhat) == -1) break;
-				te->SendSciMessage(SCI_REPLACETARGETRE, -1, (LPARAM)fr->lpstrReplaceWith);
+				te->SendSciMessage(SCI_SETTARGETEND, docLen, 0);
+				if(te->SendSciMessage(SCI_SEARCHINTARGET, searchlen, (LPARAM)lpfr->lpstrFindWhat) == -1) break;
+				te->SendSciMessage(SCI_REPLACETARGET, replen, (LPARAM)lpfr->lpstrReplaceWith);
 
 				// move target after the replaced text
-				int targetend = te->SendSciMessage(SCI_GETTARGETEND, 0, 0);
-				te->SendSciMessage(SCI_SETTARGETEND, targetend, 0);
+				int newtargetend = te->SendSciMessage(SCI_GETTARGETEND, 0, 0);
+				te->SendSciMessage(SCI_SETTARGETSTART, newtargetend, 0);
 				replacedn++;
 			}
 
@@ -183,7 +200,7 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 		}
 		return 0;
 	}
-	
+
 
 	switch(msg) {
 	case WM_CREATE:
@@ -196,10 +213,10 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			te->hScintilla = CreateWindow(
 				"Scintilla",
 				"",
-				WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN,
+				WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_VSCROLL,
 				0,
 				0,
-				800,
+				600,
 				600,
 				hWnd,
 				(HMENU)ScintillaID,
@@ -210,99 +227,38 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			te->_pSciMsg = (SciFnDirect)SendMessage(te->hScintilla, SCI_GETDIRECTFUNCTION, 0, 0);
 			te->_pSciWndData = (sptr_t)SendMessage(te->hScintilla, SCI_GETDIRECTPOINTER, 0, 0);
 
-			// Lua syntax highlighting
-			
-			te->SendSciMessage(SCI_SETLEXER, SCLEX_LUA, 0);
+			ApplyEditorStyle(te);
 
-			// Color scheme from scintilla
-			te->SendSciMessage(SCI_STYLESETFORE,  0, RGB(0xFF, 0x00, 0x00));
-			te->SendSciMessage(SCI_STYLESETFORE,  1, RGB(0x00, 0x7F, 0x00));
-			te->SendSciMessage(SCI_STYLESETFORE,  2, RGB(0x00, 0x7F, 0x00));
-			te->SendSciMessage(SCI_STYLESETFORE,  3, RGB(0xFF, 0x00, 0x00));
-			te->SendSciMessage(SCI_STYLESETFORE,  4, RGB(0x00, 0x7F, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE,  5, RGB(0x00, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE,  6, RGB(0x7F, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE,  7, RGB(0x7F, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE,  8, RGB(0x7F, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE,  9, RGB(0x7F, 0x7F, 0x00));
-			te->SendSciMessage(SCI_STYLESETFORE, 10, RGB(0x00, 0x00, 0x00));
-			te->SendSciMessage(SCI_STYLESETFORE, 12, RGB(0xE0, 0xC0, 0xE0));
-			te->SendSciMessage(SCI_STYLESETFORE, 13, RGB(0x00, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE, 14, RGB(0x00, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE, 15, RGB(0x00, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE, 16, RGB(0x00, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE, 17, RGB(0x00, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE, 18, RGB(0x00, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE, 19, RGB(0x00, 0x00, 0x7F));
-			te->SendSciMessage(SCI_STYLESETFORE, 20, RGB(0x7F, 0x7F, 0x00));
-			te->SendSciMessage(SCI_STYLESETFORE, 32, RGB(0x00, 0x00, 0x00));
+			// Autocomplete list
+			HWND hElmnTable = CreateWindow("listbox", NULL,
+				WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_VSCROLL |
+				LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | LBS_SORT | LBS_WANTKEYBOARDINPUT,
+				600, 0, 200, 600, hWnd, (HMENU)ElmnTableID, hInstance, NULL);
 
-			te->SendSciMessage(SCI_STYLESETBACK,  1, RGB(0xD0, 0xF0, 0xF0));
-			te->SendSciMessage(SCI_STYLESETBACK,  8, RGB(0xE0, 0xFF, 0xFF));
-			te->SendSciMessage(SCI_STYLESETBACK, 13, RGB(0xF5, 0xFF, 0xF5));
-			te->SendSciMessage(SCI_STYLESETBACK, 14, RGB(0xF5, 0xF5, 0xFF));
-			te->SendSciMessage(SCI_STYLESETBACK, 15, RGB(0xFF, 0xF5, 0xF5));
-			te->SendSciMessage(SCI_STYLESETBACK, 16, RGB(0xFF, 0xF5, 0xFF));
-			te->SendSciMessage(SCI_STYLESETBACK, 17, RGB(0xFF, 0xFF, 0xF5));
-			te->SendSciMessage(SCI_STYLESETBACK, 18, RGB(0xFF, 0xA0, 0xA0));
-			te->SendSciMessage(SCI_STYLESETBACK, 19, RGB(0xFF, 0xF5, 0xF5));
-
-			te->SendSciMessage(SCI_STYLESETEOLFILLED, 12, TRUE);
-			te->SendSciMessage(SCI_STYLESETEOLFILLED,  1, TRUE);
-			
-			// Margins 
-			te->SendSciMessage(SCI_SETMARGINWIDTHN, 0, 50);  // Line number
-			te->SendSciMessage(SCI_SETMARGINWIDTHN, 1, 0);
-			te->SendSciMessage(SCI_SETMARGINWIDTHN, 2, 16);  // Fold
-
-			// Folder
-			{
-				te->SendSciMessage(SCI_SETPROPERTY, (WPARAM)"fold", (LPARAM)"1");
-				te->SendSciMessage(SCI_SETPROPERTY, (WPARAM)"fold.compact", (LPARAM)"0");
-
-				te->SendSciMessage(SCI_SETMARGINWIDTHN, MARGIN_SCRIPT_FOLD_INDEX, 0);
-				te->SendSciMessage(SCI_SETMARGINTYPEN, MARGIN_SCRIPT_FOLD_INDEX, SC_MARGIN_SYMBOL);
-				te->SendSciMessage(SCI_SETMARGINMASKN, MARGIN_SCRIPT_FOLD_INDEX, SC_MASK_FOLDERS);
-				te->SendSciMessage(SCI_SETMARGINWIDTHN, MARGIN_SCRIPT_FOLD_INDEX, 20);
-
-				// Fold style
-				te->SendSciMessage(SCI_MARKERDEFINE, SC_MARKNUM_FOLDER, SC_MARK_BOXPLUS);
-				te->SendSciMessage(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEROPEN, SC_MARK_BOXMINUS);
-				te->SendSciMessage(SCI_MARKERDEFINE, SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);
-				te->SendSciMessage(SCI_MARKERDEFINE, SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNER);
-				te->SendSciMessage(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEREND, SC_MARK_BOXPLUSCONNECTED);
-				te->SendSciMessage(SCI_MARKERDEFINE, SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
-				te->SendSciMessage(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEROPENMID, SC_MARK_BOXMINUSCONNECTED);
-
-				te->SendSciMessage(SCI_SETFOLDFLAGS, 16, 0); // 16  	Draw line below if not expanded
-
-				// Folder color
-				te->SendSciMessage(SCI_MARKERSETBACK, SC_MARKNUM_FOLDER, 0x808080);
-				te->SendSciMessage(SCI_MARKERSETFORE, SC_MARKNUM_FOLDER, 0xFFFFFF);
-				te->SendSciMessage(SCI_MARKERSETBACK, SC_MARKNUM_FOLDEROPEN, 0x808080);
-				te->SendSciMessage(SCI_MARKERSETFORE, SC_MARKNUM_FOLDEROPEN, 0xFFFFFF);
-				te->SendSciMessage(SCI_MARKERSETBACK, SC_MARKNUM_FOLDERSUB, 0x808080);
-				te->SendSciMessage(SCI_MARKERSETFORE, SC_MARKNUM_FOLDERSUB, 0xFFFFFF);
-				te->SendSciMessage(SCI_MARKERSETBACK, SC_MARKNUM_FOLDERTAIL, 0x808080);
-				te->SendSciMessage(SCI_MARKERSETFORE, SC_MARKNUM_FOLDERTAIL, 0xFFFFFF);
-				te->SendSciMessage(SCI_MARKERSETBACK, SC_MARKNUM_FOLDEREND, 0x808080);
-				te->SendSciMessage(SCI_MARKERSETFORE, SC_MARKNUM_FOLDEREND, 0xFFFFFF);
-				te->SendSciMessage(SCI_MARKERSETBACK, SC_MARKNUM_FOLDERMIDTAIL, 0x808080);
-				te->SendSciMessage(SCI_MARKERSETFORE, SC_MARKNUM_FOLDERMIDTAIL, 0xFFFFFF);
-				te->SendSciMessage(SCI_MARKERSETBACK, SC_MARKNUM_FOLDEROPENMID, 0x808080);
-				te->SendSciMessage(SCI_MARKERSETFORE, SC_MARKNUM_FOLDEROPENMID, 0xFFFFFF);
-
-				// Sensitive to click
-				te->SendSciMessage(SCI_SETMARGINSENSITIVEN, MARGIN_SCRIPT_FOLD_INDEX, 1);
-			}
+			SendMessage(hElmnTable, WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT), TRUE);
+			te->hElmnTable = hElmnTable;
 		}
 		return 0;
 
 	case WM_SIZE:
 		{
+			HWND hElmnTable = te->hElmnTable;
+
 			int scrW = LOWORD(lParam);
 			int scrH = HIWORD(lParam);
-			MoveWindow(te->hScintilla, 0, 0, scrW, scrH, TRUE);
+
+			MoveWindow(te->hScintilla, 0, 0, scrW - 200, scrH, TRUE);
+			MoveWindow(hElmnTable, scrW - 200, 0, 200, scrH, TRUE);
+		}
+		return 0;
+
+	case WM_VKEYTOITEM:
+		{
+			// when user pressed enter while selecting item
+			if(LOWORD(lParam) == ElmnTableID && wParam == 13) {
+				ApplyAutocomplete(te);
+				SetFocus(te->hScintilla);
+			}
 		}
 		return 0;
 
@@ -361,7 +317,7 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			case IDM_FILE_COMPILE:
 				if(te->EncodeTriggerCode()) {
 					// OK.
-					MessageBox(hWnd, "Trigger successfully updated", "OK", MB_OK);
+					if(HIWORD(wParam) != 1) MessageBox(hWnd, "Trigger successfully updated", "OK", MB_OK);
 					te->SendSciMessage(SCI_SETSAVEPOINT, 0, 0);
 					te->_textedited = false;
 				}
@@ -372,30 +328,51 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 				}
 				return 0;
 
+			case IDM_VIEW_FOLDALL:
+				te->SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_CONTRACT, 0);
+				te->SendSciMessage(SCI_SCROLLCARET, 0, 0);
+				break;
 
-			// EDIT
-			
+			case IDM_VIEW_UNFOLDALL:
+				te->SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_EXPAND, 0);
+				te->SendSciMessage(SCI_SCROLLCARET, 0, 0);
+				break;
+
+				// EDIT
 			case IDM_EDIT_FIND:
 			case IDM_EDIT_REPLACE:
-				return 0; //Bug still present
-
 				{
 					if(te->hFindDlg) {
 						DestroyWindow(te->hFindDlg);
 						te->hFindDlg = NULL;
 					}
-					FINDREPLACE fr;
+
 					ZeroMemory(&fr, sizeof(fr));
 
 					// Initialize FINDREPLACE
 					fr.lStructSize = sizeof(fr);
 					fr.hwndOwner = hWnd;
-					fr.hInstance = hInstance;
-					fr.Flags = 0;
+					//fr.hInstance = hInstance;
+					fr.Flags = FR_DOWN;
 					fr.lpstrFindWhat = szFindText;
 					fr.lpstrReplaceWith = szReplaceText;
 					ZeroMemory(szFindText, 4096);
 					ZeroMemory(szReplaceText, 4096);
+
+					// Get selected text and fill lpstrFindWhat with it.
+					int selstart = te->SendSciMessage(SCI_GETSELECTIONSTART, 0, 0);
+					int selend   = te->SendSciMessage(SCI_GETSELECTIONEND, 0, 0);
+					if(selend != selstart) {
+						Sci_TextRange tr;
+						tr.chrg.cpMin = selstart;
+						tr.chrg.cpMax = selend;
+						tr.lpstrText = new char[selend - selstart + 1];
+						te->SendSciMessage(SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
+						strncpy(szFindText, tr.lpstrText, 4096);
+						szFindText[4095] = '\0';
+						delete[] tr.lpstrText;
+					}
+
 					fr.wFindWhatLen = 4096;
 					fr.wReplaceWithLen = 4096;
 
@@ -404,16 +381,95 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 				}
 				return 0;
 
+
+
 			case IDM_HELP_ABOUTTRIGEDITPLUS:
 				MessageBox(hWnd,
 					"TrigEditPlus " VERSION ". Made by trgk(phu54321@naver.com)\r\n"
-					"Simple & powerful trigger editor.\r\n",
-					"This program uses scintilla.\r\n"
+					"Simple & powerful trigger editor.\r\n"
+					"This program uses scintilla and lua.",
+
 					"Info", MB_OK);
 
 				return 0;
+
+			case IDM_HELP_LICENSES:
+				MessageBox(hWnd,
+					"Copyright 1994-2014 Lua.org, PUC-Rio.\r\n"
+					"Permission is hereby granted, free of charge, to any person obtaining a copy of\r\n"
+					"this software and associated documentation files (the \"Software\"), to deal in\r\n"
+					"the Software without restriction, including without limitation the rights to\r\n"
+					"use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies\r\n"
+					"of the Software, and to permit persons to whom the Software is furnished to do\r\n"
+					"so, subject to the following conditions:\r\n"
+					"\r\n"
+					"The above copyright notice and this permission notice shall be included in all\r\n"
+					"copies or substantial portions of the Software.\r\n"
+					"\r\n"
+					"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\n"
+					"IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\n"
+					"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\n"
+					"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\n"
+					"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\n"
+					"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\r\n"
+					"SOFTWARE.\r\n",
+					"Lua License",
+					MB_OK);
+
+				MessageBox(hWnd,
+					"License for Scintilla and SciTE\r\n"
+					"\r\n"
+					"Copyright 1998-2002 by Neil Hodgson <neilh@scintilla.org>\r\n"
+					"\r\n"
+					"All Rights Reserved \r\n"
+					"\r\n"
+					"Permission to use, copy, modify, and distribute this software and its \r\n"
+					"documentation for any purpose and without fee is hereby granted, \r\n"
+					"provided that the above copyright notice appear in all copies and that \r\n"
+					"both that copyright notice and this permission notice appear in \r\n"
+					"supporting documentation. \r\n"
+					"\r\n"
+					"NEIL HODGSON DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS \r\n"
+					"SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY \r\n"
+					"AND FITNESS, IN NO EVENT SHALL NEIL HODGSON BE LIABLE FOR ANY \r\n"
+					"SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES \r\n"
+					"WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, \r\n"
+					"WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER \r\n"
+					"TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE \r\n"
+					"OR PERFORMANCE OF THIS SOFTWARE. \r\n",
+					"Scintilla License",
+					MB_OK);
+
+				return 0;
+
+
+
+
+			case IDM_EDIT_NEWTRIGGER:
+				{
+					const char* newtriggertext = 
+						"Trigger {\r\n"
+						"	players = {},\r\n"
+						"	conditions = {\r\n"
+						"\r\n"
+						"	},\r\n"
+						"	actions = {\r\n"
+						"\r\n"
+						"	}\r\n"
+						"}\r\n"
+						;
+					te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)newtriggertext);
+				}
+				return 0;
+
+			case ElmnTableID:
+				if(HIWORD(wParam) == LBN_DBLCLK) {
+					ApplyAutocomplete(te);
+					SetFocus(te->hScintilla);
+				}
+				return 0;
 			}
-			
+
 		}
 		break;
 
@@ -439,13 +495,17 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 					const int line_number = te->SendSciMessage(SCI_LINEFROMPOSITION, position, 0);
 
 					switch (margin) {
-					case MARGIN_SCRIPT_FOLD_INDEX:
+					case 2:
 						{
 							te->SendSciMessage(SCI_TOGGLEFOLD, line_number, 0);
 						}
 						break;
 					}
 				}
+				return 0;
+
+			case SCN_CHARADDED:
+				Editor_CharAdded(ne, te);
 				return 0;
 			}
 		}
@@ -484,3 +544,4 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
+
