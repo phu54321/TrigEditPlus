@@ -61,6 +61,8 @@ int LuaParseUnit(lua_State* L);
 int LuaParseLocation(lua_State* L);
 int LuaParseSwitchName(lua_State* L);
 int LuaParseString(lua_State* L);
+int LuaParseProperty(lua_State* L);
+void ClearPropertyMap();
 
 int LuaErrorf(lua_State* L, const char* format, ...) {
 	char errmsg[512];
@@ -274,6 +276,7 @@ int LuaExtraComment(lua_State* L) {
 }
 
 
+char* GetUPRPChunkData();
 
 bool TriggerEditor::EncodeTriggerCode() {
 	//Prepare for encode.
@@ -301,6 +304,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 	lua_register(L, "ParseSwitchName", LuaParseSwitchName);
 	lua_register(L, "ParseString", LuaParseString);
 	lua_register(L, "Trigger", LuaParseTrigger);
+	lua_register(L, "ParseProperty", LuaParseProperty);
 
 	// Load basic script.
 	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT));
@@ -314,6 +318,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 		lua_close(L);
 		StringTable_RestoreBackup(_editordata->EngineData->MapStrings);
 		PrintErrorMessage("Compile failed.");
+		ClearPropertyMap();
 		return false;
 	}
 
@@ -323,6 +328,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 		StringTable_RestoreBackup(_editordata->EngineData->MapStrings);
 		PrintErrorMessage("Compile failed.");
 		_trigbuffer.clear();
+		ClearPropertyMap();
 		return false;
 	}
 
@@ -344,8 +350,11 @@ bool TriggerEditor::EncodeTriggerCode() {
 	_editordata->Triggers->ChunkData = newdata;
 	_editordata->Triggers->ChunkSize = 2400 * _trigbuffer.size();
 
+	memcpy(_editordata->UnitProperties->ChunkData, GetUPRPChunkData(), 1280);
+
 	// Cleanup
 	_trigbuffer.clear();
+	ClearPropertyMap();
 	lua_close(L);
 	PrintErrorMessage("Compile Complete!");
 	return true;

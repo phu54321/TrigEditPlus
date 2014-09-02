@@ -148,5 +148,5 @@ void TriggerEditor::DecodeTrigger(StringBuffer& buf, const Trig& content) const 
 		buf << "\tstarting_action = " << content.current_action << ",\n";
 	}
 
-	buf << "}\n\n";
+	buf << "}\n\n\n";
 }

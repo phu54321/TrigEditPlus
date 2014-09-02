@@ -21,6 +21,7 @@
     <ClCompile Include="TrigEdit\Decoder\TriggerActionEncDec.cpp" />
     <ClCompile Include="TrigEdit\Decoder\TriggerConditionEncDec.cpp" />
     <ClCompile Include="TrigEdit\Decoder\TriggerDecode.cpp" />
+    <ClCompile Include="TrigEdit\Decoder\UnitPropDecode.cpp" />
     <ClCompile Include="TrigEdit\EditorCharAdded.cpp" />
     <ClCompile Include="TrigEdit\Encoder\LuaParseString.cpp" />
     <ClCompile Include="TrigEdit\Encoder\Lua\lapi.c" />
@@ -59,6 +60,7 @@
     <ClCompile Include="TrigEdit\Encoder\StringDeref.cpp" />
     <ClCompile Include="TrigEdit\Encoder\StringEncoder.cpp" />
     <ClCompile Include="TrigEdit\Encoder\TriggerEncode.cpp" />
+    <ClCompile Include="TrigEdit\Encoder\UnitPropertyEncode.cpp" />
     <ClCompile Include="TrigEdit\LuaStyle.cpp" />
     <ClCompile Include="TrigEdit\MapNamespace.cpp" />
     <ClCompile Include="TrigEdit\SetAutocomplete.cpp" />
@@ -104,6 +106,7 @@
     <ClInclude Include="TrigEdit\StringUtils\stringbuffer.h" />
     <ClInclude Include="TrigEdit\TriggerEditor.h" />
     <ClInclude Include="TrigEdit\TriggerEncDec.h" />
+    <ClInclude Include="TrigEdit\UnitProp.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>

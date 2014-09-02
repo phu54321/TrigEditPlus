@@ -1,7 +1,10 @@
 #include "../TriggerEditor.h"
 #include "../TriggerEncDec.h"
+#include "../UnitProp.h"
 
 extern TriggerStatementDecl ActionFields[57];
+
+std::string DecodeUPRPData(const UPRPData* data);
 
 void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) const {
 	buf << "\t\t";
@@ -12,7 +15,7 @@ void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) cons
 
 	if(content.acttype == 0);
 	else if(content.acttype > 57) {
-		buf << "Custom("
+		buf << "Action("
 			<< content.locid << ", "
 			<< content.strid << ", "
 			<< content.wavid << ", "
@@ -71,6 +74,16 @@ void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) cons
 			case FIELDTYPE_LOCATION:     str = DecodeLocation(value); break;
 			case FIELDTYPE_STRING:       str = DecodeString(value); break;
 			case FIELDTYPE_SWITCHNAME:   str = DecodeSwitchName(value); break;
+			case FIELDTYPE_UNITPROPERTY:
+				{
+					if(value == 0 || value > 64) str = DecodeNumber(value);
+					else {
+						UPRPData* uprp = &((UPRPData*)_editordata->UnitProperties->ChunkData)[value - 1];
+						str = DecodeUPRPData(uprp); break;
+					}
+				}
+				break;
+
 			default: throw std::bad_exception("TT");
 			}
 

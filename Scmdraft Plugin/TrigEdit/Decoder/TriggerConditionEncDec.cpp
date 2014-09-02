@@ -12,7 +12,7 @@ void TriggerEditor::DecodeCondition(StringBuffer& buf, const TrigCond& content) 
 
 	if(content.condtype == 0);
 	else if(content.condtype > 23) {
-		buf << "Custom("
+		buf << "Condition("
 			<< content.locid << ", "
 			<< content.player << ", "
 			<< content.res << ", "

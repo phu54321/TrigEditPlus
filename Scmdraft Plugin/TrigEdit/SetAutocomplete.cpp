@@ -139,18 +139,25 @@ void ApplyAutocomplete(TriggerEditor* te) {
 
 	// find the last comma before current position.
 	int last_comma = current_pos - 1;
+	bool isfirstarg = false;
 	p_depth = 0;
 	while(last_comma >= 0) {
 		if(doc_text[last_comma] == '(') {
 			p_depth--;
-			if(p_depth == -1) break;
+			if(p_depth == -1) {
+				isfirstarg = true;
+				break;
+			}
 		}
 		else if(doc_text[last_comma] == ')') {
 			p_depth++;
 		}
 
 		else if(doc_text[last_comma] == ',') {
-			if(p_depth == 0) break;
+			if(p_depth == 0) {
+				isfirstarg = false;
+				break;
+			}
 		}
 		last_comma--;
 	}
@@ -177,7 +184,8 @@ void ApplyAutocomplete(TriggerEditor* te) {
 	if(p_depth > 0) return; // Invalid;
 
 	te->SendSciMessage(SCI_SETSELECTION, last_comma, first_comma);
-	te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)" ");
+
+	if(!isfirstarg) te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)" ");
 	te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)replace_text);
 
 	delete[] replace_text;

@@ -26,7 +26,7 @@ int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 	hTrigDlg = CreateWindow(
 		"TrigEditPlusDlg",
 		"TrigEditPlus " VERSION,
-		WS_OVERLAPPEDWINDOW,
+		WS_OVERLAPPEDWINDOW | WS_MAXIMIZE,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		800,
@@ -315,9 +315,10 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 				}
 
 			case IDM_FILE_COMPILE:
+			case IDM_FILE_COMPILENONAG:
 				if(te->EncodeTriggerCode()) {
 					// OK.
-					if(HIWORD(wParam) != 1) MessageBox(hWnd, "Trigger successfully updated", "OK", MB_OK);
+					if(LOWORD(wParam) == IDM_FILE_COMPILE) MessageBox(hWnd, "Trigger successfully updated", "OK", MB_OK);
 					te->SendSciMessage(SCI_SETSAVEPOINT, 0, 0);
 					te->_textedited = false;
 				}
@@ -450,12 +451,8 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 					const char* newtriggertext = 
 						"Trigger {\r\n"
 						"	players = {},\r\n"
-						"	conditions = {\r\n"
-						"\r\n"
-						"	},\r\n"
-						"	actions = {\r\n"
-						"\r\n"
-						"	}\r\n"
+						"	conditions = {},\r\n"
+						"	actions = {}\r\n"
 						"}\r\n"
 						;
 					te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)newtriggertext);

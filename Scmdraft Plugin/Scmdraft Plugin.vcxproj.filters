@@ -190,6 +190,12 @@
     <ClCompile Include="TrigEdit\SetAutocomplete.cpp">
       <Filter>TrigEdit</Filter>
     </ClCompile>
+    <ClCompile Include="TrigEdit\Decoder\UnitPropDecode.cpp">
+      <Filter>TrigEdit\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\UnitPropertyEncode.cpp">
+      <Filter>TrigEdit\Encoder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PluginBase\SCMDPlugin.h">
@@ -296,6 +302,9 @@
       <Filter>TrigEdit\Scintilla</Filter>
     </ClInclude>
     <ClInclude Include="version.h" />
+    <ClInclude Include="TrigEdit\UnitProp.h">
+      <Filter>TrigEdit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="PluginBase\DllMain.def">

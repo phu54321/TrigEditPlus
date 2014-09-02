@@ -210,7 +210,7 @@ TriggerStatementDecl ActionFields[57] = {
 		{7, FIELDTYPE_UNIT},
 		{1, FIELDTYPE_LOCATION},
 		{5, FIELDTYPE_PLAYER},
-		{6, FIELDTYPE_NUMBER},
+		{6, FIELDTYPE_UNITPROPERTY},
 	}
 	},
 

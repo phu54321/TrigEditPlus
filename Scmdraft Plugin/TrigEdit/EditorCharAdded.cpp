@@ -124,18 +124,20 @@ void Editor_CharAdded(SCNotification* ne, TriggerEditor* te) {
 		int parenthesis_depth = 1;
 		int argindex = 0;
 		int argstartpos = -1;
-		while(parenthesis_depth) {
+		while(p >= strstart && parenthesis_depth) {
 			if(p == strstart) break;
 			else if(*p == ')') parenthesis_depth++;
 			else if(*p == '(') {
 				parenthesis_depth--;
-				if(parenthesis_depth != 0) argindex = 0;
 			}
 			else if(*p == ',') {
 				if(argstartpos == -1) {
 					argstartpos = (p - strstart) + (current_pos - find_length);
 				}
-				argindex++;
+				
+				if(parenthesis_depth == 1) {
+					argindex++;
+				}
 			}
 			p--;
 		}

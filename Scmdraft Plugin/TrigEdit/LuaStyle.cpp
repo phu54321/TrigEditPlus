@@ -5,8 +5,10 @@
 
 void ApplyEditorStyle(TriggerEditor* te) {
 	// Lua syntax highlighting
-
 	te->SendSciMessage(SCI_SETLEXER, SCLEX_LUA, 0);
+
+	// Korean thing
+	te->SendSciMessage(SCI_SETCODEPAGE, 949, 0);
 
 	// Color scheme from scintilla
 	te->SendSciMessage(SCI_STYLESETFORE,  0, RGB(0xFF, 0x00, 0x00));
@@ -51,7 +53,7 @@ void ApplyEditorStyle(TriggerEditor* te) {
 
 	// Folder
 	te->SendSciMessage(SCI_SETPROPERTY, (WPARAM)"fold", (LPARAM)"1");
-	te->SendSciMessage(SCI_SETPROPERTY, (WPARAM)"fold.compact", (LPARAM)"0");
+	te->SendSciMessage(SCI_SETPROPERTY, (WPARAM)"fold.compact", (LPARAM)"1");
 
 	te->SendSciMessage(SCI_SETMARGINWIDTHN, MARGIN_SCRIPT_FOLD_INDEX, 0);
 	te->SendSciMessage(SCI_SETMARGINTYPEN, MARGIN_SCRIPT_FOLD_INDEX, SC_MARGIN_SYMBOL);
@@ -89,7 +91,8 @@ void ApplyEditorStyle(TriggerEditor* te) {
 	te->SendSciMessage(SCI_SETMARGINSENSITIVEN, MARGIN_SCRIPT_FOLD_INDEX, 1);
 
 	// Font & ab
-	te->SendSciMessage(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)"³ª´®°íµñÄÚµù");
+	te->SendSciMessage(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)"Courier New");
+	te->SendSciMessage(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)"Consolas");
 	te->SendSciMessage(SCI_SETTABWIDTH, 4, 0);
 
 	// Scrolling
