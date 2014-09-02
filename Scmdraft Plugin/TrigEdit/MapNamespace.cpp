@@ -123,6 +123,7 @@ private:
 	bimap<int, std::string> _unitmap;
 	bimap<int, std::string> _locationmap;
 	bimap<int, std::string> _switchmap;
+	std::map<std::string, int> _unitmap_defnames;
 };
 
 
@@ -130,7 +131,7 @@ MapNamespaceImpl::MapNamespaceImpl(const TriggerEditor_Arg& data) {
 	TEngineData* EngineData = data.EngineData;
 
 
-	// Map unit names
+	// Map unit names. Allow custom names.
 	std::string unitname[233];
 	for(int i = 0 ; i < 228 ; i++) {
 		int unameindex = EngineData->UnitCustomNames[i];
@@ -141,7 +142,7 @@ MapNamespaceImpl::MapNamespaceImpl(const TriggerEditor_Arg& data) {
 		unitname[i].assign(RemoveColorFromString(uname));
 	}
 
-	unitname[228] = "None";
+	unitname[228] = "Unused unit 228";
 	unitname[229] = "Any unit";
 	unitname[230] = "Men";
 	unitname[231] = "Buildings";
@@ -151,6 +152,18 @@ MapNamespaceImpl::MapNamespaceImpl(const TriggerEditor_Arg& data) {
 	for(int i = 0 ; i < 233 ; i++) {
 		_unitmap.insert(std::make_pair(i, unitname[i]));
 	}
+
+	// Fallback : default unit names
+	for(int i = 0 ; i < 228 ; i++) {
+		_unitmap_defnames.insert(std::make_pair(EngineData->UnitNames[i], i));
+	}
+
+	_unitmap_defnames.insert(std::make_pair("Unused unit 228", 228));
+	_unitmap_defnames.insert(std::make_pair("Any unit", 229));
+	_unitmap_defnames.insert(std::make_pair("Men", 230));
+	_unitmap_defnames.insert(std::make_pair("Buildings", 231));
+	_unitmap_defnames.insert(std::make_pair("Factories", 232));
+
 
 
 	// Map location names.
@@ -237,8 +250,13 @@ int MapNamespaceImpl::GetLocationID(const std::string& str) const {
 int MapNamespaceImpl::GetUnitID(const std::string& str) const {
 	int ret;
 	bool isconverted = _unitmap.r2l(str, ret);
-	if(!isconverted) return -1;
-	return ret;
+	if(isconverted) return ret;
+
+	auto it = _unitmap_defnames.find(str);
+	isconverted = (it != _unitmap_defnames.end());
+	if(isconverted) return it->second;
+
+	return -1;
 }
 
 

@@ -5,13 +5,14 @@
 #include <exception>
 #include <functional>
 #include <memory>
-
 #include <Windows.h>
 #include <stdint.h>
 
-#include "../PluginBase/SCMDPlugin.h"
+#include "Scintilla/Scintilla.h"
 
+#include "../PluginBase/SCMDPlugin.h"
 #include "StringUtils/stringbuffer.h"
+#include "TriggerEncDec.h"
 
 //Trigger structure
 #include <packon.h>
@@ -69,29 +70,27 @@ struct TriggerEditor_Arg {
 };
 
 class MapNamespace;
+LRESULT CALLBACK TrigEditDlgProc(HWND, UINT, WPARAM, LPARAM);
 
 // Trigger editor def
 class TriggerEditor {
+	friend LRESULT CALLBACK TrigEditDlgProc(HWND, UINT, WPARAM, LPARAM);
+
 public:
 	TriggerEditor();
 	~TriggerEditor();
 
 	int RunEditor(HWND hMain, TriggerEditor_Arg& data);
 
-private:
 	TriggerEditor_Arg* _editordata;
 	MapNamespace* _namespace;
 
-
-private:
 	// Decode part : Binary Data -> Text
-	void DecodeTriggers();
-	
-	StringBuffer _decode_out;
+	std::string DecodeTriggers(CChunkData* input) const;
 
-	void DecodeTrigger(const Trig& content);
-	void DecodeCondition(const TrigCond& content);
-	void DecodeAction(const TrigAct& content);
+	void DecodeTrigger(StringBuffer& buf, const Trig& content) const;
+	void DecodeCondition(StringBuffer& buf, const TrigCond& content) const;
+	void DecodeAction(StringBuffer& buf, const TrigAct& content) const;
 
 	std::string DecodeNumber(int value) const;
 	std::string DecodeAllyStatus(int value) const;
@@ -111,15 +110,12 @@ private:
 	std::string DecodeString(int value) const;
 	std::string DecodeSwitchName(int value) const;
 
-
-public:
 	// Encode part : Text -> Binary Data
 	bool EncodeTriggerCode();
 	std::vector<Trig> _trigbuffer;
 
 	void DerefStrings();
 
-public:
 	// These functions are used by lua
 	int EncodeUnit(const std::string& str) const;
 	int EncodeLocation(const std::string& str) const;
@@ -128,21 +124,25 @@ public:
 	
 	void ClearErrors();
 	void PrintErrorMessage(const std::string& str);
-
-	void Encode_AddTrigger(const Trig& t);
-	
-private:
-	// Window part
-	HWND hTrigDlg;
-	HWND hScintilla;
+	int SendSciMessage(int msg, WPARAM, LPARAM);
 
 	std::string GetEditorText() const;
 	void SetEditorText(const std::string& str);
 
-	
+	// Window part
+	HWND hTrigDlg;
+	HWND hScintilla;
+	HWND hFindDlg;
+	HWND hElmnTable;
+	FINDREPLACE fr;
+	FieldType currentft;
+	bool _textedited;
 
-	std::string _tmp_content;
+	SciFnDirect _pSciMsg;
+	sptr_t _pSciWndData;
+
 	StringBuffer _errlist;
+
 private:
 	// Private members.
 };

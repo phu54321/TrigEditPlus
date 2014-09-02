@@ -19,6 +19,9 @@
     <Filter Include="TrigEdit\Encoder\Lua">
       <UniqueIdentifier>{8582ca1f-3f55-403c-bf35-c2786cf7e17b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TrigEdit\Scintilla">
+      <UniqueIdentifier>{7ec25cb2-026e-4d1f-aac0-cc0878743288}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PluginBase\DllMain.cpp">
@@ -175,6 +178,24 @@
     <ClCompile Include="TrigEdit\Encoder\LuaParseString.cpp">
       <Filter>TrigEdit\Encoder</Filter>
     </ClCompile>
+    <ClCompile Include="TrigEdit\LuaStyle.cpp">
+      <Filter>TrigEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\EditorCharAdded.cpp">
+      <Filter>TrigEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Decoder\SpecialCommentDec.cpp">
+      <Filter>TrigEdit\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\SetAutocomplete.cpp">
+      <Filter>TrigEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Decoder\UnitPropDecode.cpp">
+      <Filter>TrigEdit\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigEdit\Encoder\UnitPropertyEncode.cpp">
+      <Filter>TrigEdit\Encoder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PluginBase\SCMDPlugin.h">
@@ -184,9 +205,6 @@
       <Filter>PluginBase</Filter>
     </ClInclude>
     <ClInclude Include="TrigEdit\TriggerEditor.h">
-      <Filter>TrigEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="TrigEdit\condact.h">
       <Filter>TrigEdit</Filter>
     </ClInclude>
     <ClInclude Include="TrigEdit\StringUtils\stringbuffer.h">
@@ -277,6 +295,16 @@
       <Filter>TrigEdit</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TrigEdit\Scintilla\SciLexer.h">
+      <Filter>TrigEdit\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="TrigEdit\Scintilla\Scintilla.h">
+      <Filter>TrigEdit\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h" />
+    <ClInclude Include="TrigEdit\UnitProp.h">
+      <Filter>TrigEdit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="PluginBase\DllMain.def">
@@ -288,5 +316,12 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TrigEditPlus.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="toolbar.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="License\license_lua.txt" />
+    <Text Include="License\license_scintilla.txt" />
   </ItemGroup>
 </Project>

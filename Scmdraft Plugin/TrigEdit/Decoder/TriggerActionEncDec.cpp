@@ -1,18 +1,21 @@
 #include "../TriggerEditor.h"
 #include "../TriggerEncDec.h"
+#include "../UnitProp.h"
 
 extern TriggerStatementDecl ActionFields[57];
 
-void TriggerEditor::DecodeAction(const TrigAct& content) {
-	_decode_out << "\t\t";
+std::string DecodeUPRPData(const UPRPData* data);
+
+void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) const {
+	buf << "\t\t";
 
 	if(content.prop & 0x2) {
-		_decode_out << "Disabled(";
+		buf << "Disabled(";
 	}
 
 	if(content.acttype == 0);
 	else if(content.acttype > 57) {
-		_decode_out << "Custom("
+		buf << "Action("
 			<< content.locid << ", "
 			<< content.strid << ", "
 			<< content.wavid << ", "
@@ -30,7 +33,7 @@ void TriggerEditor::DecodeAction(const TrigAct& content) {
 		int acttype = content.acttype;
 		TriggerStatementDecl &decl = ActionFields[acttype - 1];
 
-		_decode_out << decl.stmt_name << "(";
+		buf << decl.stmt_name << "(";
 
 		bool firstfield = true;
 
@@ -71,22 +74,32 @@ void TriggerEditor::DecodeAction(const TrigAct& content) {
 			case FIELDTYPE_LOCATION:     str = DecodeLocation(value); break;
 			case FIELDTYPE_STRING:       str = DecodeString(value); break;
 			case FIELDTYPE_SWITCHNAME:   str = DecodeSwitchName(value); break;
+			case FIELDTYPE_UNITPROPERTY:
+				{
+					if(value == 0 || value > 64) str = DecodeNumber(value);
+					else {
+						UPRPData* uprp = &((UPRPData*)_editordata->UnitProperties->ChunkData)[value - 1];
+						str = DecodeUPRPData(uprp); break;
+					}
+				}
+				break;
+
 			default: throw std::bad_exception("TT");
 			}
 
 			if(firstfield) firstfield = false;
-			else _decode_out << ", ";
-			_decode_out << str;
+			else buf << ", ";
+			buf << str;
 		}
 
-		_decode_out << ")";
+		buf << ")";
 	}
 
 	if(content.prop & 0x2) {
-		_decode_out << ");\r\n";
+		buf << ");\r\n";
 	}
 
 	else {
-		_decode_out << ";\r\n";
+		buf << ";\r\n";
 	}
 }

@@ -23,7 +23,8 @@ void LuaRunResource(lua_State* L, LPCSTR respath) {
 		str[fsize] = '\0';
 		UnlockResource(resd);
 
-		luaL_dostring(L, str);
+		luaL_loadbuffer(L, str, fsize, "basescript");
+		lua_pcall(L, 0, LUA_MULTRET, 0);
 
 		delete[] str;
 	}
@@ -60,6 +61,8 @@ int LuaParseUnit(lua_State* L);
 int LuaParseLocation(lua_State* L);
 int LuaParseSwitchName(lua_State* L);
 int LuaParseString(lua_State* L);
+int LuaParseProperty(lua_State* L);
+void ClearPropertyMap();
 
 int LuaErrorf(lua_State* L, const char* format, ...) {
 	char errmsg[512];
@@ -71,7 +74,6 @@ int LuaErrorf(lua_State* L, const char* format, ...) {
 	lua_pushstring(L, errmsg);
 	return lua_error(L);
 }
-
 
 // Trigger getter
 int LuaParseTrigger(lua_State* L) {
@@ -115,7 +117,8 @@ int LuaParseTrigger(lua_State* L) {
 
 	// Conditions.
 	lua_pushstring(L, "conditions");
-	lua_gettable(L, -2); // < t.conditions
+	lua_gettable(L, -2); // < t.players
+
 	if(lua_istable(L, -1)) {
 		int condn = lua_rawlen(L, -1);
 		if(condn > 16) {
@@ -165,7 +168,8 @@ int LuaParseTrigger(lua_State* L) {
 
 	// Actions
 	lua_pushstring(L, "actions");
-	lua_gettable(L, -2); // < t.actions
+	lua_gettable(L, -2); // < t.players
+
 	if(lua_istable(L, -1)) {
 		int actn = lua_rawlen(L, -1);
 		if(actn > 64) {
@@ -217,9 +221,10 @@ int LuaParseTrigger(lua_State* L) {
 
 	// Flag
 	lua_pushstring(L, "flag");
-	lua_gettable(L, -2); // < t.flag
+	lua_gettable(L, -2); // < t.players
+
 	if(lua_istable(L, -1)) {
-		int flagn = lua_rawlen(L, 1);
+		int flagn = lua_rawlen(L, -1);
 		int flag = 0;
 
 		lua_getglobal(L, "actexec");    // 0x1
@@ -228,7 +233,7 @@ int LuaParseTrigger(lua_State* L) {
 		
 		for(int i = 1 ; i <= flagn ; i++) {
 			lua_pushnumber(L, i);
-			lua_gettable(L, -2); // < t.flag[i]
+			lua_gettable(L, -5); // < t.flag[i]
 
 			/**/ if(lua_compare(L, -1, -4, LUA_OPEQ)) flag |= 0x1; //actexec
 			else if(lua_compare(L, -1, -3, LUA_OPEQ)) flag |= 0x4; //preserved
@@ -239,6 +244,8 @@ int LuaParseTrigger(lua_State* L) {
 
 			lua_pop(L, 1); // > t.flag[i]
 		}
+
+		t.flag = flag;
 
 		lua_pop(L, 3); // actexec, preserved, disabled
 	}
@@ -261,6 +268,15 @@ int LuaParseTrigger(lua_State* L) {
 }
 
 
+int LuaExtraComment(lua_State* L) {
+	const char* str = luaL_checkstring(L, -1);
+	// Encode str.
+
+	return 0;
+}
+
+
+char* GetUPRPChunkData();
 
 bool TriggerEditor::EncodeTriggerCode() {
 	//Prepare for encode.
@@ -279,12 +295,8 @@ bool TriggerEditor::EncodeTriggerCode() {
 	// Init
 	lua_pushlightuserdata(L, this);
 	lua_setglobal(L, "__inst_global_TriggerEditor");
-	
-	// Load safe standard libaries.
-	luaopen_string(L);
-	luaopen_table(L);
-	luaopen_math(L);
-	luaopen_bit32(L);
+	luaL_openlibs(L);
+
 
 	// Load basic functions.
 	lua_register(L, "ParseUnit", LuaParseUnit);
@@ -292,6 +304,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 	lua_register(L, "ParseSwitchName", LuaParseSwitchName);
 	lua_register(L, "ParseString", LuaParseString);
 	lua_register(L, "Trigger", LuaParseTrigger);
+	lua_register(L, "ParseProperty", LuaParseProperty);
 
 	// Load basic script.
 	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT));
@@ -305,6 +318,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 		lua_close(L);
 		StringTable_RestoreBackup(_editordata->EngineData->MapStrings);
 		PrintErrorMessage("Compile failed.");
+		ClearPropertyMap();
 		return false;
 	}
 
@@ -313,6 +327,8 @@ bool TriggerEditor::EncodeTriggerCode() {
 		lua_close(L);
 		StringTable_RestoreBackup(_editordata->EngineData->MapStrings);
 		PrintErrorMessage("Compile failed.");
+		_trigbuffer.clear();
+		ClearPropertyMap();
 		return false;
 	}
 
@@ -321,6 +337,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 	// Compile Done.
 
 	StringTable_ClearBackup(_editordata->EngineData->MapStrings);
+
 
 	// Replace trigger data
 	scmd2_free(_editordata->Triggers->ChunkData);
@@ -333,8 +350,11 @@ bool TriggerEditor::EncodeTriggerCode() {
 	_editordata->Triggers->ChunkData = newdata;
 	_editordata->Triggers->ChunkSize = 2400 * _trigbuffer.size();
 
+	memcpy(_editordata->UnitProperties->ChunkData, GetUPRPChunkData(), 1280);
+
 	// Cleanup
 	_trigbuffer.clear();
+	ClearPropertyMap();
 	lua_close(L);
 	PrintErrorMessage("Compile Complete!");
 	return true;

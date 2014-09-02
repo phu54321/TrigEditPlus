@@ -16,10 +16,13 @@
     <ClCompile Include="PluginMain.cpp" />
     <ClCompile Include="TrigEdit\Decoder\AIScriptDecode.cpp" />
     <ClCompile Include="TrigEdit\Decoder\ConstDecoder.cpp" />
+    <ClCompile Include="TrigEdit\Decoder\SpecialCommentDec.cpp" />
     <ClCompile Include="TrigEdit\Decoder\StringDecoder.cpp" />
     <ClCompile Include="TrigEdit\Decoder\TriggerActionEncDec.cpp" />
     <ClCompile Include="TrigEdit\Decoder\TriggerConditionEncDec.cpp" />
     <ClCompile Include="TrigEdit\Decoder\TriggerDecode.cpp" />
+    <ClCompile Include="TrigEdit\Decoder\UnitPropDecode.cpp" />
+    <ClCompile Include="TrigEdit\EditorCharAdded.cpp" />
     <ClCompile Include="TrigEdit\Encoder\LuaParseString.cpp" />
     <ClCompile Include="TrigEdit\Encoder\Lua\lapi.c" />
     <ClCompile Include="TrigEdit\Encoder\Lua\lauxlib.c" />
@@ -57,7 +60,10 @@
     <ClCompile Include="TrigEdit\Encoder\StringDeref.cpp" />
     <ClCompile Include="TrigEdit\Encoder\StringEncoder.cpp" />
     <ClCompile Include="TrigEdit\Encoder\TriggerEncode.cpp" />
+    <ClCompile Include="TrigEdit\Encoder\UnitPropertyEncode.cpp" />
+    <ClCompile Include="TrigEdit\LuaStyle.cpp" />
     <ClCompile Include="TrigEdit\MapNamespace.cpp" />
+    <ClCompile Include="TrigEdit\SetAutocomplete.cpp" />
     <ClCompile Include="TrigEdit\StringUtils\RawCStringCast.cpp" />
     <ClCompile Include="TrigEdit\StringUtils\stringbuffer.cpp" />
     <ClCompile Include="TrigEdit\StringUtils\StringIntCast.cpp" />
@@ -68,7 +74,6 @@
     <ClInclude Include="PluginBase\SCMDPlugin.h" />
     <ClInclude Include="PluginBase\SICStringList.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="TrigEdit\condact.h" />
     <ClInclude Include="TrigEdit\Encoder\Lua\lapi.h" />
     <ClInclude Include="TrigEdit\Encoder\Lua\lauxlib.h" />
     <ClInclude Include="TrigEdit\Encoder\Lua\lcode.h" />
@@ -95,10 +100,14 @@
     <ClInclude Include="TrigEdit\Encoder\Lua\lvm.h" />
     <ClInclude Include="TrigEdit\Encoder\Lua\lzio.h" />
     <ClInclude Include="TrigEdit\MapNamespace.h" />
+    <ClInclude Include="TrigEdit\Scintilla\SciLexer.h" />
+    <ClInclude Include="TrigEdit\Scintilla\Scintilla.h" />
     <ClInclude Include="TrigEdit\StringUtils\StringCast.h" />
     <ClInclude Include="TrigEdit\StringUtils\stringbuffer.h" />
     <ClInclude Include="TrigEdit\TriggerEditor.h" />
     <ClInclude Include="TrigEdit\TriggerEncDec.h" />
+    <ClInclude Include="TrigEdit\UnitProp.h" />
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PluginBase\DllMain.def" />
@@ -106,6 +115,13 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TrigEditPlus.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="toolbar.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="License\license_lua.txt" />
+    <Text Include="License\license_scintilla.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D577A097-70FD-4B22-A758-2451721BF5EB}</ProjectGuid>
@@ -115,8 +131,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v110_xp</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -147,17 +164,20 @@
     <IntDir>Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.sdp</TargetExt>
+    <GenerateManifest>false</GenerateManifest>
+    <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)TrigEditPlus.sdp</OutputFile>
@@ -169,6 +189,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>false</DataExecutionPrevention>
+      <AdditionalDependencies>Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -177,20 +198,23 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>None</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)TrigEditPlus.sdp</OutputFile>
       <ModuleDefinitionFile>PluginBase\DllMain.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <Profile>true</Profile>
+      <Profile>false</Profile>
+      <AdditionalDependencies>Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

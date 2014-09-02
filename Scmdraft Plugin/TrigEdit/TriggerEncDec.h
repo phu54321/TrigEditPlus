@@ -107,6 +107,7 @@ enum FieldType {
 	FIELDTYPE_LOCATION,
 	FIELDTYPE_STRING,
 	FIELDTYPE_SWITCHNAME,
+	FIELDTYPE_UNITPROPERTY
 };
 
 enum TrigField {
@@ -150,3 +151,6 @@ struct TriggerStatementDecl {
 	const char* stmt_name;
 	FieldTypePair fields[MAX_FIELD_NUM];
 };
+
+extern TriggerStatementDecl ConditionFields[23];
+extern TriggerStatementDecl ActionFields[57];

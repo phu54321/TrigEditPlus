@@ -1,4 +1,6 @@
 // Basic interface I/O for plugin.
+#include <Windows.h>
+#include <CommCtrl.h>
 #include <stdio.h>
 
 #include "PluginBase/SCMDPlugin.h"
@@ -7,17 +9,36 @@
 
 const char* PluginMenuName = "TrigEdit++";
 
+static HMODULE hScintillaDLL;
 
-// This function is called when the DLL is loaded.
+
 void Initialize() {
-	freopen("log.txt", "w", stderr);
-	freopen("output.txt", "w", stdout);
+	// Initialize common controls.
+	hScintillaDLL = LoadLibrary("SciLexer");
+	if(!hScintillaDLL) {
+		PluginMenuName = NULL;
+		return;
+	}
+
+	InitCommonControls();
+
+	WNDCLASSEX wc;
+	memset(&wc, 0, sizeof(wc));
+	wc.cbSize = sizeof(wc);
+	wc.lpszClassName = "TrigEditPlusDlg";
+	wc.hInstance = hInstance;
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = (HBRUSH)GetStockObject(GRAY_BRUSH);
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = TrigEditDlgProc;
+	RegisterClassEx(&wc);
+
+	RegisterWindowMessage(FINDMSGSTRING);
 }
 
 // This function is called when the DLL is unloaded.
 void Finalize() {
-	fclose(stderr);
-	fclose(stdout);
+	if(hScintillaDLL) FreeLibrary(hScintillaDLL);
 }
 
 
