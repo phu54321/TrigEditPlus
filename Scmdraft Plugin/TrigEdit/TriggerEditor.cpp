@@ -7,7 +7,8 @@
 #include <CommCtrl.h>
 #include <windowsx.h>
 
-#define SCMD2_IDM_SAVE 32903
+void ApplyAutocomplete(TriggerEditor* te);
+
 
 TriggerEditor::TriggerEditor() : hTrigDlg(NULL), hScintilla(NULL),
 	hFindDlg(NULL), _textedited(false) {}
@@ -203,6 +204,10 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 
 
 	switch(msg) {
+	case WM_SETFOCUS:
+		SetFocus(te->hScintilla);
+		break;
+
 	case WM_CREATE:
 		{
 			EnableWindow(hSCMD2MainWindow, FALSE);

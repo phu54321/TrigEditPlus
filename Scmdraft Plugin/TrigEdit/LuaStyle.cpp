@@ -10,6 +10,11 @@ void ApplyEditorStyle(TriggerEditor* te) {
 	// Korean thing
 	te->SendSciMessage(SCI_SETCODEPAGE, 949, 0);
 
+	// Multiple selection
+	te->SendSciMessage(SCI_SETMULTIPLESELECTION, 1, 0);
+	te->SendSciMessage(SCI_SETADDITIONALSELECTIONTYPING, 1, 0);
+	te->SendSciMessage(SCI_SETMULTIPASTE, 1, 0);
+
 	// Color scheme from scintilla
 	te->SendSciMessage(SCI_STYLESETFORE,  0, RGB(0xFF, 0x00, 0x00));
 	te->SendSciMessage(SCI_STYLESETFORE,  1, RGB(0x00, 0x7F, 0x00));

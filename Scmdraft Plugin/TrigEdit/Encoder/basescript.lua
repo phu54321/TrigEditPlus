@@ -1100,3 +1100,17 @@ function ParseCount(s)
     end   
 end
 
+
+-- Auxillary functions.
+
+function EPD(offset)
+    return (offset - 0x58A364) / 4
+end
+
+function Memory(offset, comparison, number)
+    return Deaths(EPD(offset), comparison, number, 0)
+end
+
+function SetMemory(offset, modtype, number)
+    return SetDeaths(EPD(offset), modtype, number, 0)
+end
