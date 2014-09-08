@@ -113,8 +113,39 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 		}
 	}
 
-	int findindex = ListBox_FindString(hElmnTable, 0, s.c_str());
-	if(findindex != LB_ERR) ListBox_SetCurSel(hElmnTable, findindex);
+	//int findindex = ListBox_FindString(hElmnTable, 0, s.c_str());
+	//if(findindex != LB_ERR) ListBox_SetCurSel(hElmnTable, findindex);
+	const BYTE* const fstr = (const BYTE*)s.c_str();
+
+	int listn = ListBox_GetCount(hElmnTable);
+	int findidx = -1;
+	for(int i = 0 ; i < listn ; i++) {
+		BYTE str[512];
+		if(ListBox_GetTextLen(hElmnTable, i) >= 512) continue;
+		ListBox_GetText(hElmnTable, i, str);
+
+		// partial match
+		//  tm, Terran Marine
+		//
+		//  Terran Marine
+		//  t      m
+
+		const BYTE *p1 = fstr, *p2 = str;
+		while(*p2) {
+			if(tolower(*p1) == tolower(*p2)) {
+				p1++;
+				if(*p1 == '\0') break;
+			}
+			p2++;
+		}
+
+		if(*p2 != '\0') {
+			findidx = i;
+			break;
+		}
+	}
+
+	if(findidx != -1) ListBox_SetCurSel(hElmnTable, findidx);
 }
 
 
