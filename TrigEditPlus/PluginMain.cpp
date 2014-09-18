@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #include "PluginBase/SCMDPlugin.h"
-#include "TrigEdit/TriggerEditor.h"
+#include "Editor/TriggerEditor.h"
 
 
 const char* PluginMenuName = "TrigEdit++";

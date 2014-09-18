@@ -53,9 +53,6 @@ int LuaErrorHandler(lua_State* L) {
 
 
 
-
-
-
 // String getter
 int LuaParseUnit(lua_State* L);
 int LuaParseLocation(lua_State* L);
@@ -64,16 +61,7 @@ int LuaParseString(lua_State* L);
 int LuaParseProperty(lua_State* L);
 void ClearPropertyMap();
 
-int LuaErrorf(lua_State* L, const char* format, ...) {
-	char errmsg[512];
-	va_list v;
-	va_start(v, format);
-	vsnprintf(errmsg, 512, format, v);
-	va_end(v);
-
-	lua_pushstring(L, errmsg);
-	return lua_error(L);
-}
+int LuaErrorf(lua_State* L, const char* format, ...);
 
 // Trigger getter
 int LuaParseTrigger(lua_State* L) {
