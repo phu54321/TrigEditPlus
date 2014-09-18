@@ -14,7 +14,7 @@ static HMODULE hScintillaDLL;
 
 void Initialize() {
 	// Initialize common controls.
-	hScintillaDLL = LoadLibrary("SciLexer");
+	hScintillaDLL = LoadLibrary("SciLexer.dll");
 	if(!hScintillaDLL) {
 		PluginMenuName = NULL;
 		return;

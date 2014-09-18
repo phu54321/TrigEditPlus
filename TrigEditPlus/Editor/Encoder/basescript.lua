@@ -1,8 +1,21 @@
+-- Lock access to undefined variable.
+__trigeditplus_mt = getmetatable(_G) or {}
+
+__trigeditplus_mt.__index = function(table, key)
+	value = rawget(table, key)
+	if value == nil:
+		error("attemp to access undefined variable (" .. key .. ") denied")
+	end
+	return value
+end
+
+setmetatable(_G, __mt)
+
+
 -- Constants used for trigger.
 actexec = {}
 preserved = {}
 disabled = {}
-
 
 -- Constants used inside triggers & actions
 All = {}
@@ -1114,3 +1127,5 @@ end
 function SetMemory(offset, modtype, number)
     return SetDeaths(EPD(offset), modtype, number, 0)
 end
+
+
