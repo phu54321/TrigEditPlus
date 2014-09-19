@@ -1,0 +1,6 @@
+LIBRARY	"TrigEditPlus"
+EXPORTS
+	InitPlugin
+	RunPlugin
+	PluginGetMenuString
+	GetPluginVersion
