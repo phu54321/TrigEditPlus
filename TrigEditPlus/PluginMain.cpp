@@ -12,6 +12,35 @@ const char* PluginMenuName = "TrigEdit++";
 static HMODULE hScintillaDLL;
 
 
+// Visual style activator.
+// Code from http://stackoverflow.com/questions/25267272/win32-enable-visual-styles-in-dll
+// Thanks
+HANDLE hActCtx;
+ACTCTX actCtx;
+ULONG_PTR cookie;
+
+void EnableVisualStyle() {
+	ZeroMemory(&actCtx, sizeof(actCtx));
+	actCtx.cbSize = sizeof(actCtx);
+	actCtx.hModule = hInstance;
+	actCtx.lpResourceName = MAKEINTRESOURCE(123);
+	actCtx.dwFlags = ACTCTX_FLAG_HMODULE_VALID | ACTCTX_FLAG_RESOURCE_NAME_VALID;
+
+	hActCtx = CreateActCtx(&actCtx);
+	if(hActCtx != INVALID_HANDLE_VALUE)	{
+		ActivateActCtx(hActCtx, &cookie);
+	}
+}
+
+void DisableVisualStyle() {
+	if(hActCtx != INVALID_HANDLE_VALUE) {
+		DeactivateActCtx(0, cookie);
+		ReleaseActCtx(hActCtx);
+	}
+}
+
+// Activator end
+
 void Initialize() {
 	// Initialize common controls.
 	hScintillaDLL = LoadLibrary("SciLexer.dll");
@@ -21,6 +50,8 @@ void Initialize() {
 	}
 
 	InitCommonControls();
+
+	// Force using visual style
 
 	WNDCLASSEX wc;
 	memset(&wc, 0, sizeof(wc));
@@ -64,7 +95,10 @@ BOOL WINAPI RunPlugin(	TEngineData*	EngineData,		//	Struct containing engine dat
 		};
 
 		TriggerEditor te;
+		
+		EnableVisualStyle();
 		te.RunEditor(hSCMD2MainWindow, arg);
+		DisableVisualStyle();
 	}
 	return TRUE;
 }

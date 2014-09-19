@@ -1,4 +1,4 @@
-LIBRARY	"Scmdraft Plugin"
+LIBRARY	"TrigEditPlus"
 EXPORTS
 	InitPlugin
 	RunPlugin

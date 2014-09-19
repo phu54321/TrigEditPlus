@@ -6,6 +6,7 @@
 #include "Scintilla/SciLexer.h"
 #include <CommCtrl.h>
 #include <windowsx.h>
+#include "SearchBox/SearchBox.h"
 
 void ApplyAutocomplete(TriggerEditor* te);
 
@@ -112,41 +113,37 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 	const int ScintillaID = 1000;
 	const int TabID = 1001;
 	const int ElmnTableID = 1002;
-	const static int FindReplaceMsg = RegisterWindowMessage(FINDMSGSTRING);
-	static FINDREPLACE fr;
+	const static int FindReplaceMsg = RegisterWindowMessage("TEP_Find");
 
 
 	if(msg == FindReplaceMsg) {
-		LPFINDREPLACE lpfr = (LPFINDREPLACE)lParam;
+		SearchQuery* q = (SearchQuery*)lParam;
+		const int searchflag = (
+			(q->searchFlag & SEARCHFLAG_USEREGEXP ? SCFIND_REGEXP : 0) |
+			(q->searchFlag & SEARCHFLAG_CASESENSITIVE ? SCFIND_MATCHCASE : 0) |
+			(q->searchFlag & SEARCHFLAG_WHOLEWORD ? SCFIND_WHOLEWORD : 0)
+		);
 
-		if(lpfr->Flags & FR_DIALOGTERM) {
-			te->hFindDlg = NULL;
-		}
+		if(q->mode == SEARCHMODE_FIND || q->mode == SEARCHMODE_REPLACE) { // Find/replace
+			strncpy(szFindText, q->searchFor.c_str(), 4096);
+			strncpy(szReplaceText, q->replaceTo.c_str(), 4096);
+			szFindText[4095] = szReplaceText[4095] = '\0';
 
-		else if(lpfr->Flags & FR_FINDNEXT || lpfr->Flags & FR_REPLACE) { // Find/replace
-			int searchflag = 
-				((lpfr->Flags & FR_MATCHCASE) ? SCFIND_MATCHCASE : 0) |
-				((lpfr->Flags & FR_WHOLEWORD) ? SCFIND_WHOLEWORD : 0);
-
-			int retv;
-
-			// Init ttf
 			Sci_TextToFind ttf;
-			ttf.lpstrText = lpfr->lpstrFindWhat;
+			ttf.lpstrText = szFindText;
 
-			if(lpfr->Flags & FR_DOWN) {
+			if(q->searchFlag & SEARCHFLAG_SEARCHUP) {
+				ttf.chrg.cpMin = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
+				ttf.chrg.cpMax = 0;
+			}
+
+			else {
 				ttf.chrg.cpMin = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
 				ttf.chrg.cpMax = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
 			}
 
-			else {
-				ttf.chrg.cpMin = 0;
-				ttf.chrg.cpMax = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
-			}
-
 			// Find specified text.
-			retv = te->SendSciMessage(SCI_FINDTEXT, searchflag, (LPARAM)&ttf);
-			if(retv == -1) {
+			if(te->SendSciMessage(SCI_FINDTEXT, searchflag, (LPARAM)&ttf) == -1) {
 				MessageBox(hWnd, "Cannot find specified string.", "Result", MB_OK);
 				return 0;
 			}
@@ -155,33 +152,48 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			te->SendSciMessage(SCI_SETSEL, ttf.chrgText.cpMin, ttf.chrgText.cpMax);
 
 			// Replace if needed.
-			if(lpfr->Flags & FR_REPLACE) {
-				te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)lpfr->lpstrReplaceWith);
+			if(q->mode == 2) {
+				te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)szReplaceText);
 			}
 		}
 
-		else if(lpfr->Flags & FR_REPLACEALL) {
-			const int docLen = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
+		else if(q->mode == 1 || q->mode == 3) {
+			const int searchstart = (q->searchFlag & SEARCHFLAG_INSELECTION)
+				? te->SendSciMessage(SCI_GETSELECTIONSTART, 0, 0)
+				: 0;
+
+			const int searchend = (q->searchFlag & SEARCHFLAG_INSELECTION)
+				? te->SendSciMessage(SCI_GETSELECTIONEND, 0, 0)
+				: te->SendSciMessage(SCI_GETLENGTH, 0, 0);
+
 			int replacedn = 0;
 
-			const int searchflag = 
-				((lpfr->Flags & FR_MATCHCASE) ? SCFIND_MATCHCASE : 0) |
-				((lpfr->Flags & FR_WHOLEWORD) ? SCFIND_WHOLEWORD : 0);
+			strncpy(szFindText, q->searchFor.c_str(), 4096);
+			strncpy(szReplaceText, q->replaceTo.c_str(), 4096);
+			szFindText[4095] = szReplaceText[4095] = '\0';
 
-			const int searchlen = strlen(lpfr->lpstrFindWhat);
-			const int replen = strlen(lpfr->lpstrReplaceWith);
+			const int searchlen = strlen(szFindText);
+			const int replen = strlen(szReplaceText);
 
-			te->SendSciMessage(SCI_SETTARGETSTART, 0, 0);
+			te->SendSciMessage(SCI_SETTARGETSTART, searchstart, 0);
 			te->SendSciMessage(SCI_SETSEARCHFLAGS, searchflag, 0);
 			
 
 			while(1) {
 				// find next text
-				te->SendSciMessage(SCI_SETTARGETEND, docLen, 0);
-				if(te->SendSciMessage(SCI_SEARCHINTARGET, searchlen, (LPARAM)lpfr->lpstrFindWhat) == -1) break;
-				te->SendSciMessage(SCI_REPLACETARGET, replen, (LPARAM)lpfr->lpstrReplaceWith);
+				te->SendSciMessage(SCI_SETTARGETEND, searchend, 0);
+				if(te->SendSciMessage(SCI_SEARCHINTARGET, searchlen, (LPARAM)szFindText) == -1) break;
+				if(q->mode == 3) { // Replace all
+					te->SendSciMessage(SCI_REPLACETARGET, replen, (LPARAM)szReplaceText);
+				}
 
-				// move target after the replaced text
+				else if(q->mode == 1) {
+					int selstart = te->SendSciMessage(SCI_GETTARGETSTART, 0, 0);
+					int selend = te->SendSciMessage(SCI_GETTARGETEND, 0, 0);
+					te->SendSciMessage(SCI_ADDSELECTION, selstart, selend);
+				}
+
+				// move target after the found
 				int newtargetend = te->SendSciMessage(SCI_GETTARGETEND, 0, 0);
 				te->SendSciMessage(SCI_SETTARGETSTART, newtargetend, 0);
 				replacedn++;
@@ -193,7 +205,8 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 
 			else {
 				char outstr[512];
-				sprintf(outstr, "Replaced %d strings.", replacedn);
+				if(q->mode == 3) sprintf(outstr, "Replaced %d strings.", replacedn);
+				else sprintf(outstr, "Found %d strings.", replacedn);
 				MessageBox(hWnd, outstr, "Result", MB_OK);
 			}
 
@@ -348,22 +361,7 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			case IDM_EDIT_FIND:
 			case IDM_EDIT_REPLACE:
 				{
-					if(te->hFindDlg) {
-						DestroyWindow(te->hFindDlg);
-						te->hFindDlg = NULL;
-					}
-
-					ZeroMemory(&fr, sizeof(fr));
-
-					// Initialize FINDREPLACE
-					fr.lStructSize = sizeof(fr);
-					fr.hwndOwner = hWnd;
-					//fr.hInstance = hInstance;
-					fr.Flags = FR_DOWN;
-					fr.lpstrFindWhat = szFindText;
-					fr.lpstrReplaceWith = szReplaceText;
-					ZeroMemory(szFindText, 4096);
-					ZeroMemory(szReplaceText, 4096);
+					QuitSearchBox();
 
 					// Get selected text and fill lpstrFindWhat with it.
 					int selstart = te->SendSciMessage(SCI_GETSELECTIONSTART, 0, 0);
@@ -379,11 +377,7 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 						delete[] tr.lpstrText;
 					}
 
-					fr.wFindWhatLen = 4096;
-					fr.wReplaceWithLen = 4096;
-
-					if(LOWORD(wParam) == IDM_EDIT_FIND) te->hFindDlg = FindText(&fr);
-					else te->hFindDlg = ReplaceText(&fr);
+					RunSearchBox(hWnd, szFindText);
 				}
 				return 0;
 

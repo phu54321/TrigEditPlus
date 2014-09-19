@@ -42,12 +42,6 @@
     <ClCompile Include="Editor\Decoder\StringDecoder.cpp">
       <Filter>Editor\Decoder</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\Decoder\TriggerActionEncDec.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Decoder\TriggerConditionEncDec.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
     <ClCompile Include="Editor\Decoder\TriggerDecode.cpp">
       <Filter>Editor\Decoder</Filter>
     </ClCompile>
@@ -183,6 +177,12 @@
     <ClCompile Include="Editor\SearchBox\SearchBox.cpp">
       <Filter>Editor\SearchBox</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\Decoder\TriggerDecodeAction.cpp">
+      <Filter>Editor\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Decoder\TriggerDecodeCondition.cpp">
+      <Filter>Editor\Decoder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -294,6 +294,9 @@
     </ClInclude>
     <ClInclude Include="Editor\Encoder\Lua\lzio.h">
       <Filter>Editor\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\SearchBox\SearchBox.h">
+      <Filter>Editor\SearchBox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

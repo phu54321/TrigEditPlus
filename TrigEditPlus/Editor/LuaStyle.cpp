@@ -104,5 +104,5 @@ void ApplyEditorStyle(TriggerEditor* te) {
 	te->SendSciMessage(SCI_SETYCARETPOLICY, CARET_SLOP | CARET_STRICT | CARET_EVEN, 5);
 
 	// EOL
-	te->SendSciMessage(SCI_SETEOLMODE, SC_EOL_LF, 0);
+	te->SendSciMessage(SCI_SETEOLMODE, SC_EOL_CRLF, 0);
 }
