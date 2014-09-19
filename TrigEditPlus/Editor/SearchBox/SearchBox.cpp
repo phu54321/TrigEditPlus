@@ -70,6 +70,10 @@ BOOL CALLBACK SearchBoxProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lPar
 		double dlgBaseUnitX = (rt_dlg2Scr.right - rt_dlg2Scr.left) / 1000.0;
 		double dlgBaseUnitY = (rt_dlg2Scr.bottom - rt_dlg2Scr.top) / 1000.0;
 
+
+		// Begin moving
+		HDWP hdwp = BeginDeferWindowPos(12);
+
 		// Move checkboxes
 		DWORD chkboxYOffset = winH - (DWORD)(10 * dlgBaseUnitY);
 		DWORD chkboxHeight = (DWORD)(8 * dlgBaseUnitY);
@@ -77,14 +81,12 @@ BOOL CALLBACK SearchBoxProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lPar
 		HWND chkRegex = GetDlgItem(hDlg, IDC_USEREGEX);
 		HWND chkCase  = GetDlgItem(hDlg, IDC_CASESENSITIVE);
 		HWND chkWord  = GetDlgItem(hDlg, IDC_WHOLEWORD);
-		HWND chkUp    = GetDlgItem(hDlg, IDC_SEARCHUP);
 		HWND chkInSel = GetDlgItem(hDlg, IDC_INSEL);
 
-		MoveWindow(chkRegex, (DWORD)(dlgBaseUnitX *   1), chkboxYOffset, (DWORD)(51 * dlgBaseUnitX), chkboxHeight, TRUE);
-		MoveWindow(chkCase,  (DWORD)(dlgBaseUnitX *  56), chkboxYOffset, (DWORD)(61 * dlgBaseUnitX), chkboxHeight, TRUE);
-		MoveWindow(chkWord,  (DWORD)(dlgBaseUnitX * 121), chkboxYOffset, (DWORD)(51 * dlgBaseUnitX), chkboxHeight, TRUE);
-		MoveWindow(chkUp,    (DWORD)(dlgBaseUnitX * 181), chkboxYOffset, (DWORD)(49 * dlgBaseUnitX), chkboxHeight, TRUE);
-		MoveWindow(chkInSel, (DWORD)(dlgBaseUnitX * 235), chkboxYOffset, (DWORD)(53 * dlgBaseUnitX), chkboxHeight, TRUE);
+		DeferWindowPos(hdwp, chkRegex, NULL, (DWORD)(dlgBaseUnitX *   1), chkboxYOffset, (DWORD)(51 * dlgBaseUnitX), chkboxHeight, SWP_NOZORDER);
+		DeferWindowPos(hdwp, chkCase,  NULL, (DWORD)(dlgBaseUnitX *  56), chkboxYOffset, (DWORD)(61 * dlgBaseUnitX), chkboxHeight, SWP_NOZORDER);
+		DeferWindowPos(hdwp, chkWord,  NULL, (DWORD)(dlgBaseUnitX * 121), chkboxYOffset, (DWORD)(51 * dlgBaseUnitX), chkboxHeight, SWP_NOZORDER);
+		DeferWindowPos(hdwp, chkInSel, NULL, (DWORD)(dlgBaseUnitX * 177), chkboxYOffset, (DWORD)(53 * dlgBaseUnitX), chkboxHeight, SWP_NOZORDER);
 
 		// Move textbox
 		HWND stF = GetDlgItem(hDlg, IDC_STATIC_FINDWHAT);
@@ -98,10 +100,10 @@ BOOL CALLBACK SearchBoxProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lPar
 		DWORD captionHeight = (DWORD)(8 * dlgBaseUnitX);
 		DWORD captionXOffset = (DWORD)(5 * dlgBaseUnitX);
 
-		MoveWindow(stF, captionXOffset, 0, (DWORD)(34 * dlgBaseUnitX), captionHeight, TRUE);
-		MoveWindow(stR, captionXOffset, textboxYSpacing, (DWORD)(36 * dlgBaseUnitX), captionHeight, TRUE);
-		MoveWindow(txF, 0, captionHSpace, textboxWidth, textboxYSpacing - captionHSpace, TRUE);
-		MoveWindow(txR, 0, textboxYSpacing + captionHSpace, textboxWidth, textboxYSpacing - captionHSpace, TRUE);
+		DeferWindowPos(hdwp, stF, NULL, captionXOffset, 0, (DWORD)(34 * dlgBaseUnitX), captionHeight, SWP_NOZORDER);
+		DeferWindowPos(hdwp, stR, NULL, captionXOffset, textboxYSpacing, (DWORD)(36 * dlgBaseUnitX), captionHeight, SWP_NOZORDER);
+		DeferWindowPos(hdwp, txF, NULL, 0, captionHSpace, textboxWidth, textboxYSpacing - captionHSpace, SWP_NOZORDER);
+		DeferWindowPos(hdwp, txR, NULL, 0, textboxYSpacing + captionHSpace, textboxWidth, textboxYSpacing - captionHSpace, SWP_NOZORDER);
 
 		// Move buttons
 		HWND butFind = GetDlgItem(hDlg, IDC_FIND);
@@ -112,10 +114,12 @@ BOOL CALLBACK SearchBoxProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lPar
 		DWORD buttonWidth = (DWORD)(20 * dlgBaseUnitX);
 		DWORD buttonHeight = (textboxYSpacing - captionHSpace) / 2;
 
-		MoveWindow(butFind, textboxWidth, captionHSpace, buttonWidth, buttonHeight, TRUE);
-		MoveWindow(butFindAll, textboxWidth, buttonHeight + captionHSpace, buttonWidth, buttonHeight, TRUE);
-		MoveWindow(butRep, textboxWidth, textboxYSpacing + captionHSpace, buttonWidth, buttonHeight, TRUE);
-		MoveWindow(butRepAll, textboxWidth, textboxYSpacing + buttonHeight + captionHSpace, buttonWidth, buttonHeight, TRUE);
+		DeferWindowPos(hdwp, butFind, NULL, textboxWidth, captionHSpace, buttonWidth, buttonHeight, SWP_NOZORDER);
+		DeferWindowPos(hdwp, butFindAll, NULL, textboxWidth, buttonHeight + captionHSpace, buttonWidth, buttonHeight, SWP_NOZORDER);
+		DeferWindowPos(hdwp, butRep, NULL, textboxWidth, textboxYSpacing + captionHSpace, buttonWidth, buttonHeight, SWP_NOZORDER);
+		DeferWindowPos(hdwp, butRepAll, NULL, textboxWidth, textboxYSpacing + buttonHeight + captionHSpace, buttonWidth, buttonHeight, SWP_NOZORDER);
+
+		EndDeferWindowPos(hdwp);
 
 		return TRUE;
 	}
@@ -133,7 +137,6 @@ BOOL CALLBACK SearchBoxProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lPar
 				HWND chkRegex = GetDlgItem(hDlg, IDC_USEREGEX);
 				HWND chkCase = GetDlgItem(hDlg, IDC_CASESENSITIVE);
 				HWND chkWord = GetDlgItem(hDlg, IDC_WHOLEWORD);
-				HWND chkUp = GetDlgItem(hDlg, IDC_SEARCHUP);
 				HWND chkInSel = GetDlgItem(hDlg, IDC_INSEL);
 				
 				DWORD findtextlen = GetWindowTextLength(txF);
@@ -157,7 +160,6 @@ BOOL CALLBACK SearchBoxProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lPar
 				if(SendMessage(chkRegex, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_USEREGEXP;
 				if(SendMessage(chkCase, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_CASESENSITIVE;
 				if(SendMessage(chkWord, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_WHOLEWORD;
-				if(SendMessage(chkUp, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_SEARCHUP;
 				if(SendMessage(chkInSel, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_INSELECTION;
 				
 				SendMessage(hParent, FindReplaceMsg, 0, (LPARAM)&q);

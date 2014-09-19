@@ -19,7 +19,6 @@
 #define IDC_WHOLEWORD                           40007
 #define IDC_CASESENSITIVE                       40008
 #define IDC_REPLACE                             40009
-#define IDC_SEARCHUP                            40010
 #define IDC_STATIC_REPLACETO                    40011
 #define IDC_INSEL                               40012
 #define IDM_FILE_IMPORT                         40018
