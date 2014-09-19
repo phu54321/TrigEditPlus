@@ -27,6 +27,7 @@ std::string TriggerEditor::DecodeTriggers(CChunkData* Triggers) const {
 
 void TriggerEditor::DecodeTrigger(StringBuffer& buf, const Trig& content) const {
 	size_t i;
+	int totstrn = StringTable_GetTotalStringNum(_editordata->EngineData->MapStrings);
 
 	// If trigger executed by no players, then special-decode that trigger.
 	for(i = 0 ; i < 27 ; i++) {
@@ -51,6 +52,7 @@ void TriggerEditor::DecodeTrigger(StringBuffer& buf, const Trig& content) const 
 
 		else if(content.act[i].acttype == COMMENT) {
 			int strid = content.act[i].strid;
+			if(strid < 0 || strid > totstrn) break;
 			const char* rawcomment0 = StringTable_GetString(_editordata->EngineData->MapStrings, strid);
 			if(rawcomment0 == NULL) break;
 			if(strchr(rawcomment0, '\n') == NULL) comment_singleline = true;

@@ -53,33 +53,59 @@ inline void AddIndexTrail(std::string &string, int index) {
  * ex) A, A(0), A -> A(0), A(0)(1), A(2)
  */
 
+/*
+def UnduplicateString(stringlist, defstringlist):
+    assert len(stringlist) == len(defstringlist), 'length mismatch'
+
+    stringmap = {}  # String -> corresponding index
+
+    for i, string in enumerate(stringlist):
+        if string not in stringmap:  # ok
+            stringmap[string] = [i, False]
+
+        else:  # duplicate things
+            stringlist[i] += ' (%s)' % defstringlist[i]
+            stringmap[stringlist[i]] = [i, True]
+
+            dupit = stringmap[string]
+            if dupit[1] is True:
+                pass
+
+            else:
+                dupindex = dupit[0]
+                stringmap[string] = None
+                stringlist[dupindex] += ' (%s)' % defstringlist[dupindex]
+                stringmap[stringlist[dupindex]] = [dupindex, True]
+*/
+
 void UnduplicateString(std::string stringlist[], size_t begin, size_t end) {
 	struct IndexDupPair {
 		IndexDupPair(int index, bool dup) : index(index), dup(dup) {};
 		int index; // Index of string
-		bool dup;  // Is this string already trailed with string id?
+		int dup;  // Is this string already trailed with string id?
 	};
 
 	std::map<std::string, IndexDupPair> stringmap;
 
 	for(size_t i = begin ; i < end ; i++) {
-		auto insret = stringmap.insert(std::make_pair(stringlist[i], IndexDupPair(i, false)));
-		if(insret.second == false) { // there is duplicate item.
+		auto insret = stringmap.insert(std::make_pair(stringlist[i], IndexDupPair(i, 0)));
+		if(insret.second == 0) { // there is duplicate item.
 			
 			auto dupit = insret.first;
+			if(dupit->second.dup  == 0) {
+				// Add trail to duplicate items if nessecary.
+				dupit->second.dup = 2;
 
-			// Add trail to duplicate items if nessecary.
-			if(!dupit->second.dup) {
 				int dupindex = dupit->second.index;
 				AddIndexTrail(stringlist[dupindex], dupindex);
 
 				stringmap.erase(dupit);
-				stringmap.insert(std::make_pair(stringlist[dupindex], IndexDupPair(dupindex, true)));
+				stringmap.insert(std::make_pair(stringlist[dupindex], IndexDupPair(dupindex, 1)));
 			}
 
 			// Add trail to this item.
 			AddIndexTrail(stringlist[i], i);
-			stringmap.insert(std::make_pair(stringlist[i], IndexDupPair(i, true))); // This should succeed.
+			stringmap.insert(std::make_pair(stringlist[i], IndexDupPair(i, 1))); // This should succeed.
 		}
 	}
 }
