@@ -133,7 +133,9 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			ttf.lpstrText = szFindText;
 
 			if(q->searchFlag & SEARCHFLAG_SEARCHUP) {
-				ttf.chrg.cpMin = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
+				int curpos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
+				int curanch = te->SendSciMessage(SCI_GETANCHOR, 0, 0);
+				ttf.chrg.cpMin = min(curpos, curanch);
 				ttf.chrg.cpMax = 0;
 			}
 
@@ -358,8 +360,7 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 				break;
 
 				// EDIT
-			case IDM_EDIT_FIND:
-			case IDM_EDIT_REPLACE:
+			case IDM_EDIT_FINDREPLACE:
 				{
 					QuitSearchBox();
 
@@ -380,6 +381,10 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 					RunSearchBox(hWnd, szFindText);
 				}
 				return 0;
+
+			case IDM_EDIT_AUTOCOMPLETE:
+				ApplyAutocomplete(te);
+				break;
 
 
 

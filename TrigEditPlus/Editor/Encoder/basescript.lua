@@ -1,63 +1,138 @@
+-- Lock access to undefined variable.
+
+-- Code snippet from http://stackoverflow.com/questions/9102931/can-lua-support-case-insensitive-method-calls
+
+__trigeditplus_mt = getmetatable(_G) or {}
+
+__trigeditplus_mt.__newindex = function(table, key, value)
+    if type(key) == "string" then
+        key = key:lower()
+    end
+
+    rawset(table, key, value)
+end
+
+__trigeditplus_mt.__index = function(table, key)
+    local value
+
+    if type(key) == "string" then
+        key = key:lower()
+    end
+
+    value = rawget(table, key)
+    if value == nil then
+        error("attemp to access undefined variable (" .. key .. ") denied")
+    end
+    return value
+end
+
+setmetatable(_G, __trigeditplus_mt)
+
+function Trigger(args)
+	if args.players then
+        args.players = FlattenList(args.players)
+    end
+
+    if args.conditions then
+        args.conditions = FlattenList(args.conditions)
+    end
+
+    if args.actions then
+        args.actions = FlattenList(args.actions)
+    end
+
+    if args.flag then
+        args.flag = FlattenList(args.flag)
+    end
+
+    __internal__AddTrigger(args)
+end
+
+
+function FlattenList(list)
+    local output, tmp, outputidx
+
+    if type(list) == 'table' then
+        if list.__trg_magic ~= nil then
+            return {list}
+        end
+
+        output = {}
+        outputidx = 1
+        for i = 1, #list do
+            tmp = FlattenList(list[i])
+            for j = 1, #tmp do
+                output[outputidx] = tmp[j]
+                outputidx = outputidx + 1
+            end
+        end
+
+        return output
+    else
+        return {list}
+    end
+end
+
 -- Constants used for trigger.
-actexec = {}
-preserved = {}
-disabled = {}
+actexec = {__trg_magic="trgconst"}
+preserved = {__trg_magic="trgconst"}
+disabled = {__trg_magic="trgconst"}
 
 
 -- Constants used inside triggers & actions
-All = {}
-Enemy = {}
-Ally = {}
-AlliedVictory = {}
-AtLeast = {}
-AtMost = {}
-Exactly = {}
-SetTo = {}
-Add = {}
-Subtract = {}
-Move = {}
-Patrol = {}
-Attack = {}
-P1 = {}
-P2 = {}
-P3 = {}
-P4 = {}
-P5 = {}
-P6 = {}
-P7 = {}
-P8 = {}
-P9 = {}
-P10 = {}
-P11 = {}
-P12 = {}
-CurrentPlayer = {}
-Foes = {}
-Allies = {}
-NeutralPlayers = {}
-AllPlayers = {}
-Force1 = {}
-Force2 = {}
-Force3 = {}
-Force4 = {}
-NonAlliedVictoryPlayers = {}
-Enable = {}
-Disable = {}
-Toggle = {}
-Ore = {}
-Gas = {}
-OreAndGas = {}
-Total = {}
-Units = {}
-Buildings = {}
-UnitsAndBuildings = {}
-Kills = {}
-Razings = {}
-KillsAndRazings = {}
-Custom = {}
-Set = {}
-Clear = {}
-Random = {}
-Cleared = {}
+All = {__trg_magic="trgconst"}
+Enemy = {__trg_magic="trgconst"}
+Ally = {__trg_magic="trgconst"}
+AlliedVictory = {__trg_magic="trgconst"}
+AtLeast = {__trg_magic="trgconst"}
+AtMost = {__trg_magic="trgconst"}
+Exactly = {__trg_magic="trgconst"}
+SetTo = {__trg_magic="trgconst"}
+Add = {__trg_magic="trgconst"}
+Subtract = {__trg_magic="trgconst"}
+Move = {__trg_magic="trgconst"}
+Patrol = {__trg_magic="trgconst"}
+Attack = {__trg_magic="trgconst"}
+P1 = {__trg_magic="trgconst"}
+P2 = {__trg_magic="trgconst"}
+P3 = {__trg_magic="trgconst"}
+P4 = {__trg_magic="trgconst"}
+P5 = {__trg_magic="trgconst"}
+P6 = {__trg_magic="trgconst"}
+P7 = {__trg_magic="trgconst"}
+P8 = {__trg_magic="trgconst"}
+P9 = {__trg_magic="trgconst"}
+P10 = {__trg_magic="trgconst"}
+P11 = {__trg_magic="trgconst"}
+P12 = {__trg_magic="trgconst"}
+CurrentPlayer = {__trg_magic="trgconst"}
+Foes = {__trg_magic="trgconst"}
+Allies = {__trg_magic="trgconst"}
+NeutralPlayers = {__trg_magic="trgconst"}
+AllPlayers = {__trg_magic="trgconst"}
+Force1 = {__trg_magic="trgconst"}
+Force2 = {__trg_magic="trgconst"}
+Force3 = {__trg_magic="trgconst"}
+Force4 = {__trg_magic="trgconst"}
+NonAlliedVictoryPlayers = {__trg_magic="trgconst"}
+Enable = {__trg_magic="trgconst"}
+Disable = {__trg_magic="trgconst"}
+Toggle = {__trg_magic="trgconst"}
+Ore = {__trg_magic="trgconst"}
+Gas = {__trg_magic="trgconst"}
+OreAndGas = {__trg_magic="trgconst"}
+Total = {__trg_magic="trgconst"}
+Units = {__trg_magic="trgconst"}
+Buildings = {__trg_magic="trgconst"}
+UnitsAndBuildings = {__trg_magic="trgconst"}
+Kills = {__trg_magic="trgconst"}
+Razings = {__trg_magic="trgconst"}
+KillsAndRazings = {__trg_magic="trgconst"}
+Custom = {__trg_magic="trgconst"}
+Set = {__trg_magic="trgconst"}
+Clear = {__trg_magic="trgconst"}
+Random = {__trg_magic="trgconst"}
+Cleared = {__trg_magic="trgconst"}
 
 
 -- Conditions list
@@ -295,7 +370,7 @@ function CreateUnitWithProperties(Count, Unit, Where, Player, Properties)
     Unit = ParseUnit(Unit)
     Where = ParseLocation(Where)
     Player = ParsePlayer(Player)
-	Properties = ParseProperty(Properties)
+    Properties = ParseProperty(Properties)
     return Action(Where, 0, 0, 0, Player, Properties, Unit, 11, Count, 28)
 end
 
@@ -1097,7 +1172,7 @@ function ParseCount(s)
         return 0
     else
         return s
-    end   
+    end
 end
 
 
@@ -1114,3 +1189,4 @@ end
 function SetMemory(offset, modtype, number)
     return SetDeaths(EPD(offset), modtype, number, 0)
 end
+

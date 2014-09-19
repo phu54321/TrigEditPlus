@@ -39,7 +39,7 @@ IDR_MAINMENU MENU
     }
     POPUP "Edit"
     {
-        MENUITEM "Find\tCtrl+F, Ctrl+H", IDM_EDIT_FIND
+        MENUITEM "Find && Replace\tCtrl+F, Ctrl+H", IDM_EDIT_FINDREPLACE
         MENUITEM SEPARATOR
         MENUITEM "New trigger\tCtrl+T", IDM_EDIT_NEWTRIGGER
         MENUITEM SEPARATOR

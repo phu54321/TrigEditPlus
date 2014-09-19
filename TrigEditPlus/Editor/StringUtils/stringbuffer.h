@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <vector>
+#include <list>
 #define STRINGBUFFER_NODE_SIZE 4096
 
 // Someone says that stringstream is slow. So I made one.
@@ -28,7 +28,7 @@ private:
 		uint8_t buffer[STRINGBUFFER_NODE_SIZE];
 	};
 
-	std::vector<BufferNode*> _buftb;
+	std::list<BufferNode*> _buftb;
 	BufferNode* _currentnode;
 	size_t _currentsize;
 	size_t _bufnode_pos;

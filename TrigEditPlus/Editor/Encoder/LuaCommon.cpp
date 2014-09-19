@@ -25,8 +25,6 @@ void LuaCheckTableEntry(lua_State* L, std::vector<std::string> accepted) {
 		return;
 	}
 
-	lua_pushnil(L);
-	/* table is in the stack at index 't' */
 	lua_pushnil(L);  /* first key */
 	while (lua_next(L, -2) != 0) {
 		lua_pop(L, 1); // Remove value.
@@ -43,7 +41,7 @@ void LuaCheckTableEntry(lua_State* L, std::vector<std::string> accepted) {
 		}
 
 		if(!accept) {
-			LuaErrorf(L, "unknown key %s to table", key);
+			LuaErrorf(L, "\"%s\" as a key of this table is disallowed", key);
 			return;
 		}
 	}

@@ -25,8 +25,6 @@
 #define IDM_FILE_IMPORT                         40018
 #define IDM_FILE_COMPILE                        40019
 #define IDM_FILE_EXIT                           40020
-#define IDM_EDIT_FIND                           40029
-#define IDM_EDIT_REPLACE                        40030
 #define IDM_HELP_TRIGGERSYNTAX                  40044
 #define IDM_HELP_ABOUTTRIGEDITPLUS              40045
 #define IDM_EDIT_NEWTRIGGER                     40054

@@ -9,6 +9,7 @@
 #include "../TriggerEditor.h"
 #include "Lua/lua.hpp"
 #include "../../resource.h"
+#include "LuaCommon.h"
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -61,8 +62,6 @@ int LuaParseString(lua_State* L);
 int LuaParseProperty(lua_State* L);
 void ClearPropertyMap();
 
-int LuaErrorf(lua_State* L, const char* format, ...);
-
 // Trigger getter
 int LuaParseTrigger(lua_State* L) {
 	Trig t;
@@ -72,6 +71,7 @@ int LuaParseTrigger(lua_State* L) {
 		return LuaErrorf(L, "table expected, got %s", lua_typename(L, lua_type(L, -1)));
 	}
 
+	LuaCheckTableEntry(L, {"players", "conditions", "actions", "flag", "starting_action"});
 
 	// Players
 	lua_pushstring(L, "players");
@@ -227,7 +227,7 @@ int LuaParseTrigger(lua_State* L) {
 			else if(lua_compare(L, -1, -3, LUA_OPEQ)) flag |= 0x4; //preserved
 			else if(lua_compare(L, -1, -2, LUA_OPEQ)) flag |= 0x8; //disabled
 			else {
-				return LuaErrorf(L, "Unknown flag given : %s", lua_typename(L, lua_type(L, -1)));
+				return LuaErrorf(L, "Unknown flag of type \"%s\" given", lua_typename(L, lua_type(L, -1)));
 			}
 
 			lua_pop(L, 1); // > t.flag[i]
@@ -271,31 +271,30 @@ bool TriggerEditor::EncodeTriggerCode() {
 	StringTable_BackupStrings(_editordata->EngineData->MapStrings);
 	ClearErrors();
 
-
-	// Deref strings.
-	DerefStrings();
-
 	// Initialize new lua state.
 	lua_State *L;
 	L = luaL_newstate();
 
 
 	// Init
-	lua_pushlightuserdata(L, this);
-	lua_setglobal(L, "__inst_global_TriggerEditor");
 	luaL_openlibs(L);
 
+	// Load basic script.
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT));
+	// basescript.lua contains case-insensitive patch, so this should be called
+	// before any variable is declared
+
+	// Declare global thing.
+	lua_pushlightuserdata(L, this);
+	lua_setglobal(L, "__inst_global_TriggerEditor");
 
 	// Load basic functions.
 	lua_register(L, "ParseUnit", LuaParseUnit);
 	lua_register(L, "ParseLocation", LuaParseLocation);
 	lua_register(L, "ParseSwitchName", LuaParseSwitchName);
 	lua_register(L, "ParseString", LuaParseString);
-	lua_register(L, "Trigger", LuaParseTrigger);
+	lua_register(L, "__internal__AddTrigger", LuaParseTrigger);
 	lua_register(L, "ParseProperty", LuaParseProperty);
-
-	// Load basic script.
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT));
 
 	// Run trigger code.
 	lua_pushcfunction(L, LuaErrorHandler); // Error handler
@@ -325,6 +324,14 @@ bool TriggerEditor::EncodeTriggerCode() {
 	// Compile Done.
 
 	StringTable_ClearBackup(_editordata->EngineData->MapStrings);
+
+	// Dereferencing should be after trigger compilication
+	//
+	// - Any string referenced by comment action or something won't change its ID.
+	//
+	
+	// Deref strings.
+	DerefStrings();
 
 
 	// Replace trigger data
