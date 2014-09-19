@@ -1,0 +1,145 @@
+Trigger Syntax::
+
+    -- Anything after "--" in the line is comment. They are ignored.
+
+    Trigger {
+        players = {P1, P2, P8, P12, Force1, AllPlayers},
+        conditions = {
+
+            Disabled(Always());                                  -- Disable() disables condition.
+
+            CountdownTimer(Comparison, Time);
+            Command(Player, Comparison, Number, Unit);
+            Bring(Player, Comparison, Number, Unit, Location);
+            Accumulate(Player, Comparison, Number, ResourceType);
+            Kills(Player, Comparison, Number, Unit);
+            CommandMost(Unit);
+            CommandMostAt(Unit, Location);
+            MostKills(Unit);
+            HighestScore(ScoreType);
+            MostResources(ResourceType);
+            Switch(Switch, State);
+            ElapsedTime(Comparison, Time);
+            Briefing();
+            Opponents(Player, Comparison, Number);
+            Deaths(Player, Comparison, Number, Unit);
+            CommandLeast(Unit);
+            CommandLeastAt(Unit, Location);
+            LeastKills(Unit);
+            LowestScore(ScoreType);
+            LeastResources(ResourceType);
+            Score(Player, ScoreType, Comparison, Number);
+            Always();
+            Never();
+
+            -- 16 actions maximum
+        },
+        actions = {
+
+            Disabled(Victory());                                 -- Disable() disables action.
+
+            Victory();
+            Defeat();
+            PreserveTrigger();
+            Wait(Time);
+            PauseGame();
+            UnpauseGame();
+            Transmission(Unit, Where, WAVName, TimeModifier, Time, Text, AlwaysDisplay);
+            PlayWAV(WAVName);
+            DisplayText(Text, AlwaysDisplay);
+            CenterView(Where);
+            CreateUnitWithProperties(Count, Unit, Where, Player, Properties);
+            SetMissionObjectives(Text);
+            SetSwitch(Switch, State);
+            SetCountdownTimer(TimeModifier, Time);
+            RunAIScript(Script);
+            RunAIScriptAt(Script, Where);
+            LeaderBoardControl(Unit, Label);
+            LeaderBoardControlAt(Unit, Location, Label);
+            LeaderBoardResources(ResourceType, Label);
+            LeaderBoardKills(Unit, Label);
+            LeaderBoardScore(ScoreType, Label);
+            KillUnit(Unit, Player);
+            KillUnitAt(Count, Unit, Where, ForPlayer);
+            RemoveUnit(Unit, Player);
+            RemoveUnitAt(Count, Unit, Where, ForPlayer);
+            SetResources(Player, Modifier, Amount, ResourceType);
+            SetScore(Player, Modifier, Amount, ScoreType);
+            MinimapPing(Where);
+            TalkingPortrait(Unit, Time);
+            MuteUnitSpeech();
+            UnMuteUnitSpeech();
+            LeaderBoardComputerPlayers(State);
+            LeaderBoardGoalControl(Goal, Unit, Label);
+            LeaderBoardGoalControlAt(Goal, Unit, Location, Label);
+            LeaderBoardGoalResources(Goal, ResourceType, Label);
+            LeaderBoardGoalKills(Goal, Unit, Label);
+            LeaderBoardGoalScore(Goal, ScoreType, Label);
+            MoveLocation(Location, OnUnit, Owner, DestLocation);
+            MoveUnit(Count, UnitType, Owner, StartLocation, DestLocation);
+            LeaderBoardGreed(Goal);
+            SetNextScenario(ScenarioName);
+            SetDoodadState(State, Unit, Owner, Where);
+            SetInvincibility(State, Unit, Owner, Where);
+            CreateUnit(Number, Unit, Where, ForPlayer);
+            SetDeaths(Player, Modifier, Number, Unit);
+            Order(Unit, Owner, StartLocation, OrderType, DestLocation);
+            Comment(Text);
+            GiveUnits(Count, Unit, Owner, Where, NewOwner);
+            ModifyUnitHitPoints(Count, Unit, Owner, Where, Percent);
+            ModifyUnitEnergy(Count, Unit, Owner, Where, Percent);
+            ModifyUnitShields(Count, Unit, Owner, Where, Percent);
+            ModifyUnitResourceAmount(Count, Owner, Where, NewValue);
+            ModifyUnitHangarCount(Add, Count, Unit, Owner, Where);
+            PauseTimer();
+            UnpauseTimer();
+            Draw();
+            SetAllianceStatus(Player, Status);
+
+            -- 64 actions maximum
+        },
+        flag = {
+            actexec,     -- Execute actions once without checking conditions.
+            preserved,   -- Make trigger preserved. Acts like PreserveTrigger() action.
+            disabled,    -- Make trigger disabled
+        },
+
+        starting_action = 3  -- Used in pair with actexec : Starting action.
+            -- This option is ignored for trigger without actexec flag.
+    }
+
+
+Various constants:
+
+============= =================================================================
+   Field                           Allowed constants
+------------- -----------------------------------------------------------------
+AllyStatus    Enemy, Ally, AlliedVictory
+Comparison    AtLeast, AtMost, Exactly
+Modifier      SetTo, Add, Subtract
+Order         Move, Patrol, Attack
+Player        P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12,
+              CurrentPlayer, Foes, Allies, NeutralPlayers, AllPlayers,
+              Force1, Force2, Force3, Force4, NonAlliedVictoryPlayers
+PropState     Enable, Disable, Toggle
+Resource      Ore, Gas, OreAndGas
+Score         Total, Units, Buildings, UnitsAndBuildings, Kills, Razings,
+              KillsAndRazings, Custom
+SwitchAction  Set, Clear, Toggle, Random
+SwitchState   Set, Cleared
+============= =================================================================
+
+
+
+- 'Unit' field accepts unit name:
+
+    SetDeaths(P1, SetTo, 0, "Boss #1");  // Name of Terran Marine inside the map is "Boss #1".
+
+- 'Location' field accepts location name.
+
+- 'String' field accepts string.
+
+- All field accepts numeric value:
+    
+    SetDeaths(12345678, SetTo, 9101112, 13141);
+ 

@@ -10,7 +10,6 @@
 #define SEARCHFLAG_USEREGEXP      0x1
 #define SEARCHFLAG_CASESENSITIVE  0x2
 #define SEARCHFLAG_WHOLEWORD      0x4
-#define SEARCHFLAG_SEARCHUP       0x8
 #define SEARCHFLAG_INSELECTION    0x10
 
 struct SearchQuery {

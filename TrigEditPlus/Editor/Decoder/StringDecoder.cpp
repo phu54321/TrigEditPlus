@@ -18,6 +18,9 @@ std::string TriggerEditor::DecodeSwitchName(int value) const {
 
 std::string TriggerEditor::DecodeString(int value) const {
 	SI_VirtSCStringList* stb = _editordata->EngineData->MapStrings;
+	int totstringn = StringTable_GetTotalStringNum(stb);
+	if(value < 0 || value > totstringn) return Int2String(value);
+
 	const char* rawstr = StringTable_GetString(stb, value);
 	if(rawstr == NULL) return Int2String(value);
 	else return Raw2CString(rawstr);
