@@ -8,7 +8,8 @@ int LuaParse ## target (lua_State* L) {\
     TriggerEditor* e = LuaGetEditor(L);\
 \
     /* number -> return as-is */ \
-    if(lua_isnumber(L, -1)) {\
+    /* if(lua_isnumber(L, -1)) { <-- Don't use this. Argument may be "00" thing */ \
+	if(lua_type(L, -1) == LUA_TNUMBER) { \
         return 1; /* return arg1 as ret1. */ \
     }\
 \
