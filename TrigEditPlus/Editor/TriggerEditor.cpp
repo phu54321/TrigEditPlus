@@ -1,4 +1,26 @@
-﻿#include "TriggerEditor.h"
+﻿/*
+ * Copyright (c) 2014 trgk(phu54321@naver.com)
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+#include "TriggerEditor.h"
 #include "MapNamespace.h"
 #include "../resource.h"
 #include "../version.h"
@@ -8,8 +30,10 @@
 #include <windowsx.h>
 #include "SearchBox/SearchBox.h"
 #include <regex>
+#include <array>
 
 void ApplyAutocomplete(TriggerEditor* te);
+void ProcessSearchMessage(HWND hTrigDlg, TriggerEditor* te, SearchQuery* q);
 
 
 TriggerEditor::TriggerEditor() : hTrigDlg(NULL), hScintilla(NULL),
@@ -105,16 +129,15 @@ char szReplaceText[4096];
 
 void Editor_CharAdded(SCNotification* ne, TriggerEditor* te);
 void ApplyEditorStyle(TriggerEditor* te);
-
 void ApplyAutocomplete(TriggerEditor* te);
 
+const int ScintillaID = 1000;
+const int TabID = 1001;
+const int ElmnTableID = 1002;
+const int StatusBarID = 1003;
 
 LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	TriggerEditor* te = reinterpret_cast<TriggerEditor*>(GetWindowLong(hWnd, GWL_USERDATA));
-	const int ScintillaID = 1000;
-	const int TabID = 1001;
-	const int ElmnTableID = 1002;
-	const int StatusBarID = 1003;
 	const static int FindReplaceMsg = RegisterWindowMessage("TEP_Find");
 
 
@@ -313,13 +336,38 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 				MessageBox(hWnd,
 					"TrigEditPlus " VERSION ". Made by trgk(phu54321@naver.com)\r\n"
 					"Simple & powerful trigger editor.\r\n"
-					"This program uses scintilla and lua.",
+					"This program uses Scintilla and Lua.",
 
 					"Info", MB_OK);
 
 				return 0;
 
 			case IDM_HELP_LICENSES:
+				MessageBox(hWnd,
+					"TrigEditPlus is distributed in MIT License.\r\n"
+					"Source code can be obtained at http://github.com/phu54321/TrigEditPlus/\r\n"
+					"\r\n"
+					"Copyright (c) 2014 trgk(phu54321@naver.com)\r\n"
+					"\r\n"
+					"Permission is hereby granted, free of charge, to any person obtaining a copy\r\n"
+					"of this software and associated documentation files (the \"Software\"), to deal\r\n"
+					"in the Software without restriction, including without limitation the rights\r\n"
+					"to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\r\n"
+					"copies of the Software, and to permit persons to whom the Software is\r\n"
+					"furnished to do so, subject to the following conditions:\r\n"
+					"\r\n"
+					"The above copyright notice and this permission notice shall be included in\r\n"
+					"all copies or substantial portions of the Software.\r\n"
+					"\r\n"
+					"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\n"
+					"IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\n"
+					"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\n"
+					"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\n"
+					"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\n"
+					"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\r\n"
+					"THE SOFTWARE.\r\n"
+					, "TrigEditPlus License", MB_OK);
+
 				MessageBox(hWnd,
 					"Copyright 1994-2014 Lua.org, PUC-Rio.\r\n"
 					"Permission is hereby granted, free of charge, to any person obtaining a copy of\r\n"
@@ -467,111 +515,113 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 
 
 	if(msg == FindReplaceMsg) {
-		SearchQuery* q = (SearchQuery*)lParam;
-		const int searchflag = (
-			(q->searchFlag & SEARCHFLAG_USEREGEXP ? SCFIND_REGEXP : 0) |
-			(q->searchFlag & SEARCHFLAG_CASESENSITIVE ? SCFIND_MATCHCASE : 0) |
-			(q->searchFlag & SEARCHFLAG_WHOLEWORD ? SCFIND_WHOLEWORD : 0)
-		);
-		te->SendSciMessage(SCI_SETSEARCHFLAGS, searchflag, 0);
-
-		if(q->mode == SEARCHMODE_FIND || q->mode == SEARCHMODE_REPLACE) { // Find/replace
-			strncpy(szFindText, q->searchFor.c_str(), 4096);
-			strncpy(szReplaceText, q->replaceTo.c_str(), 4096);
-			szFindText[4095] = szReplaceText[4095] = '\0';
-
-			Sci_TextToFind ttf;
-			ttf.lpstrText = szFindText;
-			ttf.chrg.cpMin = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
-			ttf.chrg.cpMax = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
-
-			// Find specified text.
-			if(te->SendSciMessage(SCI_FINDTEXT, searchflag, (LPARAM)&ttf) == -1) { // Failed
-				// Retry with entire scope
-				ttf.chrg.cpMin = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
-				ttf.chrg.cpMax = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
-				if(te->SendSciMessage(SCI_FINDTEXT, searchflag, (LPARAM)&ttf) == -1) { // Failed
-					HWND hStatusBar = GetDlgItem(hWnd, StatusBarID);
-					SetWindowText(hStatusBar, "Cannot find specified string.");
-					return 0;
-				}
-				else {
-					HWND hStatusBar = GetDlgItem(hWnd, StatusBarID);
-					SetWindowText(hStatusBar, "Passed the end of the document");
-				}
-			}
-
-			// Select the text
-			te->SendSciMessage(SCI_SETSEL, ttf.chrgText.cpMin, ttf.chrgText.cpMax);
-
-			// Replace if needed.
-			if(q->mode == 2) {
-				te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)szReplaceText);
-			}
-		}
-
-		else if(q->mode == 1 || q->mode == 3) {
-			const int searchstart = (q->searchFlag & SEARCHFLAG_INSELECTION)
-				? te->SendSciMessage(SCI_GETSELECTIONSTART, 0, 0)
-				: 0;
-
-			const int searchend = (q->searchFlag & SEARCHFLAG_INSELECTION)
-				? te->SendSciMessage(SCI_GETSELECTIONEND, 0, 0)
-				: te->SendSciMessage(SCI_GETLENGTH, 0, 0);
-
-			int replacedn = 0;
-
-			strncpy(szFindText, q->searchFor.c_str(), 4096);
-			strncpy(szReplaceText, q->replaceTo.c_str(), 4096);
-			szFindText[4095] = szReplaceText[4095] = '\0';
-
-			const int searchlen = strlen(szFindText);
-			const int replen = strlen(szReplaceText);
-
-			te->SendSciMessage(SCI_SETTARGETSTART, searchstart, 0);
-			te->SendSciMessage(SCI_SETSEARCHFLAGS, searchflag, 0);
-			
-			te->SendSciMessage(SCI_BEGINUNDOACTION, 0, 0);
-			while(1) {
-				// find next text
-				te->SendSciMessage(SCI_SETTARGETEND, searchend, 0);
-				if(te->SendSciMessage(SCI_SEARCHINTARGET, searchlen, (LPARAM)szFindText) == -1) break;
-				if(q->mode == 3) { // Replace all
-					te->SendSciMessage(SCI_REPLACETARGET, replen, (LPARAM)szReplaceText);
-				}
-
-				else if(q->mode == 1) {
-					int selstart = te->SendSciMessage(SCI_GETTARGETSTART, 0, 0);
-					int selend = te->SendSciMessage(SCI_GETTARGETEND, 0, 0);
-					if(replacedn == 0) te->SendSciMessage(SCI_CLEARSELECTIONS, 0, 0);
-					te->SendSciMessage(SCI_ADDSELECTION, selstart, selend);
-				}
-
-				// move target after the found
-				int newtargetend = te->SendSciMessage(SCI_GETTARGETEND, 0, 0);
-				te->SendSciMessage(SCI_SETTARGETSTART, newtargetend, 0);
-				replacedn++;
-			}
-
-			te->SendSciMessage(SCI_ENDUNDOACTION, 0, 0);
-
-			if(replacedn == 0) {
-				MessageBox(hWnd, "Cannot find specified string.", "Result", MB_OK);
-			}
-
-			else {
-				char outstr[512];
-				HWND hStatusBar = GetDlgItem(hWnd, StatusBarID);
-				if(q->mode == 3) sprintf(outstr, "Replaced %d strings.", replacedn);
-				else sprintf(outstr, "Found %d strings.", replacedn);
-				SetWindowText(hStatusBar, outstr);
-			}
-
-			return 0;
-		}
+		ProcessSearchMessage(hWnd, te, (SearchQuery*)lParam);
 		return 0;
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
+
+
+
+void ProcessSearchMessage(HWND hTrigDlg, TriggerEditor* te, SearchQuery* q) {
+	const int searchflag = (
+		(q->searchFlag & SEARCHFLAG_USEREGEXP ? SCFIND_REGEXP : 0) |
+		(q->searchFlag & SEARCHFLAG_CASESENSITIVE ? SCFIND_MATCHCASE : 0) |
+		(q->searchFlag & SEARCHFLAG_WHOLEWORD ? SCFIND_WHOLEWORD : 0)
+	);
+
+	
+	if(q->mode == SEARCHMODE_FIND || q->mode == SEARCHMODE_REPLACE) { // Find/replace
+		strncpy(szFindText, q->searchFor.c_str(), 4096);
+		strncpy(szReplaceText, q->replaceTo.c_str(), 4096);
+		szFindText[4095] = szReplaceText[4095] = '\0';
+
+		Sci_TextToFind ttf;
+		ttf.lpstrText = szFindText;
+		ttf.chrg.cpMin = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
+		ttf.chrg.cpMax = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
+
+		// Find specified text.
+		if(te->SendSciMessage(SCI_FINDTEXT, searchflag, (LPARAM)&ttf) == -1) { // Failed
+			// Retry with entire scope
+			ttf.chrg.cpMin = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
+			ttf.chrg.cpMax = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
+			if(te->SendSciMessage(SCI_FINDTEXT, searchflag, (LPARAM)&ttf) == -1) { // Failed
+				HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
+				SetWindowText(hStatusBar, "Cannot find specified string.");
+			}
+			else {
+				HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
+				SetWindowText(hStatusBar, "Passed the end of the document");
+			}
+		}
+
+		// Select the text
+		te->SendSciMessage(SCI_SETSEL, ttf.chrgText.cpMin, ttf.chrgText.cpMax);
+
+		// Replace if needed.
+		if(q->mode == 2) {
+			te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)szReplaceText);
+		}
+	}
+
+	else if(q->mode == 1 || q->mode == 3) {
+		const int searchstart = (q->searchFlag & SEARCHFLAG_INSELECTION)
+			? te->SendSciMessage(SCI_GETSELECTIONSTART, 0, 0)
+			: 0;
+
+		const int searchend = (q->searchFlag & SEARCHFLAG_INSELECTION)
+			? te->SendSciMessage(SCI_GETSELECTIONEND, 0, 0)
+			: te->SendSciMessage(SCI_GETLENGTH, 0, 0);
+
+		int replacedn = 0;
+
+		strncpy(szFindText, q->searchFor.c_str(), 4096);
+		strncpy(szReplaceText, q->replaceTo.c_str(), 4096);
+		szFindText[4095] = szReplaceText[4095] = '\0';
+
+		const int searchlen = strlen(szFindText);
+		const int replen = strlen(szReplaceText);
+
+		te->SendSciMessage(SCI_SETTARGETSTART, searchstart, 0);
+		te->SendSciMessage(SCI_SETSEARCHFLAGS, searchflag, 0);
+			
+		te->SendSciMessage(SCI_BEGINUNDOACTION, 0, 0);
+		while(1) {
+			// find next text
+			te->SendSciMessage(SCI_SETTARGETEND, searchend, 0);
+			if(te->SendSciMessage(SCI_SEARCHINTARGET, searchlen, (LPARAM)szFindText) == -1) break;
+			if(q->mode == 3) { // Replace all
+				te->SendSciMessage(SCI_REPLACETARGET, replen, (LPARAM)szReplaceText);
+			}
+
+			else if(q->mode == 1) {
+				int selstart = te->SendSciMessage(SCI_GETTARGETSTART, 0, 0);
+				int selend = te->SendSciMessage(SCI_GETTARGETEND, 0, 0);
+				if(replacedn == 0) te->SendSciMessage(SCI_CLEARSELECTIONS, 0, 0);
+				te->SendSciMessage(SCI_ADDSELECTION, selstart, selend);
+			}
+
+			// move target after the found
+			int newtargetend = te->SendSciMessage(SCI_GETTARGETEND, 0, 0);
+			te->SendSciMessage(SCI_SETTARGETSTART, newtargetend, 0);
+			replacedn++;
+		}
+
+		te->SendSciMessage(SCI_ENDUNDOACTION, 0, 0);
+
+		if(replacedn == 0) {
+			MessageBox(hTrigDlg, "Cannot find specified string.", "Result", MB_OK);
+		}
+
+		else {
+			char outstr[512];
+			HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
+			if(q->mode == 3) sprintf(outstr, "Replaced %d strings.", replacedn);
+			else sprintf(outstr, "Found %d strings.", replacedn);
+			SetWindowText(hStatusBar, outstr);
+		}
+	}
+}
