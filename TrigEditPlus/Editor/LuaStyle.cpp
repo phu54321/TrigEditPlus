@@ -27,7 +27,12 @@
 
 void ApplyEditorStyle(TriggerEditor* te) {
 	// Lua syntax highlighting
+	const char* luaKeywords =
+		"and break do else elseif end false for function if"
+		"in local nil not or repeat return then true until while";
+
 	te->SendSciMessage(SCI_SETLEXER, SCLEX_LUA, 0);
+	te->SendSciMessage(SCI_SETKEYWORDS, 0, (LPARAM)luaKeywords);
 
 	// Korean thing
 	te->SendSciMessage(SCI_SETCODEPAGE, 949, 0);
@@ -58,7 +63,7 @@ void ApplyEditorStyle(TriggerEditor* te) {
 	te->SendSciMessage(SCI_STYLESETFORE, 18, RGB(0x00, 0x00, 0x7F));
 	te->SendSciMessage(SCI_STYLESETFORE, 19, RGB(0x00, 0x00, 0x7F));
 	te->SendSciMessage(SCI_STYLESETFORE, 20, RGB(0x7F, 0x7F, 0x00));
-	te->SendSciMessage(SCI_STYLESETFORE, 32, RGB(0xCC, 0xCC, 0xCC));
+	te->SendSciMessage(SCI_STYLESETFORE, 32, RGB(0xA8, 0xA8, 0xA8)); // Fold line
 
 	te->SendSciMessage(SCI_STYLESETBACK,  1, RGB(0xD0, 0xF0, 0xF0));
 	te->SendSciMessage(SCI_STYLESETBACK,  8, RGB(0xE0, 0xFF, 0xFF));
