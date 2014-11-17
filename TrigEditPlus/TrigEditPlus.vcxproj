@@ -25,7 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -53,12 +53,12 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TRIGEDITPLUS_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TRIGEDITPLUS_EXPORTS;_CRT_SECURE_NO_WARNINGS;STATIC_BUILD;SCI_LEXER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>PluginBase\DllMain.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -70,7 +70,7 @@
       <Optimization>MinSpace</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TRIGEDITPLUS_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TRIGEDITPLUS_EXPORTS;_CRT_SECURE_NO_WARNINGS;STATIC_BUILD;SCI_LEXER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -82,12 +82,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>PluginBase\DllMain.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AutoIndent.cpp" />
     <ClCompile Include="Editor\Decoder\AIScriptDecode.cpp" />
     <ClCompile Include="Editor\Decoder\ConstDecoder.cpp" />
     <ClCompile Include="Editor\Decoder\SpecialCommentDec.cpp" />
@@ -139,6 +138,48 @@
     <ClCompile Include="Editor\LuaStyle.cpp" />
     <ClCompile Include="Editor\MapNamespace.cpp" />
     <ClCompile Include="Editor\MapStrings.cpp" />
+    <ClCompile Include="Editor\Scintilla\Accessor.cxx" />
+    <ClCompile Include="Editor\Scintilla\AutoComplete.cxx" />
+    <ClCompile Include="Editor\Scintilla\CallTip.cxx" />
+    <ClCompile Include="Editor\Scintilla\CaseConvert.cxx" />
+    <ClCompile Include="Editor\Scintilla\CaseFolder.cxx" />
+    <ClCompile Include="Editor\Scintilla\Catalogue.cxx" />
+    <ClCompile Include="Editor\Scintilla\CellBuffer.cxx" />
+    <ClCompile Include="Editor\Scintilla\CharacterCategory.cxx" />
+    <ClCompile Include="Editor\Scintilla\CharacterSet.cxx" />
+    <ClCompile Include="Editor\Scintilla\CharClassify.cxx" />
+    <ClCompile Include="Editor\Scintilla\CheckD2D.cxx" />
+    <ClCompile Include="Editor\Scintilla\ContractionState.cxx" />
+    <ClCompile Include="Editor\Scintilla\Decoration.cxx" />
+    <ClCompile Include="Editor\Scintilla\Document.cxx" />
+    <ClCompile Include="Editor\Scintilla\EditModel.cxx" />
+    <ClCompile Include="Editor\Scintilla\Editor.cxx" />
+    <ClCompile Include="Editor\Scintilla\EditView.cxx" />
+    <ClCompile Include="Editor\Scintilla\ExternalLexer.cxx" />
+    <ClCompile Include="Editor\Scintilla\Indicator.cxx" />
+    <ClCompile Include="Editor\Scintilla\KeyMap.cxx" />
+    <ClCompile Include="Editor\Scintilla\LexerBase.cxx" />
+    <ClCompile Include="Editor\Scintilla\LexerModule.cxx" />
+    <ClCompile Include="Editor\Scintilla\LexerNoExceptions.cxx" />
+    <ClCompile Include="Editor\Scintilla\LexerSimple.cxx" />
+    <ClCompile Include="Editor\Scintilla\LexLua.cxx" />
+    <ClCompile Include="Editor\Scintilla\LineMarker.cxx" />
+    <ClCompile Include="Editor\Scintilla\MarginView.cxx" />
+    <ClCompile Include="Editor\Scintilla\PerLine.cxx" />
+    <ClCompile Include="Editor\Scintilla\PlatWin.cxx" />
+    <ClCompile Include="Editor\Scintilla\PositionCache.cxx" />
+    <ClCompile Include="Editor\Scintilla\PropSetSimple.cxx" />
+    <ClCompile Include="Editor\Scintilla\RESearch.cxx" />
+    <ClCompile Include="Editor\Scintilla\RunStyles.cxx" />
+    <ClCompile Include="Editor\Scintilla\ScintillaBase.cxx" />
+    <ClCompile Include="Editor\Scintilla\ScintillaWin.cxx" />
+    <ClCompile Include="Editor\Scintilla\Selection.cxx" />
+    <ClCompile Include="Editor\Scintilla\Style.cxx" />
+    <ClCompile Include="Editor\Scintilla\StyleContext.cxx" />
+    <ClCompile Include="Editor\Scintilla\UniConversion.cxx" />
+    <ClCompile Include="Editor\Scintilla\ViewStyle.cxx" />
+    <ClCompile Include="Editor\Scintilla\WordList.cxx" />
+    <ClCompile Include="Editor\Scintilla\XPM.cxx" />
     <ClCompile Include="Editor\SearchBox\SearchBox.cpp" />
     <ClCompile Include="Editor\SetAutocomplete.cpp" />
     <ClCompile Include="Editor\StringUtils\RawCStringCast.cpp" />
@@ -178,8 +219,59 @@
     <ClInclude Include="Editor\Encoder\Lua\lvm.h" />
     <ClInclude Include="Editor\Encoder\Lua\lzio.h" />
     <ClInclude Include="Editor\MapNamespace.h" />
+    <ClInclude Include="Editor\Scintilla\Accessor.h" />
+    <ClInclude Include="Editor\Scintilla\AutoComplete.h" />
+    <ClInclude Include="Editor\Scintilla\CallTip.h" />
+    <ClInclude Include="Editor\Scintilla\CaseConvert.h" />
+    <ClInclude Include="Editor\Scintilla\CaseFolder.h" />
+    <ClInclude Include="Editor\Scintilla\Catalogue.h" />
+    <ClInclude Include="Editor\Scintilla\CellBuffer.h" />
+    <ClInclude Include="Editor\Scintilla\CharacterCategory.h" />
+    <ClInclude Include="Editor\Scintilla\CharacterSet.h" />
+    <ClInclude Include="Editor\Scintilla\CharClassify.h" />
+    <ClInclude Include="Editor\Scintilla\ContractionState.h" />
+    <ClInclude Include="Editor\Scintilla\Decoration.h" />
+    <ClInclude Include="Editor\Scintilla\Document.h" />
+    <ClInclude Include="Editor\Scintilla\EditModel.h" />
+    <ClInclude Include="Editor\Scintilla\Editor.h" />
+    <ClInclude Include="Editor\Scintilla\EditView.h" />
+    <ClInclude Include="Editor\Scintilla\ExternalLexer.h" />
+    <ClInclude Include="Editor\Scintilla\FontQuality.h" />
+    <ClInclude Include="Editor\Scintilla\ILexer.h" />
+    <ClInclude Include="Editor\Scintilla\Indicator.h" />
+    <ClInclude Include="Editor\Scintilla\KeyMap.h" />
+    <ClInclude Include="Editor\Scintilla\LexAccessor.h" />
+    <ClInclude Include="Editor\Scintilla\LexerBase.h" />
+    <ClInclude Include="Editor\Scintilla\LexerModule.h" />
+    <ClInclude Include="Editor\Scintilla\LexerNoExceptions.h" />
+    <ClInclude Include="Editor\Scintilla\LexerSimple.h" />
+    <ClInclude Include="Editor\Scintilla\LineMarker.h" />
+    <ClInclude Include="Editor\Scintilla\MarginView.h" />
+    <ClInclude Include="Editor\Scintilla\OptionSet.h" />
+    <ClInclude Include="Editor\Scintilla\Partitioning.h" />
+    <ClInclude Include="Editor\Scintilla\PerLine.h" />
+    <ClInclude Include="Editor\Scintilla\Platform.h" />
+    <ClInclude Include="Editor\Scintilla\PlatWin.h" />
+    <ClInclude Include="Editor\Scintilla\PositionCache.h" />
+    <ClInclude Include="Editor\Scintilla\PropSetSimple.h" />
+    <ClInclude Include="Editor\Scintilla\RESearch.h" />
+    <ClInclude Include="Editor\Scintilla\RunStyles.h" />
     <ClInclude Include="Editor\Scintilla\SciLexer.h" />
     <ClInclude Include="Editor\Scintilla\Scintilla.h" />
+    <ClInclude Include="Editor\Scintilla\ScintillaBase.h" />
+    <ClInclude Include="Editor\Scintilla\ScintillaWidget.h" />
+    <ClInclude Include="Editor\Scintilla\Selection.h" />
+    <ClInclude Include="Editor\Scintilla\SparseState.h" />
+    <ClInclude Include="Editor\Scintilla\SplitVector.h" />
+    <ClInclude Include="Editor\Scintilla\StringCopy.h" />
+    <ClInclude Include="Editor\Scintilla\Style.h" />
+    <ClInclude Include="Editor\Scintilla\StyleContext.h" />
+    <ClInclude Include="Editor\Scintilla\SubStyles.h" />
+    <ClInclude Include="Editor\Scintilla\UnicodeFromUTF8.h" />
+    <ClInclude Include="Editor\Scintilla\UniConversion.h" />
+    <ClInclude Include="Editor\Scintilla\ViewStyle.h" />
+    <ClInclude Include="Editor\Scintilla\WordList.h" />
+    <ClInclude Include="Editor\Scintilla\XPM.h" />
     <ClInclude Include="Editor\SearchBox\SearchBox.h" />
     <ClInclude Include="Editor\StringUtils\stringbuffer.h" />
     <ClInclude Include="Editor\StringUtils\StringCast.h" />
@@ -196,6 +288,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Editor\Encoder\basescript.lua" />
+    <None Include="Editor\Scintilla\Scintilla.iface" />
+    <None Include="Editor\Scintilla\SciTE.properties" />
     <None Include="PluginBase\DllMain.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

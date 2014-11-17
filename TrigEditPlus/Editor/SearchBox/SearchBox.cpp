@@ -1,10 +1,25 @@
 /*
-#define SCFIND_WHOLEWORD 0x2
-#define SCFIND_MATCHCASE 0x4
-#define SCFIND_WORDSTART 0x00100000
-#define SCFIND_REGEXP 0x00200000
-#define SCFIND_POSIX 0x00400000
-*/
+ * Copyright (c) 2014 trgk(phu54321@naver.com)
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 
 #include <string>
 #include <Windows.h>
@@ -125,49 +140,48 @@ BOOL CALLBACK SearchBoxProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lPar
 	}
 
 	case WM_COMMAND:
-		switch(LOWORD(wParam)) {
+		switch(LOWORD(wParam))
+		{
 		case IDC_FIND:
 		case IDC_FINDALL:
 		case IDC_REPLACE:
 		case IDC_REPLACEALL:
-			if(1) {
-				SearchQuery q;
-				HWND txF = GetDlgItem(hDlg, IDC_FINDTEXT);
-				HWND txR = GetDlgItem(hDlg, IDC_REPLACETEXT);
-				HWND chkRegex = GetDlgItem(hDlg, IDC_USEREGEX);
-				HWND chkCase = GetDlgItem(hDlg, IDC_CASESENSITIVE);
-				HWND chkWord = GetDlgItem(hDlg, IDC_WHOLEWORD);
-				HWND chkInSel = GetDlgItem(hDlg, IDC_INSEL);
-				
-				DWORD findtextlen = GetWindowTextLength(txF);
-				char* findtext = new char[findtextlen + 1];
-				GetWindowText(txF, findtext, findtextlen + 1);
-				q.searchFor = findtext;
-				delete[] findtext;
+		{
+			SearchQuery q;
+			HWND txF = GetDlgItem(hDlg, IDC_FINDTEXT);
+			HWND txR = GetDlgItem(hDlg, IDC_REPLACETEXT);
+			HWND chkRegex = GetDlgItem(hDlg, IDC_USEREGEX);
+			HWND chkCase = GetDlgItem(hDlg, IDC_CASESENSITIVE);
+			HWND chkWord = GetDlgItem(hDlg, IDC_WHOLEWORD);
+			HWND chkInSel = GetDlgItem(hDlg, IDC_INSEL);
 
-				DWORD replacetextlen = GetWindowTextLength(txR);
-				char* replacetext = new char[replacetextlen + 1];
-				GetWindowText(txR, replacetext, replacetextlen + 1);
-				q.replaceTo = replacetext;
-				delete[] replacetext;
+			DWORD findtextlen = GetWindowTextLength(txF);
+			char* findtext = new char[findtextlen + 1];
+			GetWindowText(txF, findtext, findtextlen + 1);
+			q.searchFor = findtext;
+			delete[] findtext;
 
-				/**/ if(LOWORD(wParam) == IDC_FIND)       q.mode = SEARCHMODE_FIND;
-				else if(LOWORD(wParam) == IDC_FINDALL)    q.mode = SEARCHMODE_FINDALL;
-				else if(LOWORD(wParam) == IDC_REPLACE)   q.mode = SEARCHMODE_REPLACE;
-				else if(LOWORD(wParam) == IDC_REPLACEALL) q.mode = SEARCHMODE_REPLACEALL;
+			DWORD replacetextlen = GetWindowTextLength(txR);
+			char* replacetext = new char[replacetextlen + 1];
+			GetWindowText(txR, replacetext, replacetextlen + 1);
+			q.replaceTo = replacetext;
+			delete[] replacetext;
 
-				q.searchFlag = 0;				
-				if(SendMessage(chkRegex, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_USEREGEXP;
-				if(SendMessage(chkCase, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_CASESENSITIVE;
-				if(SendMessage(chkWord, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_WHOLEWORD;
-				if(SendMessage(chkInSel, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_INSELECTION;
-				
-				SendMessage(hParent, FindReplaceMsg, 0, (LPARAM)&q);
-			}
+			/**/ if(LOWORD(wParam) == IDC_FIND)       q.mode = SEARCHMODE_FIND;
+			else if(LOWORD(wParam) == IDC_FINDALL)    q.mode = SEARCHMODE_FINDALL;
+			else if(LOWORD(wParam) == IDC_REPLACE)   q.mode = SEARCHMODE_REPLACE;
+			else if(LOWORD(wParam) == IDC_REPLACEALL) q.mode = SEARCHMODE_REPLACEALL;
+
+			q.searchFlag = 0;
+			if(SendMessage(chkRegex, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_USEREGEXP;
+			if(SendMessage(chkCase, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_CASESENSITIVE;
+			if(SendMessage(chkWord, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_WHOLEWORD;
+			if(SendMessage(chkInSel, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_INSELECTION;
+
+			SendMessage(hParent, FindReplaceMsg, 0, (LPARAM)&q);
 			return TRUE;
-
 		}
-		break;
+		}
 
 	case WM_CLOSE:
 		EndDialog(hDlg, 0);
