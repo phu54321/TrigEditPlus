@@ -1,4 +1,8 @@
-Trigger Syntax::
+Trigger Syntax
+==============
+
+TrigEditPlus works with lua code.
+::
 
     -- Anything after "--" in the line is comment. They are ignored.
 

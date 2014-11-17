@@ -119,7 +119,7 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 		}
 
 		else if(ft == FIELDTYPE_UNIT) {
-			for(int i = 0 ; i < 232 ; i++) {
+			for(int i = 0 ; i < 233 ; i++) {
 				ListBox_AddString(hElmnTable, te->DecodeUnit(i).c_str());
 			}
 		}
