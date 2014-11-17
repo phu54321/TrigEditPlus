@@ -58,7 +58,7 @@ void ApplyEditorStyle(TriggerEditor* te) {
 	te->SendSciMessage(SCI_STYLESETFORE, 18, RGB(0x00, 0x00, 0x7F));
 	te->SendSciMessage(SCI_STYLESETFORE, 19, RGB(0x00, 0x00, 0x7F));
 	te->SendSciMessage(SCI_STYLESETFORE, 20, RGB(0x7F, 0x7F, 0x00));
-	te->SendSciMessage(SCI_STYLESETFORE, 32, RGB(0x00, 0x00, 0x00));
+	te->SendSciMessage(SCI_STYLESETFORE, 32, RGB(0xCC, 0xCC, 0xCC));
 
 	te->SendSciMessage(SCI_STYLESETBACK,  1, RGB(0xD0, 0xF0, 0xF0));
 	te->SendSciMessage(SCI_STYLESETBACK,  8, RGB(0xE0, 0xFF, 0xFF));

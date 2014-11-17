@@ -65,11 +65,8 @@ void DisableVisualStyle() {
 
 void Initialize() {
 	// Initialize common controls.
-	hScintillaDLL = LoadLibrary("SciLexer.dll");
-	if(!hScintillaDLL) {
-		PluginMenuName = NULL;
-		return;
-	}
+	Scintilla_RegisterClasses(hInstance);
+	Scintilla_LinkLexers();
 
 	InitCommonControls();
 

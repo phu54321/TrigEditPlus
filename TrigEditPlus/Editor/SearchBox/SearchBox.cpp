@@ -140,49 +140,48 @@ BOOL CALLBACK SearchBoxProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lPar
 	}
 
 	case WM_COMMAND:
-		switch(LOWORD(wParam)) {
+		switch(LOWORD(wParam))
+		{
 		case IDC_FIND:
 		case IDC_FINDALL:
 		case IDC_REPLACE:
 		case IDC_REPLACEALL:
-			if(1) {
-				SearchQuery q;
-				HWND txF = GetDlgItem(hDlg, IDC_FINDTEXT);
-				HWND txR = GetDlgItem(hDlg, IDC_REPLACETEXT);
-				HWND chkRegex = GetDlgItem(hDlg, IDC_USEREGEX);
-				HWND chkCase = GetDlgItem(hDlg, IDC_CASESENSITIVE);
-				HWND chkWord = GetDlgItem(hDlg, IDC_WHOLEWORD);
-				HWND chkInSel = GetDlgItem(hDlg, IDC_INSEL);
-				
-				DWORD findtextlen = GetWindowTextLength(txF);
-				char* findtext = new char[findtextlen + 1];
-				GetWindowText(txF, findtext, findtextlen + 1);
-				q.searchFor = findtext;
-				delete[] findtext;
+		{
+			SearchQuery q;
+			HWND txF = GetDlgItem(hDlg, IDC_FINDTEXT);
+			HWND txR = GetDlgItem(hDlg, IDC_REPLACETEXT);
+			HWND chkRegex = GetDlgItem(hDlg, IDC_USEREGEX);
+			HWND chkCase = GetDlgItem(hDlg, IDC_CASESENSITIVE);
+			HWND chkWord = GetDlgItem(hDlg, IDC_WHOLEWORD);
+			HWND chkInSel = GetDlgItem(hDlg, IDC_INSEL);
 
-				DWORD replacetextlen = GetWindowTextLength(txR);
-				char* replacetext = new char[replacetextlen + 1];
-				GetWindowText(txR, replacetext, replacetextlen + 1);
-				q.replaceTo = replacetext;
-				delete[] replacetext;
+			DWORD findtextlen = GetWindowTextLength(txF);
+			char* findtext = new char[findtextlen + 1];
+			GetWindowText(txF, findtext, findtextlen + 1);
+			q.searchFor = findtext;
+			delete[] findtext;
 
-				/**/ if(LOWORD(wParam) == IDC_FIND)       q.mode = SEARCHMODE_FIND;
-				else if(LOWORD(wParam) == IDC_FINDALL)    q.mode = SEARCHMODE_FINDALL;
-				else if(LOWORD(wParam) == IDC_REPLACE)   q.mode = SEARCHMODE_REPLACE;
-				else if(LOWORD(wParam) == IDC_REPLACEALL) q.mode = SEARCHMODE_REPLACEALL;
+			DWORD replacetextlen = GetWindowTextLength(txR);
+			char* replacetext = new char[replacetextlen + 1];
+			GetWindowText(txR, replacetext, replacetextlen + 1);
+			q.replaceTo = replacetext;
+			delete[] replacetext;
 
-				q.searchFlag = 0;				
-				if(SendMessage(chkRegex, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_USEREGEXP;
-				if(SendMessage(chkCase, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_CASESENSITIVE;
-				if(SendMessage(chkWord, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_WHOLEWORD;
-				if(SendMessage(chkInSel, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_INSELECTION;
-				
-				SendMessage(hParent, FindReplaceMsg, 0, (LPARAM)&q);
-			}
+			/**/ if(LOWORD(wParam) == IDC_FIND)       q.mode = SEARCHMODE_FIND;
+			else if(LOWORD(wParam) == IDC_FINDALL)    q.mode = SEARCHMODE_FINDALL;
+			else if(LOWORD(wParam) == IDC_REPLACE)   q.mode = SEARCHMODE_REPLACE;
+			else if(LOWORD(wParam) == IDC_REPLACEALL) q.mode = SEARCHMODE_REPLACEALL;
+
+			q.searchFlag = 0;
+			if(SendMessage(chkRegex, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_USEREGEXP;
+			if(SendMessage(chkCase, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_CASESENSITIVE;
+			if(SendMessage(chkWord, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_WHOLEWORD;
+			if(SendMessage(chkInSel, BM_GETCHECK, 0, 0) == BST_CHECKED) q.searchFlag |= SEARCHFLAG_INSELECTION;
+
+			SendMessage(hParent, FindReplaceMsg, 0, (LPARAM)&q);
 			return TRUE;
-
 		}
-		break;
+		}
 
 	case WM_CLOSE:
 		EndDialog(hDlg, 0);
