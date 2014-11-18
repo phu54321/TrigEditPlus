@@ -37,11 +37,16 @@ HWND findDlg;
 int RunSearchBox(HWND parent, const char* query) {
 	findDlg = CreateDialogParam(hInstance, MAKEINTRESOURCE(IDD_FINDREPLACEDLG),
 		parent, SearchBoxProc, (LPARAM)query);
+	ShowWindow(findDlg, SW_SHOW);
 	return 0;
 }
 
 int QuitSearchBox() {
-	if(findDlg) SendMessage(findDlg, WM_CLOSE, 0, 0);
+	if(findDlg)
+	{
+		SendMessage(findDlg, WM_CLOSE, 0, 0);
+		findDlg = NULL;
+	}
 	return 0;
 }
 

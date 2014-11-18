@@ -311,7 +311,8 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 					// Get selected text and fill lpstrFindWhat with it.
 					int selstart = te->SendSciMessage(SCI_GETSELECTIONSTART, 0, 0);
 					int selend   = te->SendSciMessage(SCI_GETSELECTIONEND, 0, 0);
-					if(selend != selstart) {
+					if(selend != selstart)
+					{
 						Sci_TextRange tr;
 						tr.chrg.cpMin = selstart;
 						tr.chrg.cpMax = selend;
