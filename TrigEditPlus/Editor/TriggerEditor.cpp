@@ -646,6 +646,7 @@ void ProcessSearchMessage(HWND hTrigDlg, TriggerEditor* te, SearchQuery* q) {
 		te->SendSciMessage(SCI_SETTARGETSTART, 0, 0);
 		te->SendSciMessage(SCI_SETSEARCHFLAGS, searchflag, 0);
 
+		te->SendSciMessage(SCI_BEGINUNDOACTION, 0, 0);
 
 		while(1)
 		{
@@ -659,6 +660,8 @@ void ProcessSearchMessage(HWND hTrigDlg, TriggerEditor* te, SearchQuery* q) {
 			te->SendSciMessage(SCI_SETTARGETSTART, newtargetend, 0);
 			replacedn++;
 		}
+
+		te->SendSciMessage(SCI_ENDUNDOACTION, 0, 0);
 
 		if(replacedn == 0)
 		{
