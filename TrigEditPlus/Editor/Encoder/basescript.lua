@@ -359,15 +359,19 @@ end
 
 
 function Transmission(Unit, Where, WAVName, TimeModifier, Time, Text, AlwaysDisplay)
-    if AlwaysDisplay == nil then AlwaysDisplay = 4 end
+    if AlwaysDisplay == nil then
+		AlwaysDisplay = 4
+	end
+
     Unit = ParseUnit(Unit)
     Where = ParseLocation(Where)
     WAVName = ParseString(WAVName)
     TimeModifier = ParseModifier(TimeModifier)
     Text = ParseString(Text)
-    return Action(Where, Text, WAVName, Time, 0, 0, Unit, 7, TimeModifier, AlwaysDisplay)
+    return Action(Where, Text, WAVName, 0, 0, Time, Unit, 7, TimeModifier, AlwaysDisplay)
 end
 
+-- Location	Text	Wav	TotDuration	0	DurationMod	UnitType	7	NumericMod	20
 
 function PlayWAV(WAVName)
     WAVName = ParseString(WAVName)

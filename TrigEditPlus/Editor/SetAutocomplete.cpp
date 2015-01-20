@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2014 trgk(phu54321@naver.com)
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,62 +22,109 @@
 
 #include "TriggerEditor.h"
 #include "TriggerEncDec.h"
-#include <WindowsX.h>
-
-
-/*
-
-Field types :
-	FIELDTYPE_NONE,
-	FIELDTYPE_NUMBER,
-	FIELDTYPE_ALLYSTATUS,
-	FIELDTYPE_COMPARISON,
-	FIELDTYPE_MODIFIER,
-	FIELDTYPE_ORDER,
-	FIELDTYPE_PLAYER,
-	FIELDTYPE_PROPSTATE,
-	FIELDTYPE_RESOURCE,
-	FIELDTYPE_SCORE,
-	FIELDTYPE_SWITCHACTION,
-	FIELDTYPE_SWITCHSTATE,
-	FIELDTYPE_AISCRIPT,
-	FIELDTYPE_COUNT,
-	FIELDTYPE_UNIT,
-	FIELDTYPE_LOCATION,
-	FIELDTYPE_STRING,
-	FIELDTYPE_SWITCHNAME,
-*/
+#include <windowsx.h>
+#include <algorithm>
 
 const char* const_autocomplete_list[][40] = {
 	{}, // None
 	{}, // Number
-	{"Enemy", "Ally", "AlliedVictory"}, //AllyStatus
-	{"AtLeast", "AtMost", "Exactly"}, //Comparison
-	{"SetTo", "Add", "Subtract"}, //Modifier
-	{"Move", "Patrol", "Attack"}, //Order
-	{"P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12",
+	{ "Enemy", "Ally", "AlliedVictory" }, //AllyStatus
+	{ "AtLeast", "AtMost", "Exactly" }, //Comparison
+	{ "SetTo", "Add", "Subtract" }, //Modifier
+	{ "Move", "Patrol", "Attack" }, //Order
+	{ "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12",
 	"CurrentPlayer", "Foes", "Allies", "NeutralPlayers", "AllPlayers", "Force1",
-	"Force2", "Force3", "Force4", "NonAlliedVictoryPlayers"}, //Player
-	{"Enable", "Disable", "Toggle"}, //PropState
-	{"Ore", "Gas", "OreAndGas"}, //Resource
-	{"Total", "Units", "Buildings", "UnitsAndBuildings", "Kills", "Razings","KillsAndRazings", "Custom"}, //Score
-	{"Set", "Clear", "Toggle", "Random"}, //SwitchAction
-	{"Set", "Cleared"}, //SwitchState
+	"Force2", "Force3", "Force4", "NonAlliedVictoryPlayers" }, //Player
+	{ "Enable", "Disable", "Toggle" }, //PropState
+	{ "Ore", "Gas", "OreAndGas" }, //Resource
+	{ "Total", "Units", "Buildings", "UnitsAndBuildings", "Kills", "Razings", "KillsAndRazings", "Custom" }, //Score
+	{ "Set", "Clear", "Toggle", "Random" }, //SwitchAction
+	{ "Set", "Cleared" }, //SwitchState
 };
 
-struct AIScriptEntry{
+struct AIScriptEntry
+{
 	DWORD aidw;
 	const char* str;
 };
 
 extern AIScriptEntry AIScriptList[];
 
-void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext) {
+// DBCS-safe version. maybe.
+inline char dbcs_tolower(char ch)
+{
+	if('A' <= ch && ch <= 'Z') return ch + ('a' - 'A');
+	else return ch;
+}
+
+// Simple similarity ranker. Inspired from Sublime Text Fuzzy String Matching algorithm.
+// Independently developed, though.
+int CalculateStringAcceptance(const std::string& keyword, const std::string& matched_text)
+{
+	const int max_prioritized_char_dist = 3;
+	const int max_prioritized_wordstart_dist = 4;
+
+	int index = 0;
+	int rank = 0;
+	const int match_maxidx = matched_text.size();
+
+	for(char ch : keyword)
+	{
+		int previndex = index;
+
+		// Find matching index
+		while(dbcs_tolower(matched_text[index]) != dbcs_tolower(ch))
+		{
+			index++;
+			if(index >= match_maxidx) return -1;  // Match failed
+		}
+
+		// Value smaller distance between match characters
+		int chdist = index - previndex, chd_mul;
+		if(chdist >= max_prioritized_char_dist) chd_mul = 1;
+		else chd_mul = max_prioritized_char_dist - chdist;
+
+		// Value smaller distance between word start and matched character
+		int wsindex = index;  // Word start position
+		while(wsindex >= 0)
+		{
+			char wsi_ch = matched_text[wsindex];
+			// Space can be seperator
+			if(wsi_ch == ' ')
+			{
+				wsindex++;
+				break;
+			}
+			else if('A' <= wsi_ch && wsi_ch <= 'Z') break;  // Capical character can be word start
+			wsindex--;
+		}
+		int wsdist = index - wsindex, wsd_mul;
+		if(wsdist >= max_prioritized_wordstart_dist) wsd_mul = 1;
+		else wsd_mul = max_prioritized_wordstart_dist - wsdist;
+
+		rank += 100 * chd_mul * wsd_mul;
+
+		index++;
+	}
+
+	// If two string has same length (maybe rank was determined in common prefix)
+	// shorter string should have more rank.
+	int slen = matched_text.size();
+	if(slen < 100) rank += 100 - slen;
+
+	return rank;
+}
+
+
+void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
+{
 	HWND hElmnTable = te->hElmnTable;
 
-	if(ft == FIELDTYPE_NONE) {
+	if(ft == FIELDTYPE_NONE) // End of fields
+	{
 		if(te->currentft == ft);
-		else {
+		else
+		{
 			te->currentft = ft;
 			ListBox_ResetContent(hElmnTable);
 		}
@@ -86,96 +133,91 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 
 	int slen = strlen(inputtext);
 
-	// trim string
+	// trim inputtext
 	int trimstart = 0, trimend = slen;
 	while(trimstart < slen && isspace((unsigned char)inputtext[++trimstart]));
-	while(trimend >= 0      && isspace((unsigned char)inputtext[--trimend]));
+	while(trimend >= 0 && isspace((unsigned char)inputtext[--trimend]));
 
-	std::string s; // default initialized to empty string
-	if(trimstart == slen); //empty string
-	else s.assign(inputtext + trimstart, inputtext + trimend + 1);
+	std::string keyword; // default initialized to empty string
+	if(trimstart == slen); // empty string
+	else keyword.assign(inputtext + trimstart, inputtext + trimend + 1);
 
 
-	// update autocompletelist
-	
-	if(te->currentft == ft);
-	else {
-		te->currentft = ft;
-		ListBox_ResetContent(hElmnTable);
+	// Get list of available arguments for field type
+	std::vector<std::string> stringlist;
 
-		// get autocompletion list for field type.
-		if(ft == FIELDTYPE_NONE || ft == FIELDTYPE_NUMBER);
-		else if(ft < FIELDTYPE_SWITCHSTATE) {
-			const char** autocompletionlist = const_autocomplete_list[ft];
-			for(const char** p = autocompletionlist ; *p != NULL ; p++) {
-				ListBox_AddString(hElmnTable, *p);
-			}
-		}
-
-		else if(ft == FIELDTYPE_AISCRIPT) {
-			for(AIScriptEntry* p = AIScriptList ; p->str != NULL ; p++) {
-				ListBox_AddString(hElmnTable, p->str);
-			}
-		}
-
-		else if(ft == FIELDTYPE_UNIT) {
-			for(int i = 0 ; i < 232 ; i++) {
-				ListBox_AddString(hElmnTable, te->DecodeUnit(i).c_str());
-			}
-		}
-
-		else if(ft == FIELDTYPE_LOCATION) {
-			for(int i = 0 ; i < 255 ; i++) {
-				//if(te->_editordata->EngineData->MapLocations[i].Exists) {
-					ListBox_AddString(hElmnTable, te->DecodeLocation(i).c_str());
-				//}
-			}
-		}
-
-		else if(ft == FIELDTYPE_SWITCHNAME) {
-			for(int i = 0 ; i < 256 ; i++) {
-				ListBox_AddString(hElmnTable, te->DecodeSwitchName(i).c_str());
-			}
+	if(ft == FIELDTYPE_NONE || ft == FIELDTYPE_NUMBER);
+	else if(ft < FIELDTYPE_SWITCHSTATE)
+	{
+		const char** autocompletionlist = const_autocomplete_list[ft];
+		for(const char** p = autocompletionlist; *p != NULL; p++)
+		{
+			stringlist.push_back(*p);
 		}
 	}
 
-	//int findindex = ListBox_FindString(hElmnTable, 0, s.c_str());
-	//if(findindex != LB_ERR) ListBox_SetCurSel(hElmnTable, findindex);
-	const BYTE* const fstr = (const BYTE*)s.c_str();
-
-	int listn = ListBox_GetCount(hElmnTable);
-	int findidx = -1;
-	for(int i = 0 ; i < listn ; i++) {
-		BYTE str[512];
-		if(ListBox_GetTextLen(hElmnTable, i) >= 512) continue;
-		ListBox_GetText(hElmnTable, i, str);
-
-		// partial match
-		//  tm, Terran Marine
-		//
-		//  Terran Marine
-		//  t      m
-
-		const BYTE *p1 = fstr, *p2 = str;
-		while(*p2) {
-			if(tolower(*p1) == tolower(*p2)) {
-				p1++;
-				if(*p1 == '\0') break;
-			}
-			p2++;
-		}
-
-		if(*p2 != '\0') {
-			findidx = i;
-			break;
+	else if(ft == FIELDTYPE_AISCRIPT)
+	{
+		for(AIScriptEntry* p = AIScriptList; p->str != NULL; p++)
+		{
+			stringlist.push_back(p->str);
 		}
 	}
 
-	if(findidx != -1) ListBox_SetCurSel(hElmnTable, findidx);
+	else if(ft == FIELDTYPE_UNIT)
+	{
+		for(int i = 0; i < 233; i++)
+		{
+			stringlist.push_back(te->DecodeUnit(i).c_str());
+		}
+	}
+
+	else if(ft == FIELDTYPE_LOCATION)
+	{
+		for(int i = 0; i < 255; i++)
+		{
+			stringlist.push_back(te->DecodeLocation(i).c_str());
+		}
+	}
+
+	else if(ft == FIELDTYPE_SWITCHNAME)
+	{
+		for(int i = 0; i < 256; i++)
+		{
+			stringlist.push_back(te->DecodeSwitchName(i).c_str());
+		}
+	}
+
+	// Sort them with ranks
+	std::vector<std::pair<
+		int, 
+		std::shared_ptr<std::string>>
+	> autocomplete_list;
+	for(const std::string& s : stringlist)
+	{
+		int rank = CalculateStringAcceptance(keyword, s);
+		if(rank > 0)
+		{
+			autocomplete_list.push_back(std::make_pair(
+				rank,
+				std::shared_ptr<std::string>(new std::string(s))
+			));
+		}
+	}
+	std::stable_sort(autocomplete_list.begin(), autocomplete_list.end());
+
+	// Update listbox
+	ListBox_ResetContent(hElmnTable);
+	for(auto rspair : autocomplete_list)
+	{
+		ListBox_AddString(hElmnTable, rspair.second->c_str());
+	}
+	ListBox_SetCurSel(hElmnTable, 0);
 }
 
 
-void ApplyAutocomplete(TriggerEditor* te) {
+void ApplyAutocomplete(TriggerEditor* te)
+{
 	HWND hElmnTable = te->hElmnTable;
 	int current_item = ListBox_GetCurSel(hElmnTable);
 	if(current_item == LB_ERR) return; // No selected item.
@@ -190,7 +232,7 @@ void ApplyAutocomplete(TriggerEditor* te) {
 	int doclen = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
 	const char* doc_text = (const char*)te->SendSciMessage(SCI_GETCHARACTERPOINTER, 0, 0);
 
-	
+
 	// Select current argument.
 	int p_depth;
 
@@ -198,20 +240,26 @@ void ApplyAutocomplete(TriggerEditor* te) {
 	int last_comma = current_pos - 1;
 	bool isfirstarg = false;
 	p_depth = 0;
-	while(last_comma >= 0) {
-		if(doc_text[last_comma] == '(') {
+	while(last_comma >= 0)
+	{
+		if(doc_text[last_comma] == '(')
+		{
 			p_depth--;
-			if(p_depth == -1) {
+			if(p_depth == -1)
+			{
 				isfirstarg = true;
 				break;
 			}
 		}
-		else if(doc_text[last_comma] == ')') {
+		else if(doc_text[last_comma] == ')')
+		{
 			p_depth++;
 		}
 
-		else if(doc_text[last_comma] == ',') {
-			if(p_depth == 0) {
+		else if(doc_text[last_comma] == ',')
+		{
+			if(p_depth == 0)
+			{
 				isfirstarg = false;
 				break;
 			}
@@ -224,16 +272,20 @@ void ApplyAutocomplete(TriggerEditor* te) {
 	// find the fist comma/newline after current position.
 	int first_comma = current_pos;
 	p_depth = 0;
-	while(first_comma < doclen) {
-		if(doc_text[first_comma] == ')') {
+	while(first_comma < doclen)
+	{
+		if(doc_text[first_comma] == ')')
+		{
 			p_depth--;
 			if(p_depth == -1) break;
 		}
-		else if(doc_text[first_comma] == '(') {
+		else if(doc_text[first_comma] == '(')
+		{
 			p_depth++;
 		}
 
-		else if(doc_text[first_comma] == ',' || doc_text[first_comma] == '\n') {
+		else if(doc_text[first_comma] == ',' || doc_text[first_comma] == '\n')
+		{
 			if(p_depth == 0) break;
 		}
 		first_comma++;
