@@ -78,6 +78,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -86,6 +87,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>comctl32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>PluginBase\DllMain.def</ModuleDefinitionFile>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -182,7 +184,6 @@
     <ClCompile Include="Editor\Scintilla\ViewStyle.cxx" />
     <ClCompile Include="Editor\Scintilla\WordList.cxx" />
     <ClCompile Include="Editor\Scintilla\XPM.cxx" />
-    <ClCompile Include="Editor\SearchBox\SearchBox.cpp" />
     <ClCompile Include="Editor\SetAutocomplete.cpp" />
     <ClCompile Include="Editor\StringUtils\RawCStringCast.cpp" />
     <ClCompile Include="Editor\StringUtils\stringbuffer.cpp" />
@@ -274,7 +275,6 @@
     <ClInclude Include="Editor\Scintilla\ViewStyle.h" />
     <ClInclude Include="Editor\Scintilla\WordList.h" />
     <ClInclude Include="Editor\Scintilla\XPM.h" />
-    <ClInclude Include="Editor\SearchBox\SearchBox.h" />
     <ClInclude Include="Editor\StringUtils\stringbuffer.h" />
     <ClInclude Include="Editor\StringUtils\StringCast.h" />
     <ClInclude Include="Editor\TriggerEditor.h" />
@@ -293,6 +293,13 @@
     <None Include="Editor\Scintilla\Scintilla.iface" />
     <None Include="Editor\Scintilla\SciTE.properties" />
     <None Include="PluginBase\DllMain.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="styles.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="License\license_lua.txt" />
+    <Text Include="License\license_scintilla.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

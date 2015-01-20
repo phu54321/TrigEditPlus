@@ -24,17 +24,19 @@
 #include "MapNamespace.h"
 #include "../resource.h"
 #include "../version.h"
-#include "Scintilla/Scintilla.h"
-#include "Scintilla/SciLexer.h"
 #include <CommCtrl.h>
-#include <windowsx.h>
-#include "SearchBox/SearchBox.h"
-#include <regex>
-#include <array>
+
+struct SearchQuery
+{
+	std::string searchFor;
+	std::string replaceTo;
+	int mode; // 0:find, 1:findall 2:replace 3:replaceall
+	unsigned int searchFlag;
+};
+
 
 void ApplyAutocomplete(TriggerEditor* te);
 void ProcessSearchMessage(HWND hTrigDlg, TriggerEditor* te, SearchQuery* q);
-
 
 TriggerEditor::TriggerEditor() : hTrigDlg(NULL), hScintilla(NULL),
 	hFindDlg(NULL), _textedited(false) {}
@@ -125,7 +127,7 @@ int TriggerEditor::SendSciMessage(int msg, WPARAM wParam, LPARAM lParam) {
 
 char szFindText[4096];
 char szReplaceText[4096];
-
+static FINDREPLACE fr;
 
 void Editor_CharAdded(SCNotification* ne, TriggerEditor* te);
 void ApplyEditorStyle(TriggerEditor* te);
@@ -138,7 +140,7 @@ const int StatusBarID = 1003;
 
 LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	TriggerEditor* te = reinterpret_cast<TriggerEditor*>(GetWindowLong(hWnd, GWL_USERDATA));
-	const static int FindReplaceMsg = RegisterWindowMessage("TEP_Find");
+	const static int FindReplaceMsg = RegisterWindowMessage(FINDMSGSTRING);
 
 
 	switch(msg) {
@@ -304,13 +306,30 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 				break;
 
 				// EDIT
-			case IDM_EDIT_FINDREPLACE:
-				{
-					QuitSearchBox();
+			case IDM_EDIT_FIND:
+			case IDM_EDIT_REPLACE:
+			{
+					if(te->hFindDlg)
+					{
+						DestroyWindow(te->hFindDlg);
+						te->hFindDlg = NULL;
+					}
+
+					ZeroMemory(&fr, sizeof(fr));
+
+					// Initialize FINDREPLACE
+					fr.lStructSize = sizeof(fr);
+					fr.hwndOwner = hWnd;
+					//fr.hInstance = hInstance;
+					fr.Flags = FR_DOWN;
+					fr.lpstrFindWhat = szFindText;
+					fr.lpstrReplaceWith = szReplaceText;
+					ZeroMemory(szFindText, 4096);
+					ZeroMemory(szReplaceText, 4096);
 
 					// Get selected text and fill lpstrFindWhat with it.
 					int selstart = te->SendSciMessage(SCI_GETSELECTIONSTART, 0, 0);
-					int selend   = te->SendSciMessage(SCI_GETSELECTIONEND, 0, 0);
+					int selend = te->SendSciMessage(SCI_GETSELECTIONEND, 0, 0);
 					if(selend != selstart)
 					{
 						Sci_TextRange tr;
@@ -323,7 +342,11 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 						delete[] tr.lpstrText;
 					}
 
-					RunSearchBox(hWnd, szFindText);
+					fr.wFindWhatLen = 4096;
+					fr.wReplaceWithLen = 4096;
+
+					if(LOWORD(wParam) == IDM_EDIT_FIND) te->hFindDlg = FindText(&fr);
+					else te->hFindDlg = ReplaceText(&fr);
 				}
 				return 0;
 
@@ -527,102 +550,132 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 
 
 void ProcessSearchMessage(HWND hTrigDlg, TriggerEditor* te, SearchQuery* q) {
-	const int searchflag = (
-		(q->searchFlag & SEARCHFLAG_USEREGEXP ? SCFIND_REGEXP : 0) |
-		(q->searchFlag & SEARCHFLAG_CASESENSITIVE ? SCFIND_MATCHCASE : 0) |
-		(q->searchFlag & SEARCHFLAG_WHOLEWORD ? SCFIND_WHOLEWORD : 0)
-	);
+	LPFINDREPLACE lpfr = &fr;
+	HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
 
-	
-	if(q->mode == SEARCHMODE_FIND || q->mode == SEARCHMODE_REPLACE) { // Find/replace
-		strncpy(szFindText, q->searchFor.c_str(), 4096);
-		strncpy(szReplaceText, q->replaceTo.c_str(), 4096);
-		szFindText[4095] = szReplaceText[4095] = '\0';
+	if(lpfr->Flags & FR_DIALOGTERM)
+	{
+		te->hFindDlg = NULL;
+	}
 
+	else if(lpfr->Flags & FR_FINDNEXT || lpfr->Flags & FR_REPLACE)
+	{ // Find/replace
+		int searchflag =
+			((lpfr->Flags & FR_MATCHCASE) ? SCFIND_MATCHCASE : 0) |
+			((lpfr->Flags & FR_WHOLEWORD) ? SCFIND_WHOLEWORD : 0);
+
+		int retv;
+
+		// Init ttf
 		Sci_TextToFind ttf;
-		ttf.lpstrText = szFindText;
-		ttf.chrg.cpMin = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
-		ttf.chrg.cpMax = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
+		ttf.lpstrText = lpfr->lpstrFindWhat;
 
-		// Find specified text.
-		if(te->SendSciMessage(SCI_FINDTEXT, searchflag, (LPARAM)&ttf) == -1) { // Failed
-			// Retry with entire scope
-			ttf.chrg.cpMin = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
+		if(lpfr->Flags & FR_DOWN)
+		{
+			ttf.chrg.cpMin = max(
+				te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0),
+				te->SendSciMessage(SCI_GETANCHOR, 0, 0)
+				);
 			ttf.chrg.cpMax = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
-			if(te->SendSciMessage(SCI_FINDTEXT, searchflag, (LPARAM)&ttf) == -1) { // Failed
-				HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
-				SetWindowText(hStatusBar, "Cannot find specified string.");
+		}
+
+		else
+		{
+			ttf.chrg.cpMin = min(
+				te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0),
+				te->SendSciMessage(SCI_GETANCHOR, 0, 0)
+				);
+			ttf.chrg.cpMax = 0;
+		}
+
+		retv = te->SendSciMessage(SCI_FINDTEXT, searchflag, (LPARAM)&ttf);
+		if(retv == -1)  // Not found yet
+		{
+			// Search in global context
+			if(lpfr->Flags & FR_DOWN)
+			{
+				ttf.chrg.cpMin = 0;
+				ttf.chrg.cpMax = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
 			}
-			else {
-				HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
+
+			else
+			{
+				ttf.chrg.cpMin = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
+				ttf.chrg.cpMax = 0;
+			}
+
+			retv = te->SendSciMessage(SCI_FINDTEXT, searchflag, (LPARAM)&ttf);
+
+			if(retv != -1)
+			{
 				SetWindowText(hStatusBar, "Passed the end of the document");
 			}
+		}
+
+		if(retv == -1) // No such text in global context
+		{
+			const char* outstr = "Cannot find specified string.";
+			MessageBox(hTrigDlg, outstr, "Result", MB_OK);
+			SetWindowText(hStatusBar, outstr);
+			MessageBeep(MB_OK);
+			return;
 		}
 
 		// Select the text
 		te->SendSciMessage(SCI_SETSEL, ttf.chrgText.cpMin, ttf.chrgText.cpMax);
 
 		// Replace if needed.
-		if(q->mode == 2) {
-			te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)szReplaceText);
+		if(lpfr->Flags & FR_REPLACE)
+		{
+			te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)lpfr->lpstrReplaceWith);
 		}
 	}
 
-	else if(q->mode == 1 || q->mode == 3) {
-		const int searchstart = (q->searchFlag & SEARCHFLAG_INSELECTION)
-			? te->SendSciMessage(SCI_GETSELECTIONSTART, 0, 0)
-			: 0;
-
-		const int searchend = (q->searchFlag & SEARCHFLAG_INSELECTION)
-			? te->SendSciMessage(SCI_GETSELECTIONEND, 0, 0)
-			: te->SendSciMessage(SCI_GETLENGTH, 0, 0);
-
+	else if(lpfr->Flags & FR_REPLACEALL)
+	{
+		const int docLen = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
 		int replacedn = 0;
 
-		strncpy(szFindText, q->searchFor.c_str(), 4096);
-		strncpy(szReplaceText, q->replaceTo.c_str(), 4096);
-		szFindText[4095] = szReplaceText[4095] = '\0';
+		const int searchflag =
+			((lpfr->Flags & FR_MATCHCASE) ? SCFIND_MATCHCASE : 0) |
+			((lpfr->Flags & FR_WHOLEWORD) ? SCFIND_WHOLEWORD : 0);
 
-		const int searchlen = strlen(szFindText);
-		const int replen = strlen(szReplaceText);
+		const int searchlen = strlen(lpfr->lpstrFindWhat);
+		const int replen = strlen(lpfr->lpstrReplaceWith);
 
-		te->SendSciMessage(SCI_SETTARGETSTART, searchstart, 0);
+		te->SendSciMessage(SCI_SETTARGETSTART, 0, 0);
 		te->SendSciMessage(SCI_SETSEARCHFLAGS, searchflag, 0);
-			
-		te->SendSciMessage(SCI_BEGINUNDOACTION, 0, 0);
-		while(1) {
+
+
+		while(1)
+		{
 			// find next text
-			te->SendSciMessage(SCI_SETTARGETEND, searchend, 0);
-			if(te->SendSciMessage(SCI_SEARCHINTARGET, searchlen, (LPARAM)szFindText) == -1) break;
-			if(q->mode == 3) { // Replace all
-				te->SendSciMessage(SCI_REPLACETARGET, replen, (LPARAM)szReplaceText);
-			}
+			te->SendSciMessage(SCI_SETTARGETEND, docLen, 0);
+			if(te->SendSciMessage(SCI_SEARCHINTARGET, searchlen, (LPARAM)lpfr->lpstrFindWhat) == -1) break;
+			te->SendSciMessage(SCI_REPLACETARGET, replen, (LPARAM)lpfr->lpstrReplaceWith);
 
-			else if(q->mode == 1) {
-				int selstart = te->SendSciMessage(SCI_GETTARGETSTART, 0, 0);
-				int selend = te->SendSciMessage(SCI_GETTARGETEND, 0, 0);
-				if(replacedn == 0) te->SendSciMessage(SCI_CLEARSELECTIONS, 0, 0);
-				te->SendSciMessage(SCI_ADDSELECTION, selstart, selend);
-			}
-
-			// move target after the found
+			// move target after the replaced text
 			int newtargetend = te->SendSciMessage(SCI_GETTARGETEND, 0, 0);
 			te->SendSciMessage(SCI_SETTARGETSTART, newtargetend, 0);
 			replacedn++;
 		}
 
-		te->SendSciMessage(SCI_ENDUNDOACTION, 0, 0);
-
-		if(replacedn == 0) {
-			MessageBox(hTrigDlg, "Cannot find specified string.", "Result", MB_OK);
-		}
-
-		else {
-			char outstr[512];
-			HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
-			if(q->mode == 3) sprintf(outstr, "Replaced %d strings.", replacedn);
-			else sprintf(outstr, "Found %d strings.", replacedn);
+		if(replacedn == 0)
+		{
+			const char* outstr = "Cannot find specified string.";
+			MessageBox(hTrigDlg, outstr, "Result", MB_OK);
 			SetWindowText(hStatusBar, outstr);
+			MessageBeep(MB_OK);
 		}
+
+		else
+		{
+			char outstr[512];
+			sprintf(outstr, "Replaced %d strings.", replacedn);
+			SetWindowText(hStatusBar, outstr);
+			MessageBeep(MB_OK);
+		}
+
+		return;
 	}
 }

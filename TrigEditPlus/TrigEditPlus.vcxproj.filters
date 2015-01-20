@@ -173,9 +173,6 @@
     <ClCompile Include="Editor\Encoder\Lua\lzio.c">
       <Filter>Editor\Encoder\Lua</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\SearchBox\SearchBox.cpp">
-      <Filter>Editor\SearchBox</Filter>
-    </ClCompile>
     <ClCompile Include="Editor\Decoder\TriggerDecodeAction.cpp">
       <Filter>Editor\Decoder</Filter>
     </ClCompile>
@@ -420,9 +417,6 @@
     <ClInclude Include="Editor\Encoder\Lua\lzio.h">
       <Filter>Editor\Encoder\Lua</Filter>
     </ClInclude>
-    <ClInclude Include="Editor\SearchBox\SearchBox.h">
-      <Filter>Editor\SearchBox</Filter>
-    </ClInclude>
     <ClInclude Include="Editor\Scintilla\ViewStyle.h">
       <Filter>Editor\Scintilla</Filter>
     </ClInclude>
@@ -619,5 +613,12 @@
     <None Include="Editor\Scintilla\Scintilla.iface">
       <Filter>Editor\Scintilla</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="styles.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="License\license_lua.txt" />
+    <Text Include="License\license_scintilla.txt" />
   </ItemGroup>
 </Project>
