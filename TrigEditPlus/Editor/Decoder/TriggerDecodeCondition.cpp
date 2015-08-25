@@ -43,11 +43,27 @@ void TriggerEditor::DecodeCondition(StringBuffer& buf, const TrigCond& content) 
 			<< content.condtype << ", "
 			<< content.res_setting << ", "
 			<< content.prop
-			<< ")\r\n";
+			<< ")";
 	}
 	else {
 		int condtype = content.condtype;
 		TriggerStatementDecl &decl = ConditionFields[condtype - 1];
+
+		if(condtype == DEATHS)
+		{
+			uint32_t player = content.player;
+			uint32_t unitid = content.uid;
+			if(player >= 12 || unitid >= 228)  // EUD/EPD action
+			{
+				uint32_t number = content.res;
+				uint32_t offset = 0x58A364 + 4 * player + 48 * unitid;
+				uint32_t cmptype = content.setting;
+
+				char offsetstr[11]; sprintf(offsetstr, "0x%06X", offset);
+				buf << "Memory(" << offsetstr << ", " << DecodeComparison(cmptype) << ", " << number << ")";
+				goto cnddec_overridden;
+			}
+		}
 
 		buf << decl.stmt_name << "(";
 	
@@ -97,6 +113,7 @@ void TriggerEditor::DecodeCondition(StringBuffer& buf, const TrigCond& content) 
 		}
 
 		buf << ")";
+cnddec_overridden:;
 	}
 
 	if(content.prop & 0x2) {

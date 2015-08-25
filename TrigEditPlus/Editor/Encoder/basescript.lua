@@ -1209,10 +1209,12 @@ function EPD(offset)
 end
 
 function Memory(offset, comparison, number)
+	assert(offset % 4 == 0, "[Memory] Offset should be divisible by 4")
     return Deaths(EPD(offset), comparison, number, 0)
 end
 
 function SetMemory(offset, modtype, number)
+	assert(offset % 4 == 0, "[SetMemory] Offset should be divisible by 4")
     return SetDeaths(EPD(offset), modtype, number, 0)
 end
 
