@@ -43,8 +43,6 @@ IDR_MAINMENU MENU
 BEGIN
     POPUP "File"
     BEGIN
-        MENUITEM "Import .trg",                 IDM_FILE_IMPORT
-        MENUITEM SEPARATOR
         MENUITEM "Compile\tF5",                 IDM_FILE_COMPILE
         MENUITEM "Compile Nonag\tCtrl+S",       IDM_FILE_COMPILENONAG
         MENUITEM "Exit\tAlt+F4",                IDM_FILE_EXIT

@@ -228,54 +228,6 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 				PostMessage(hWnd, WM_CLOSE, 0, 0);
 				return 0;
 
-			case IDM_FILE_IMPORT:
-				{
-					MessageBox(hWnd, "Not implemented yet", NULL, MB_OK);
-					return 0;
-
-					OPENFILENAME ofn;
-					ZeroMemory(&ofn, sizeof(ofn));
-					char retfname[MAX_PATH + 1] = {};
-					ofn.lStructSize = sizeof(OPENFILENAME);
-					ofn.hwndOwner = hWnd;
-					ofn.lpstrFilter = "TRG file (*.trg)\0*.trg\0All files (*.*)\0*.*\0";
-					ofn.lpstrFile = retfname;
-					ofn.nMaxFile = MAX_PATH;
-					ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST;
-					ofn.lpstrDefExt = "trg";
-					ofn.lpstrInitialDir = NULL;
-
-					if(!GetOpenFileName(&ofn)) return 0;
-
-					FILE* fp = fopen(retfname, "rb");
-					if(!fp) {
-						MessageBox(hWnd, "Cannot open selected file.", NULL, MB_OK);
-						return 0;
-					}
-
-					int trgsize = ftell(fp) - 8;
-
-					if(trgsize < 0 || trgsize % 2400 != 0) {
-						MessageBox(hWnd, "Invalid TRG file.", NULL, MB_OK);
-						fclose(fp);
-						return 0;
-					}
-
-					fseek(fp, 8, SEEK_SET);
-
-					BYTE* data = new BYTE[trgsize];
-					fread(data, 1, trgsize, fp);
-					fclose(fp);
-
-					CChunkData trg;
-					trg.ChunkData = data;
-					trg.ChunkSize = trgsize;
-
-					std::string buf = te->DecodeTriggers(&trg);
-					te->SendSciMessage(SCI_ADDTEXT, buf.size(), (LPARAM)buf.data());
-					return 0;
-				}
-
 			case IDM_FILE_COMPILE:
 			case IDM_FILE_COMPILENONAG:
 				if(te->EncodeTriggerCode()) {

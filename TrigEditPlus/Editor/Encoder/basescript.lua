@@ -43,7 +43,7 @@ __trigeditplus_mt.__index = function(table, key)
 
     value = rawget(table, key)
     if value == nil then
-        error("attemp to access undefined variable (" .. key .. ") denied")
+        error("Attempt to access undefined variable (" .. key .. ")")
     end
     return value
 end

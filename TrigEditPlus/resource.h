@@ -11,7 +11,6 @@
 #define IDM_EDIT_FINDREPLACE              6000
 #define IDM_EDIT_FIND                     6001
 #define IDM_EDIT_REPLACE                  6002
-#define IDM_FILE_IMPORT                   6003
 #define IDM_FILE_COMPILE                  6004
 #define IDM_FILE_EXIT                     6005
 #define IDM_HELP_TRIGGERSYNTAX            6006
