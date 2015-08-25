@@ -133,10 +133,11 @@ void Editor_CharAdded(SCNotification* ne, TriggerEditor* te);
 void ApplyEditorStyle(TriggerEditor* te);
 void ApplyAutocomplete(TriggerEditor* te);
 
-const int ScintillaID = 1000;
-const int TabID = 1001;
-const int ElmnTableID = 1002;
-const int StatusBarID = 1003;
+const int TreeViewID = 1000;
+const int ScintillaID = 1001;
+const int TabID = 1002;
+const int ElmnTableID = 1003;
+const int StatusBarID = 1004;
 
 LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	TriggerEditor* te = reinterpret_cast<TriggerEditor*>(GetWindowLong(hWnd, GWL_USERDATA));
@@ -154,14 +155,29 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			te = (TriggerEditor*)((CREATESTRUCT*)lParam)->lpCreateParams;
 			SetWindowLong(hWnd, GWL_USERDATA, (LONG)te);
 
+			// Init trigger list
+			te->hTriggerList = CreateWindowEx(
+				0,
+				WC_TREEVIEW,
+				TEXT("Tree View"),
+				WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASLINES,
+				0,
+				0,
+				200,
+				600,
+				hWnd,
+				(HMENU)TreeViewID,
+				hInstance,
+				NULL);
+
 			// Init editor window
 			te->hScintilla = CreateWindow(
 				"Scintilla",
 				"",
 				WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_VSCROLL,
+				200,
 				0,
-				0,
-				600,
+				400,
 				600,
 				hWnd,
 				(HMENU)ScintillaID,
@@ -205,7 +221,8 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			int scrH = rt.bottom - rt.top - statusbar_height;
 
 			HDWP hdwp = BeginDeferWindowPos(2);
-			DeferWindowPos(hdwp, te->hScintilla, NULL, 0, 0, scrW - 200, scrH, SWP_NOZORDER);
+			DeferWindowPos(hdwp, te->hTriggerList, NULL, 0, 0, 199, scrH, SWP_NOZORDER);
+			DeferWindowPos(hdwp, te->hScintilla, NULL, 200, 0, scrW - 399, scrH, SWP_NOZORDER);
 			DeferWindowPos(hdwp, hElmnTable, NULL, scrW - 200, 0, 200, scrH, SWP_NOZORDER);
 			EndDeferWindowPos(hdwp);
 		}
@@ -455,6 +472,23 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 				return 0;
 			}
 		}
+
+		else if(wParam == TreeViewID)
+		{
+			LPNMHDR pnmh = (LPNMHDR)lParam;
+			if(pnmh->code == TVN_SELCHANGED)
+			{
+				LPNMTREEVIEW pnmtv = (LPNMTREEVIEW)lParam;
+				if(pnmtv->itemNew.mask | TVIF_PARAM)
+				{
+					int triggerLine = pnmtv->itemNew.lParam - 1;
+					int linePos = te->SendSciMessage(SCI_POSITIONFROMLINE, triggerLine, 0);
+					int lineEnd = te->SendSciMessage(SCI_GETLINEENDPOSITION, triggerLine, 0);
+					te->SendSciMessage(SCI_SETSEL, linePos, lineEnd);
+					SetFocus(te->hScintilla);
+				}
+			}
+		}
 		break;
 
 	case WM_CLOSE:
@@ -632,5 +666,130 @@ void ProcessSearchMessage(HWND hTrigDlg, TriggerEditor* te, SearchQuery* q) {
 		}
 
 		return;
+	}
+}
+
+
+
+char PlayerName[28][12] = {
+	"Player 1",
+	"Player 2",
+	"Player 3",
+	"Player 4",
+	"Player 5",
+	"Player 6",
+	"Player 7",
+	"Player 8",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"All players",
+	"Force 1",
+	"Force 2",
+	"Force 3",
+	"Force 4",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+};
+
+// TODO : Erase this
+void TriggerEditor::UpdateTriggerList(const std::vector<TrigBufferEntry>& trigbuffer)
+{
+	auto& strtb = _editordata->EngineData->MapStrings;
+	const int totstrn = StringTable_GetTotalStringNum(strtb);
+
+	HWND hTreeView = this->hTriggerList;
+	TreeView_DeleteAllItems(hTreeView);
+
+	// Add 28 parent nodes
+	HTREEITEM parentNode[28];
+
+
+	for(int i = 0; i < 28; i++)
+	{
+		if(PlayerName[i][0] == '\0')
+		{
+			parentNode[i] = nullptr;
+			continue;
+		}
+
+		TVINSERTSTRUCT is;
+		memset(&is, 0, sizeof(is));
+		is.hParent = TVI_ROOT;
+		is.hInsertAfter = TVI_LAST;
+		
+		TVITEM& tvi = is.item;
+		tvi.mask = TVIF_TEXT;
+		tvi.pszText = PlayerName[i];
+		tvi.cchTextMax = strlen(PlayerName[i]);
+
+		parentNode[i] = TreeView_InsertItem(hTreeView, &is);
+	}
+
+	for(const auto& entry : trigbuffer)
+	{
+		const Trig& trg = entry.trigData;
+		std::string trigCaption = "No comment";
+
+		// Get trigger comment
+		for(int i = 0; i < 64; i++)
+		{
+			if(trg.act[i].acttype == 0) break;
+			else if(trg.act[i].acttype == COMMENT)
+			{
+				int strid = trg.act[i].strid;
+				if(strid < 0 || strid > totstrn) break;
+				const char* rawcomment0 = StringTable_GetString(strtb, strid);
+				if(rawcomment0 == NULL) break;
+
+				// Decode string to lua comments
+				std::string rawcomment = rawcomment0;
+
+				char *comment = (char*)alloca(rawcomment.size() + 1);
+				char *p = comment;
+
+				for(char ch : rawcomment)
+				{
+					/**/ if(ch == '\t') *p++ = ' ';
+					else if(ch == '\r');
+					else if(ch == '\n');
+
+					else if(1 <= ch && ch <= 31) continue;
+					else *p++ = ch;
+				}
+
+				*p = '\0';
+				trigCaption.assign(comment);
+			}
+		}
+
+		for(int i = 0; i < 27; i++)
+		{
+			if(trg.effplayer[i] && parentNode[i])
+			{
+				TVINSERTSTRUCT is;
+				memset(&is, 0, sizeof(is));
+				is.hParent = parentNode[i];
+				is.hInsertAfter = TVI_LAST;
+
+				TVITEM& tvi = is.item;
+				tvi.mask = TVIF_TEXT | TVIF_PARAM;
+				tvi.pszText = (char*)trigCaption.c_str();
+				tvi.cchTextMax = trigCaption.size();
+				tvi.lParam = entry.callerLine;
+
+				TreeView_InsertItem(hTreeView, &is);
+			}
+		}
 	}
 }

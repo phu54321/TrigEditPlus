@@ -53,7 +53,7 @@ void TriggerEditor::DecodeCondition(StringBuffer& buf, const TrigCond& content) 
 		{
 			uint32_t player = content.player;
 			uint32_t unitid = content.uid;
-			if(player >= 12 || unitid >= 228)  // EUD/EPD action
+			if(player >= 28 || unitid >= 228)  // EUD/EPD action
 			{
 				uint32_t number = content.res;
 				uint32_t offset = 0x58A364 + 4 * player + 48 * unitid;

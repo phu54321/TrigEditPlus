@@ -67,6 +67,8 @@ function Trigger(args)
         args.flag = FlattenList(args.flag)
     end
 
+	args.callerLine = debug.getinfo(2).currentline
+
     __internal__AddTrigger(args)
 end
 

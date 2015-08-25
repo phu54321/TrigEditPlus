@@ -85,7 +85,7 @@ int LuaParseTrigger(lua_State* L) {
 		return LuaErrorf(L, "table expected, got %s", lua_typename(L, lua_type(L, -1)));
 	}
 
-	LuaCheckTableEntry(L, {"players", "conditions", "actions", "flag", "starting_action"});
+	LuaCheckTableEntry(L, {"players", "conditions", "actions", "flag", "starting_action", "callerLine"});
 
 	// Players
 	lua_pushstring(L, "players");
@@ -263,9 +263,18 @@ int LuaParseTrigger(lua_State* L) {
 	}
 	lua_pop(L, 1);
 
+	// callee line number
+	lua_pushstring(L, "callerLine");
+	lua_gettable(L, -2);
+	luaL_checkint(L, -1);
+	int callerLine = luaL_checkint(L, -1);
+	lua_pop(L, 1);
+
 	// Done.
 	TriggerEditor* e = LuaGetEditor(L);
-	e->_trigbuffer.push_back(t);
+	TrigBufferEntry tbe = { t, callerLine };
+	e->_trigbuffer.push_back(tbe);
+	
 	return 0;
 }
 
@@ -353,13 +362,18 @@ bool TriggerEditor::EncodeTriggerCode() {
 
 	BYTE* newdata = (BYTE*)scmd2_malloc(_trigbuffer.size() * 2400);
 	for(size_t i = 0 ; i < _trigbuffer.size() ; i++) {
-		memcpy(newdata + 2400*i, &_trigbuffer[i], 2400);
+		const Trig& trigData = _trigbuffer[i].trigData;
+		memcpy(newdata + 2400 * i, &trigData, 2400);
 	}
+
 
 	_editordata->Triggers->ChunkData = newdata;
 	_editordata->Triggers->ChunkSize = 2400 * _trigbuffer.size();
 
 	memcpy(_editordata->UnitProperties->ChunkData, GetUPRPChunkData(), 1280);
+
+	// Update trigger list
+	UpdateTriggerList(_trigbuffer);
 
 	// Cleanup
 	_trigbuffer.clear();
