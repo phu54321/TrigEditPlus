@@ -51,7 +51,7 @@ end
 setmetatable(_G, __trigeditplus_mt)
 
 function Trigger(args)
-	if args.players then
+    if args.players then
         args.players = FlattenList(args.players)
     end
 
@@ -67,7 +67,7 @@ function Trigger(args)
         args.flag = FlattenList(args.flag)
     end
 
-	args.callerLine = debug.getinfo(2).currentline
+    args.callerLine = debug.getinfo(2).currentline
 
     __internal__AddTrigger(args)
 end
@@ -362,8 +362,8 @@ end
 
 function Transmission(Unit, Where, WAVName, TimeModifier, Time, Text, AlwaysDisplay)
     if AlwaysDisplay == nil then
-		AlwaysDisplay = 4
-	end
+        AlwaysDisplay = 4
+    end
 
     Unit = ParseUnit(Unit)
     Where = ParseLocation(Where)
@@ -373,7 +373,7 @@ function Transmission(Unit, Where, WAVName, TimeModifier, Time, Text, AlwaysDisp
     return Action(Where, Text, WAVName, 0, 0, Time, Unit, 7, TimeModifier, AlwaysDisplay)
 end
 
--- Location	Text	Wav	TotDuration	0	DurationMod	UnitType	7	NumericMod	20
+-- Location Text    Wav TotDuration 0   DurationMod UnitType    7   NumericMod  20
 
 function PlayWAV(WAVName)
     WAVName = ParseString(WAVName)
@@ -1211,12 +1211,29 @@ function EPD(offset)
 end
 
 function Memory(offset, comparison, number)
-	assert(offset % 4 == 0, "[Memory] Offset should be divisible by 4")
+    assert(offset % 4 == 0, "[Memory] Offset should be divisible by 4")
+
+    if 0x58A364 <= offset and offset <= 0x58A364 + 48 * 65536 then
+        local eud_player, eud_unit
+        eud_player = (offset - 0x58A364) / 4 % 12
+        eud_unit = ((offset - 0x58A364) / 4 - eud_player) % 12
+        return Deaths(eud_player, modtype, number, eud_unit)
+    end
+    
     return Deaths(EPD(offset), comparison, number, 0)
 end
 
 function SetMemory(offset, modtype, number)
-	assert(offset % 4 == 0, "[SetMemory] Offset should be divisible by 4")
+    assert(offset % 4 == 0, "[SetMemory] Offset should be divisible by 4")
+
+    -- If offset is in normal deaths / eud range, use it.
+    if 0x58A364 <= offset and offset <= 0x58A364 + 48 * 65536 then
+        local eud_player, eud_unit
+        eud_player = (offset - 0x58A364) / 4 % 12
+        eud_unit = ((offset - 0x58A364) / 4 - eud_player) % 12
+        return SetDeaths(eud_player, modtype, number, eud_unit)
+    end
+    
     return SetDeaths(EPD(offset), modtype, number, 0)
 end
 

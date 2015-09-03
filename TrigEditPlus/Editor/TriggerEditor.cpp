@@ -26,6 +26,18 @@
 #include "../version.h"
 #include <CommCtrl.h>
 
+
+///////
+
+const int TreeViewID = 1000;
+const int ScintillaID = 1001;
+const int TabID = 1002;
+const int ElmnTableID = 1003;
+const int StatusBarID = 1004;
+
+///////
+
+
 struct SearchQuery
 {
 	std::string searchFor;
@@ -66,14 +78,17 @@ int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 		this2
 		);
 
+	ShowWindow(hTrigDlg, SW_SHOW);
+
 	SetEditorText(DecodeTriggers(arg.Triggers));
 	SendSciMessage(SCI_SETSAVEPOINT, 0, 0);
 	SendSciMessage(SCI_EMPTYUNDOBUFFER, 0, 0);
 	SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_CONTRACT, 0);
 	_textedited = false;
 
-	ShowWindow(hTrigDlg, SW_SHOW);
-
+	HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
+	SetWindowText(hStatusBar, "TrigEditPlus loaded");
+	
 	MSG msg;
 	while(hTrigDlg && GetMessage(&msg, NULL, NULL, NULL)) {
 		if(!IsWindow(hFindDlg) || !IsDialogMessage(hFindDlg, &msg)) {
@@ -133,12 +148,6 @@ void Editor_CharAdded(SCNotification* ne, TriggerEditor* te);
 void ApplyEditorStyle(TriggerEditor* te);
 void ApplyAutocomplete(TriggerEditor* te);
 
-const int TreeViewID = 1000;
-const int ScintillaID = 1001;
-const int TabID = 1002;
-const int ElmnTableID = 1003;
-const int StatusBarID = 1004;
-
 LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	TriggerEditor* te = reinterpret_cast<TriggerEditor*>(GetWindowLong(hWnd, GWL_USERDATA));
 	const static int FindReplaceMsg = RegisterWindowMessage(FINDMSGSTRING);
@@ -160,7 +169,7 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 				0,
 				WC_TREEVIEW,
 				TEXT("Tree View"),
-				WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASLINES,
+				WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS,
 				0,
 				0,
 				200,
@@ -188,7 +197,7 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			te->_pSciMsg = (SciFnDirect)SendMessage(te->hScintilla, SCI_GETDIRECTFUNCTION, 0, 0);
 			te->_pSciWndData = (sptr_t)SendMessage(te->hScintilla, SCI_GETDIRECTPOINTER, 0, 0);
 			CreateStatusWindow(SBARS_SIZEGRIP | WS_CHILD | WS_VISIBLE, 
-				"TrigEditPlus loaded", hWnd, StatusBarID);
+				"Loading triggers...", hWnd, StatusBarID);
 
 			ApplyEditorStyle(te);
 
@@ -479,7 +488,7 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			if(pnmh->code == TVN_SELCHANGED)
 			{
 				LPNMTREEVIEW pnmtv = (LPNMTREEVIEW)lParam;
-				if(pnmtv->itemNew.mask | TVIF_PARAM)
+				if(pnmtv->itemNew.mask | TVIF_PARAM && pnmtv->itemNew.lParam > 0)
 				{
 					int triggerLine = pnmtv->itemNew.lParam - 1;
 					int linePos = te->SendSciMessage(SCI_POSITIONFROMLINE, triggerLine, 0);

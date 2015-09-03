@@ -45,6 +45,8 @@ std::string TriggerEditor::DecodeTriggers(CChunkData* Triggers) const {
 			tbev.push_back(tbe);
 
 			DecodeTrigger(decode_out, *trigdata++);
+
+			decode_out << "\r\n--------------------------------------------------------------------------------\r\n\r\n";
 		}
 	}
 
@@ -183,5 +185,5 @@ void TriggerEditor::DecodeTrigger(StringBuffer& buf, const Trig& content) const 
 		buf << "\tstarting_action = " << content.current_action << ",\r\n";
 	}
 
-	buf << "}\r\n\r\n\r\n";
+	buf << "}\r\n";
 }
