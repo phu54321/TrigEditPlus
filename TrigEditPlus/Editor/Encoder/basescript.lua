@@ -1216,8 +1216,8 @@ function Memory(offset, comparison, number)
     if 0x58A364 <= offset and offset <= 0x58A364 + 48 * 65536 then
         local eud_player, eud_unit
         eud_player = (offset - 0x58A364) / 4 % 12
-        eud_unit = ((offset - 0x58A364) / 4 - eud_player) % 12
-        return Deaths(eud_player, modtype, number, eud_unit)
+        eud_unit = ((offset - 0x58A364) / 4 - eud_player) / 12
+        return Deaths(eud_player, comparison, number, eud_unit)
     end
     
     return Deaths(EPD(offset), comparison, number, 0)
@@ -1230,7 +1230,7 @@ function SetMemory(offset, modtype, number)
     if 0x58A364 <= offset and offset <= 0x58A364 + 48 * 65536 then
         local eud_player, eud_unit
         eud_player = (offset - 0x58A364) / 4 % 12
-        eud_unit = ((offset - 0x58A364) / 4 - eud_player) % 12
+        eud_unit = ((offset - 0x58A364) / 4 - eud_player) / 12
         return SetDeaths(eud_player, modtype, number, eud_unit)
     end
     
