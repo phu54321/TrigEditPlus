@@ -55,6 +55,22 @@ void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) cons
 		int acttype = content.acttype;
 		TriggerStatementDecl &decl = ActionFields[acttype - 1];
 
+		if(acttype == SETDEATHS)
+		{
+			uint32_t player = content.player;
+			uint32_t unitid = content.setting;
+			if(player >= 28 || unitid >= 228)  // EUD/EPD action
+			{
+				uint32_t number = content.target;
+				uint32_t offset = 0x58A364 + 4 * player + 48 * unitid;
+				uint32_t modtype = content.num;
+				
+				char offsetstr[11]; sprintf(offsetstr, "0x%06X", offset);
+				buf << "SetMemory(" << offsetstr << ", " << DecodeModifier(modtype) << ", " << number << ")";
+				goto actdec_overridden;
+			}
+		}
+
 		buf << decl.stmt_name << "(";
 
 		bool firstfield = true;
@@ -115,6 +131,7 @@ void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) cons
 		}
 
 		buf << ")";
+actdec_overridden:;
 	}
 
 	if(content.prop & 0x2) {

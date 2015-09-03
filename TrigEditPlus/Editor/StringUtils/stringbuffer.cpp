@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-StringBuffer::StringBuffer() : _currentsize(0), _bufnode_pos(0) {
+StringBuffer::StringBuffer() : _currentsize(0), _bufnode_pos(0), _currentLine(1) {
 	AllocNewNode();
 }
 
@@ -15,6 +15,14 @@ StringBuffer::~StringBuffer() {
 void StringBuffer::AddBlock(const void* data, int length){
 	const char* sdata = (const char*)data;
 
+	// Update current line
+	const char* sdend = sdata + length;
+	for(const char* p = sdata; p < sdend; p++)
+	{
+		if(*p == '\n') _currentLine++;
+	}
+
+	// Update current size
 	_currentsize += length;
 
 
@@ -87,6 +95,11 @@ void StringBuffer::putchar(char ch) {
 	AddBlock(&ch, 1);
 }
 
+int StringBuffer::GetCurrentLine() const
+{
+	return _currentLine;
+}
+
 
 void StringBuffer::clear() {
 	for(auto bufnode : _buftb) {
@@ -126,4 +139,3 @@ void StringBuffer::AllocNewNode() {
 	_currentnode = newnode;
 	_buftb.push_back(newnode);
 }
-

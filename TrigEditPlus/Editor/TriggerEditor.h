@@ -91,6 +91,13 @@ struct TriggerEditor_Arg {
 	CChunkData* UnitPropUsage;
 };
 
+
+struct TrigBufferEntry
+{
+	Trig trigData;
+	int callerLine;
+};
+
 class MapNamespace;
 LRESULT CALLBACK TrigEditDlgProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -134,8 +141,10 @@ public:
 
 	// Encode part : Text -> Binary Data
 	bool EncodeTriggerCode();
-	std::vector<Trig> _trigbuffer;
+	std::vector<TrigBufferEntry> _trigbuffer;
 
+	// Aux functions
+	void UpdateTriggerList(const std::vector<TrigBufferEntry>& trigbuffer);
 	void DerefStrings();
 
 	// These functions are used by lua
@@ -153,9 +162,10 @@ public:
 
 	// Window part
 	HWND hTrigDlg;
+	HWND hTriggerList;
 	HWND hScintilla;
-	HWND hFindDlg;
 	HWND hElmnTable;
+	HWND hFindDlg;
 	FINDREPLACE fr;
 	FieldType currentft;
 	bool _textedited;

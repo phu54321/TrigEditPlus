@@ -27,6 +27,7 @@
 
 #include "PluginBase/SCMDPlugin.h"
 #include "Editor/TriggerEditor.h"
+#include "version.h"
 
 
 const char* PluginMenuName = "TrigEdit++";
@@ -84,6 +85,10 @@ void Initialize() {
 	RegisterClassEx(&wc);
 
 	RegisterWindowMessage(FINDMSGSTRING);
+
+#ifdef VERSION_BETA
+	MessageBox(NULL, TEXT("UNSTABLE VERSION (IN DEVELOPMENT)"), "TrigEditPlus " VERSION, MB_OK);
+#endif
 }
 
 // This function is called when the DLL is unloaded.

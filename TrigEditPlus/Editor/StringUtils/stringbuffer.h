@@ -20,6 +20,8 @@ public:
 
 	void putchar(char ch);
 
+	int GetCurrentLine() const;
+
 private:
 	void AllocNewNode();
 	void AddBlock(const void* data, int length);
@@ -32,4 +34,5 @@ private:
 	BufferNode* _currentnode;
 	size_t _currentsize;
 	size_t _bufnode_pos;
+	size_t _currentLine;
 };
