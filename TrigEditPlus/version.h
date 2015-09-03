@@ -1,4 +1,4 @@
 #pragma once
 
-#define VERSION "0.081 (Beta)"
-#define BETA
+#define VERSION "0.081"
+//#define VERSION_BETA

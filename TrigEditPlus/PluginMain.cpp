@@ -86,7 +86,7 @@ void Initialize() {
 
 	RegisterWindowMessage(FINDMSGSTRING);
 
-#ifdef BETA
+#ifdef VERSION_BETA
 	MessageBox(NULL, TEXT("UNSTABLE VERSION (IN DEVELOPMENT)"), "TrigEditPlus " VERSION, MB_OK);
 #endif
 }

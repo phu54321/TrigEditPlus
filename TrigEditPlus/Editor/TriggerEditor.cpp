@@ -230,9 +230,9 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			int scrH = rt.bottom - rt.top - statusbar_height;
 
 			HDWP hdwp = BeginDeferWindowPos(2);
-			DeferWindowPos(hdwp, te->hTriggerList, NULL, 0, 0, 199, scrH, SWP_NOZORDER);
-			DeferWindowPos(hdwp, te->hScintilla, NULL, 200, 0, scrW - 399, scrH, SWP_NOZORDER);
-			DeferWindowPos(hdwp, hElmnTable, NULL, scrW - 200, 0, 200, scrH, SWP_NOZORDER);
+			DeferWindowPos(hdwp, te->hTriggerList, NULL, 0, 0, 200, scrH - 3, SWP_NOZORDER);
+			DeferWindowPos(hdwp, te->hScintilla, NULL, 205, 0, scrW - 410, scrH - 3, SWP_NOZORDER);
+			DeferWindowPos(hdwp, hElmnTable, NULL, scrW - 200, 0, 200, scrH - 3, SWP_NOZORDER);
 			EndDeferWindowPos(hdwp);
 		}
 		return 0;
