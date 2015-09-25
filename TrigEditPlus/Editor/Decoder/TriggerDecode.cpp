@@ -48,7 +48,7 @@ std::string TriggerEditor::DecodeTriggers(CChunkData* Triggers) const {
 
 			DecodeTrigger(decode_out, *trigdata++);
 
-			decode_out << "\r\n--------------------------------------------------------------------------------\r\n\r\n";
+			decode_out << "\r\n";
 		}
 	}
 
