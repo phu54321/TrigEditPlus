@@ -305,6 +305,9 @@
     <ClCompile Include="Editor\Scintilla\PlatWin.cxx">
       <Filter>Editor\Scintilla</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\Decoder\crc32.cpp">
+      <Filter>Editor\Decoder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -595,9 +598,6 @@
     </Filter>
     <Filter Include="Editor\Encoder\Lua">
       <UniqueIdentifier>{296077e5-b65f-4272-9f43-525c0f0a042c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Editor\SearchBox">
-      <UniqueIdentifier>{0046276d-882a-4e28-934c-6b79a9ea2d02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

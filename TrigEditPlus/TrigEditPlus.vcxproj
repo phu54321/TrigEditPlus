@@ -93,6 +93,7 @@
   <ItemGroup>
     <ClCompile Include="Editor\Decoder\AIScriptDecode.cpp" />
     <ClCompile Include="Editor\Decoder\ConstDecoder.cpp" />
+    <ClCompile Include="Editor\Decoder\crc32.cpp" />
     <ClCompile Include="Editor\Decoder\SpecialCommentDec.cpp" />
     <ClCompile Include="Editor\Decoder\StringDecoder.cpp" />
     <ClCompile Include="Editor\Decoder\TriggerDecodeAction.cpp" />

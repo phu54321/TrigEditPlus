@@ -24,6 +24,8 @@
 #include "../TriggerEncDec.h"
 #include "../StringUtils/StringCast.h"
 
+DWORD crc32(const void *buf2, size_t len);
+
 // Decode part
 
 std::string TriggerEditor::DecodeTriggers(CChunkData* Triggers) const {
@@ -61,14 +63,17 @@ std::string TriggerEditor::DecodeTriggers(CChunkData* Triggers) const {
 
 void TriggerEditor::DecodeTrigger(StringBuffer& buf, const Trig& content) const {
 	size_t i;
+	char trigCRC32[9];
+	sprintf(trigCRC32, "%08X", crc32(&content, 2400));
+
 	int totstrn = StringTable_GetTotalStringNum(_editordata->EngineData->MapStrings);
 
-	// If trigger executed by no players, then special-decode that trigger.
+	// If trigger isn't executed by any of the players, then special-decode that trigger.
 	for(i = 0 ; i < 27 ; i++) {
 		if(content.effplayer[i]) break;
 	}
 	if(i == 27) {
-		// TODO: Put special handler here.
+		// Ignore that trigger.
 		return;
 	}
 
@@ -80,7 +85,7 @@ void TriggerEditor::DecodeTrigger(StringBuffer& buf, const Trig& content) const 
 	bool comment_singleline = false;
 	for(i = 0 ; i < 64 ; i++) {
 		if(content.act[i].acttype == 0) { // no comment
-			buf << "Trigger {\r\n";
+			buf << "Trigger { -- No comment (" << trigCRC32 << ")\r\n";
 			break;
 		}
 
@@ -125,7 +130,7 @@ void TriggerEditor::DecodeTrigger(StringBuffer& buf, const Trig& content) const 
 			break;
 		}
 	}
-	if(i == 64) buf << "Trigger {\r\n"; // no comment, 64 actions all used.
+	if(i == 64) buf << "Trigger { -- No comment (" << trigCRC32 << ")\r\n"; // no comment, 64 actions all used.
 
 
 	// 2. Write player fields
