@@ -101,6 +101,7 @@
     <ClCompile Include="Editor\Decoder\TriggerDecode.cpp" />
     <ClCompile Include="Editor\Decoder\UnitPropDecode.cpp" />
     <ClCompile Include="Editor\EditorCharAdded.cpp" />
+    <ClCompile Include="Editor\Encoder\AutoRequireLibs.cpp" />
     <ClCompile Include="Editor\Encoder\LuaCommon.cpp" />
     <ClCompile Include="Editor\Encoder\LuaParseString.cpp" />
     <ClCompile Include="Editor\Encoder\Lua\lapi.c" />

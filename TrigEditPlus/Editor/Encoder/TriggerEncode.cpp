@@ -27,6 +27,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+// User lua loader
+void LoadUserLuaLibs(lua_State* L);
+
 void LuaRunResource(lua_State* L, LPCSTR respath) {
 	HRSRC res = FindResource(hInstance, respath, RT_RCDATA);
 	if(res) {
@@ -307,6 +310,11 @@ bool TriggerEditor::EncodeTriggerCode() {
 	// basescript.lua contains case-insensitive patch, so this should be called
 	// before any variable is declared
 
+	// Load user-specific scripts.
+	// NOTE : USER LIBRARY SHOULDN'T ADD ANY TRIGGERS OR SOMETHING. TO ENFORCE IT, WE LOAD
+	// USER LIBRARY BEFORE WE DECLARE VARIOUS __internal__AddTrigger function.
+	LoadUserLuaLibs(L);
+
 	// Declare global thing.
 	lua_pushlightuserdata(L, this);
 	lua_setglobal(L, "__inst_global_TriggerEditor");
@@ -318,6 +326,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 	lua_register(L, "ParseString", LuaParseString);
 	lua_register(L, "__internal__AddTrigger", LuaParseTrigger);
 	lua_register(L, "ParseProperty", LuaParseProperty);
+
 
 	// Run trigger code.
 	lua_pushcfunction(L, LuaErrorHandler); // Error handler

@@ -308,6 +308,9 @@
     <ClCompile Include="Editor\Decoder\crc32.cpp">
       <Filter>Editor\Decoder</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\Encoder\AutoRequireLibs.cpp">
+      <Filter>Editor\Encoder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
