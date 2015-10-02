@@ -74,105 +74,6 @@
     <ClCompile Include="Editor\StringUtils\StringIntCast.cpp">
       <Filter>Editor\StringUtils</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lapi.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lauxlib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lbaselib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lbitlib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lcode.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lcorolib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lctype.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\ldblib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\ldebug.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\ldo.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\ldump.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lfunc.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lgc.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\linit.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\liolib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\llex.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lmathlib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lmem.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\loadlib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lobject.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lopcodes.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\loslib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lparser.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lstate.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lstring.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lstrlib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\ltable.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\ltablib.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\ltm.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\luac.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lundump.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lvm.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\Lua\lzio.c">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClCompile>
     <ClCompile Include="Editor\Decoder\TriggerDecodeAction.cpp">
       <Filter>Editor\Decoder</Filter>
     </ClCompile>
@@ -348,81 +249,6 @@
     <ClInclude Include="Editor\StringUtils\StringCast.h">
       <Filter>Editor\StringUtils</Filter>
     </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lapi.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lauxlib.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lcode.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lctype.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\ldebug.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\ldo.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lfunc.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lgc.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\llex.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\llimits.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lmem.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lobject.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lopcodes.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lparser.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lstate.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lstring.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\ltable.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\ltm.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lua.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lua.hpp">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\luaconf.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lualib.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lundump.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lvm.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Encoder\Lua\lzio.h">
-      <Filter>Editor\Encoder\Lua</Filter>
-    </ClInclude>
     <ClInclude Include="Editor\Scintilla\ViewStyle.h">
       <Filter>Editor\Scintilla</Filter>
     </ClInclude>
@@ -576,6 +402,24 @@
     <ClInclude Include="Editor\Scintilla\PlatWin.h">
       <Filter>Editor\Scintilla</Filter>
     </ClInclude>
+    <ClInclude Include="Editor\Encoder\Lua\lauxlib.h">
+      <Filter>Editor\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Encoder\Lua\lua.h">
+      <Filter>Editor\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Encoder\Lua\lua.hpp">
+      <Filter>Editor\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Encoder\Lua\luaconf.h">
+      <Filter>Editor\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Encoder\Lua\lualib.h">
+      <Filter>Editor\Encoder\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Encoder\Lua\luajit.h">
+      <Filter>Editor\Encoder\Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TrigEditPlus.rc" />
@@ -623,5 +467,10 @@
   <ItemGroup>
     <Text Include="License\license_lua.txt" />
     <Text Include="License\license_scintilla.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Editor\Encoder\Lua\lua51.lib">
+      <Filter>Editor\Encoder\Lua</Filter>
+    </Library>
   </ItemGroup>
 </Project>

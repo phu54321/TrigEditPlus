@@ -95,7 +95,7 @@ int LuaParseTrigger(lua_State* L) {
 	lua_gettable(L, -2); // < t.players
 	
 	if(lua_istable(L, -1)) {
-		int playern = lua_rawlen(L, -1);
+		int playern = lua_objlen(L, -1);
 		for(int i = 1 ; i <= playern ; i++) {
 			lua_getglobal(L, "ParsePlayer");
 			lua_pushnumber(L, i);
@@ -125,7 +125,7 @@ int LuaParseTrigger(lua_State* L) {
 	lua_gettable(L, -2); // < t.players
 
 	if(lua_istable(L, -1)) {
-		int condn = lua_rawlen(L, -1);
+		int condn = lua_objlen(L, -1);
 		if(condn > 16) {
 			return LuaErrorf(L, "trigger has too many conditions : got %d, max 16", condn);
 		}
@@ -137,8 +137,8 @@ int LuaParseTrigger(lua_State* L) {
 				return LuaErrorf(L, "condition #%d is invalid. (not a table)", i);
 			}
 
-			if(lua_rawlen(L, -1) != 8) {
-				return LuaErrorf(L, "condition #%d is invalid. (has %d elements, expected 8)", i, lua_rawlen(L, -1));
+			if(lua_objlen(L, -1) != 8) {
+				return LuaErrorf(L, "condition #%d is invalid. (has %d elements, expected 8)", i, lua_objlen(L, -1));
 			}
 
 			// pop all elements
@@ -176,7 +176,7 @@ int LuaParseTrigger(lua_State* L) {
 	lua_gettable(L, -2); // < t.players
 
 	if(lua_istable(L, -1)) {
-		int actn = lua_rawlen(L, -1);
+		int actn = lua_objlen(L, -1);
 		if(actn > 64) {
 			return LuaErrorf(L, "trigger has too many actions : got %d, max 16", actn);
 		}
@@ -188,8 +188,9 @@ int LuaParseTrigger(lua_State* L) {
 				return LuaErrorf(L, "action #%d is invalid. (not a table)", i);
 			}
 
-			if(lua_rawlen(L, -1) != 10) {
-				return LuaErrorf(L, "action #%d is invalid. (has %d elements, expected 8)", i, lua_rawlen(L, -1));
+			if(lua_objlen(L, -1) != 10)
+			{
+				return LuaErrorf(L, "action #%d is invalid. (has %d elements, expected 8)", i, lua_objlen(L, -1));
 			}
 
 			// pop all elements
@@ -229,7 +230,7 @@ int LuaParseTrigger(lua_State* L) {
 	lua_gettable(L, -2); // < t.players
 
 	if(lua_istable(L, -1)) {
-		int flagn = lua_rawlen(L, -1);
+		int flagn = lua_objlen(L, -1);
 		int flag = 0;
 
 		lua_getglobal(L, "actexec");    // 0x1
@@ -240,9 +241,9 @@ int LuaParseTrigger(lua_State* L) {
 			lua_pushnumber(L, i);
 			lua_gettable(L, -5); // < t.flag[i]
 
-			/**/ if(lua_compare(L, -1, -4, LUA_OPEQ)) flag |= 0x1; //actexec
-			else if(lua_compare(L, -1, -3, LUA_OPEQ)) flag |= 0x4; //preserved
-			else if(lua_compare(L, -1, -2, LUA_OPEQ)) flag |= 0x8; //disabled
+			/**/ if(lua_equal(L, -1, -4)) flag |= 0x1; //actexec
+			else if(lua_equal(L, -1, -3)) flag |= 0x4; //preserved
+			else if(lua_equal(L, -1, -2)) flag |= 0x8; //disabled
 			else {
 				return LuaErrorf(L, "Unknown flag of type \"%s\" given", lua_typename(L, lua_type(L, -1)));
 			}
@@ -332,7 +333,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 	lua_pushcfunction(L, LuaErrorHandler); // Error handler
 
 	std::string editortext = GetEditorText();
-	if(luaL_loadbufferx(L, editortext.data(), editortext.size(), "main", "t") != LUA_OK) {
+	if(luaL_loadbuffer(L, editortext.data(), editortext.size(), "main") != 0) {
 		PrintErrorMessage(lua_tostring(L, -1));
 		lua_close(L);
 		StringTable_RestoreBackup(_editordata->EngineData->MapStrings);
@@ -341,7 +342,7 @@ bool TriggerEditor::EncodeTriggerCode() {
 		return false;
 	}
 
-	if(lua_pcall(L, 0, 0, -2) != LUA_OK) {
+	if(lua_pcall(L, 0, 0, -2) != 0) {
 		PrintErrorMessage(lua_tostring(L, -1));
 		lua_close(L);
 		StringTable_RestoreBackup(_editordata->EngineData->MapStrings);
