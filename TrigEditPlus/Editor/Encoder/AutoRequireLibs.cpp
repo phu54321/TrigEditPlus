@@ -20,9 +20,37 @@
  * THE SOFTWARE.
  */
 
+#include "../TriggerEditor.h"
 #include "Lua/lua.hpp"
+#include "../../resource.h"
 #include <Windows.h>
 #include <vector>
+
+
+void LuaRunResource(lua_State* L, LPCSTR respath)
+{
+	HRSRC res = FindResource(hInstance, respath, RT_RCDATA);
+	if(res)
+	{
+		HGLOBAL resd = LoadResource(hInstance, res);
+		size_t fsize = SizeofResource(hInstance, res);
+		void* data = LockResource(resd);
+		char* str = new char[fsize + 1];
+		memcpy(str, data, fsize);
+		str[fsize] = '\0';
+		UnlockResource(resd);
+
+		luaL_loadbuffer(L, str, fsize, "basescript");
+		lua_pcall(L, 0, LUA_MULTRET, 0);
+
+		delete[] str;
+	}
+	else
+	{
+		fprintf(stderr, "resource load failed : %d\n", GetLastError());
+	}
+}
+
 
 static void LuaRequire(lua_State* L, const char* modulePath, const char* moduleName)
 {
@@ -63,4 +91,34 @@ void LoadUserLuaLibs(lua_State* L)
 	} while(FindNextFile(hFind, &ffd) != 0);
 
 	FindClose(hFind);
+}
+
+// --------------------
+
+int LuaParseUnit(lua_State* L);
+int LuaParseLocation(lua_State* L);
+int LuaParseSwitchName(lua_State* L);
+int LuaParseString(lua_State* L);
+int LuaParseProperty(lua_State* L);
+
+void LuaAutoRequireLibs(lua_State* L)
+{
+	luaL_openlibs(L);
+
+	// Load basic script.
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT));
+	// basescript.lua contains case-insensitive patch, so this should be called
+	// before any variable is declared
+
+	// Load user-specific scripts.
+	// NOTE : USER LIBRARY SHOULDN'T ADD ANY TRIGGERS OR SOMETHING. TO ENFORCE IT, WE LOAD
+	// USER LIBRARY BEFORE WE DECLARE VARIOUS __internal__AddTrigger function.
+	LoadUserLuaLibs(L);
+
+	// Load basic functions.
+	lua_register(L, "ParseUnit", LuaParseUnit);
+	lua_register(L, "ParseLocation", LuaParseLocation);
+	lua_register(L, "ParseSwitchName", LuaParseSwitchName);
+	lua_register(L, "ParseString", LuaParseString);
+	lua_register(L, "ParseProperty", LuaParseProperty);
 }
