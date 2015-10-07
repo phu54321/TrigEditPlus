@@ -104,6 +104,39 @@
     <ClCompile Include="Editor\Encoder\AutoRequireLibs.cpp" />
     <ClCompile Include="Editor\Encoder\LuaCommon.cpp" />
     <ClCompile Include="Editor\Encoder\LuaParseString.cpp" />
+    <ClCompile Include="Editor\Encoder\Lua\lapi.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lauxlib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lbaselib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lbitlib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lcode.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lcorolib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lctype.c" />
+    <ClCompile Include="Editor\Encoder\Lua\ldblib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\ldebug.c" />
+    <ClCompile Include="Editor\Encoder\Lua\ldo.c" />
+    <ClCompile Include="Editor\Encoder\Lua\ldump.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lfunc.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lgc.c" />
+    <ClCompile Include="Editor\Encoder\Lua\linit.c" />
+    <ClCompile Include="Editor\Encoder\Lua\liolib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\llex.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lmathlib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lmem.c" />
+    <ClCompile Include="Editor\Encoder\Lua\loadlib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lobject.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lopcodes.c" />
+    <ClCompile Include="Editor\Encoder\Lua\loslib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lparser.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lstate.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lstring.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lstrlib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\ltable.c" />
+    <ClCompile Include="Editor\Encoder\Lua\ltablib.c" />
+    <ClCompile Include="Editor\Encoder\Lua\ltm.c" />
+    <ClCompile Include="Editor\Encoder\Lua\luac.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lundump.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lvm.c" />
+    <ClCompile Include="Editor\Encoder\Lua\lzio.c" />
     <ClCompile Include="Editor\Encoder\StringDeref.cpp" />
     <ClCompile Include="Editor\Encoder\StringEncoder.cpp" />
     <ClCompile Include="Editor\Encoder\TriggerEncode.cpp" />
@@ -165,12 +198,31 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor\Encoder\LuaCommon.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lapi.h" />
     <ClInclude Include="Editor\Encoder\Lua\lauxlib.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lcode.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lctype.h" />
+    <ClInclude Include="Editor\Encoder\Lua\ldebug.h" />
+    <ClInclude Include="Editor\Encoder\Lua\ldo.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lfunc.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lgc.h" />
+    <ClInclude Include="Editor\Encoder\Lua\llex.h" />
+    <ClInclude Include="Editor\Encoder\Lua\llimits.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lmem.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lobject.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lopcodes.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lparser.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lstate.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lstring.h" />
+    <ClInclude Include="Editor\Encoder\Lua\ltable.h" />
+    <ClInclude Include="Editor\Encoder\Lua\ltm.h" />
     <ClInclude Include="Editor\Encoder\Lua\lua.h" />
     <ClInclude Include="Editor\Encoder\Lua\lua.hpp" />
     <ClInclude Include="Editor\Encoder\Lua\luaconf.h" />
-    <ClInclude Include="Editor\Encoder\Lua\luajit.h" />
     <ClInclude Include="Editor\Encoder\Lua\lualib.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lundump.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lvm.h" />
+    <ClInclude Include="Editor\Encoder\Lua\lzio.h" />
     <ClInclude Include="Editor\MapNamespace.h" />
     <ClInclude Include="Editor\Scintilla\Accessor.h" />
     <ClInclude Include="Editor\Scintilla\AutoComplete.h" />
@@ -250,9 +302,6 @@
   <ItemGroup>
     <Text Include="License\license_lua.txt" />
     <Text Include="License\license_scintilla.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Editor\Encoder\Lua\lua51.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
