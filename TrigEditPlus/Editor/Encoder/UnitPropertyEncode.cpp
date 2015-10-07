@@ -23,7 +23,7 @@
 #include <map>
 #include <vector>
 
-#include "Lua/lua.hpp"
+#include "../Lua/lib/lua.hpp"
 #include "../UnitProp.h"
 
 int LuaErrorf(lua_State* L, const char* format, ...);

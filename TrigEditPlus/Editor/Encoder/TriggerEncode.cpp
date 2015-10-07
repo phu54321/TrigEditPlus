@@ -21,9 +21,9 @@
  */
 
 #include "../TriggerEditor.h"
-#include "Lua/lua.hpp"
+#include "../Lua/lib/lua.hpp"
 #include "../../resource.h"
-#include "LuaCommon.h"
+#include "../Lua/LuaCommon.h"
 #include <stdio.h>
 #include <stdarg.h>
 

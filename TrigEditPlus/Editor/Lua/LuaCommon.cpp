@@ -27,7 +27,7 @@
 #include <string.h>
 #include <vector>
 
-#include "Lua/lua.hpp"
+#include "lib/lua.hpp"
 
 
 int LuaErrorf(lua_State* L, const char* format, ...) {

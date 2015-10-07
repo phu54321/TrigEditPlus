@@ -21,7 +21,7 @@
  */
 
 #include "../TriggerEditor.h"
-#include "Lua/lua.hpp"
+#include "lib/lua.hpp"
 #include "../../resource.h"
 #include <Windows.h>
 #include <vector>

@@ -30,7 +30,7 @@ LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
 // RCDATA
 //
 
-IDR_BASESCRIPT          RCDATA                  "Editor\\Encoder\\basescript.lua"
+IDR_BASESCRIPT          RCDATA                  "Editor\\Lua\\basescript.lua"
 IDR_LUALICENSE          RCDATA                  "License\\license_lua.txt"
 IDR_SCINTILLALICENSE    RCDATA                  "License\\license_scintilla.txt"
 
