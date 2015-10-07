@@ -141,6 +141,7 @@
     <ClCompile Include="Editor\Encoder\StringEncoder.cpp" />
     <ClCompile Include="Editor\Encoder\TriggerEncode.cpp" />
     <ClCompile Include="Editor\Encoder\UnitPropertyEncode.cpp" />
+    <ClCompile Include="Editor\hangulUnpacker.cpp" />
     <ClCompile Include="Editor\LuaStyle.cpp" />
     <ClCompile Include="Editor\MapNamespace.cpp" />
     <ClCompile Include="Editor\MapStrings.cpp" />

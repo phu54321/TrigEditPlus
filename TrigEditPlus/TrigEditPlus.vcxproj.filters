@@ -311,6 +311,9 @@
     <ClCompile Include="Editor\Encoder\AutoRequireLibs.cpp">
       <Filter>Editor\Encoder</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\hangulUnpacker.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />

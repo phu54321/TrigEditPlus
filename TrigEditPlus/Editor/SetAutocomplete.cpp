@@ -59,8 +59,10 @@ inline char dbcs_tolower(char ch)
 
 // Simple similarity ranker. Inspired from Sublime Text Fuzzy String Matching algorithm.
 // Independently developed, though.
-int CalculateStringAcceptance(const std::string& keyword, const std::string& matched_text)
+
+int CalculateStringAcceptance(const std::wstring& keyword, const std::wstring& matched_text)
 {
+
 	const int max_prioritized_char_dist = 3;
 	const int max_prioritized_wordstart_dist = 4;
 
@@ -68,7 +70,7 @@ int CalculateStringAcceptance(const std::string& keyword, const std::string& mat
 	int rank = 0;
 	const int match_maxidx = matched_text.size();
 
-	for(char ch : keyword)
+	for(wchar_t ch : keyword)
 	{
 		int previndex = index;
 
@@ -88,7 +90,7 @@ int CalculateStringAcceptance(const std::string& keyword, const std::string& mat
 		int wsindex = index;  // Word start position
 		while(wsindex >= 0)
 		{
-			char wsi_ch = matched_text[wsindex];
+			wchar_t wsi_ch = matched_text[wsindex];
 			// Space can be seperator
 			if(wsi_ch == ' ')
 			{
@@ -116,6 +118,21 @@ int CalculateStringAcceptance(const std::string& keyword, const std::string& mat
 }
 
 
+
+// -----------------------------------
+
+
+static std::wstring s2ws(const std::string& s)
+{
+	size_t buflen = MultiByteToWideChar(CP_OEMCP, 0, s.data(), -1, 0, 0);
+	std::wstring ws(buflen, 0);
+	MultiByteToWideChar(CP_OEMCP, 0, s.data(), s.size(), (wchar_t*)ws.data(), ws.size());
+	return ws;
+}
+
+std::wstring unpack_hangeul(const std::wstring& in);
+
+
 void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 {
 	HWND hElmnTable = te->hElmnTable;
@@ -131,16 +148,17 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 		return;
 	}
 
-	int slen = strlen(inputtext);
-
+	
 	// trim inputtext
+	int slen = strlen(inputtext);
 	int trimstart = 0, trimend = slen;
 	while(trimstart < slen && isspace((unsigned char)inputtext[++trimstart]));
 	while(trimend >= 0 && isspace((unsigned char)inputtext[--trimend]));
 
-	std::string keyword; // default initialized to empty string
+	std::string _keyword; // default initialized to empty string
 	if(trimstart == slen); // empty string
-	else keyword.assign(inputtext + trimstart, inputtext + trimend + 1);
+	else _keyword.assign(inputtext + trimstart, inputtext + trimend + 1);
+	std::wstring keyword = s2ws(_keyword);
 
 
 	// Get list of available arguments for field type
@@ -195,7 +213,7 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 	> autocomplete_list;
 	for(const std::string& s : stringlist)
 	{
-		int rank = CalculateStringAcceptance(keyword, s);
+		int rank = CalculateStringAcceptance(keyword, s2ws(s));
 		if(rank > 0)
 		{
 			autocomplete_list.push_back(std::make_pair(
