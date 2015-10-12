@@ -22,6 +22,7 @@
 
 #include "TriggerEditor.h"
 #include "TriggerEncDec.h"
+#include "Lua/LuaKeywords.h"
 #include <windowsx.h>
 #include <algorithm>
 
@@ -51,7 +52,7 @@ struct AIScriptEntry
 extern AIScriptEntry AIScriptList[];
 
 // DBCS-safe version. maybe.
-inline char dbcs_tolower(char ch)
+inline wchar_t dbcs_tolower(wchar_t ch)
 {
 	if('A' <= ch && ch <= 'Z') return ch + ('a' - 'A');
 	else return ch;
@@ -137,18 +138,6 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 {
 	HWND hElmnTable = te->hElmnTable;
 
-	if(ft == FIELDTYPE_NONE) // End of fields
-	{
-		if(te->currentft == ft);
-		else
-		{
-			te->currentft = ft;
-			ListBox_ResetContent(hElmnTable);
-		}
-		return;
-	}
-
-	
 	// trim inputtext
 	int slen = strlen(inputtext);
 	int trimstart = 0, trimend = slen;
@@ -164,7 +153,11 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 	// Get list of available arguments for field type
 	std::vector<std::string> stringlist;
 
-	if(ft == FIELDTYPE_NONE || ft == FIELDTYPE_NUMBER);
+	if(ft == FIELDTYPE_NONE)
+	{
+		stringlist = GetLuaKeywords();
+	}
+	else if(ft == FIELDTYPE_NUMBER);
 	else if(ft < FIELDTYPE_SWITCHSTATE)
 	{
 		const char** autocompletionlist = const_autocomplete_list[ft];
@@ -231,6 +224,9 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 		ListBox_AddString(hElmnTable, rspair.second->c_str());
 	}
 	ListBox_SetCurSel(hElmnTable, 0);
+
+	//
+	te->currentft = ft;
 }
 
 
@@ -314,6 +310,9 @@ void ApplyAutocomplete(TriggerEditor* te)
 
 	if(!isfirstarg) te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)" ");
 	te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)replace_text);
+
+	// Set autocomplete
+	SetAutocompleteList(te, te->currentft, replace_text);
 
 	delete[] replace_text;
 }

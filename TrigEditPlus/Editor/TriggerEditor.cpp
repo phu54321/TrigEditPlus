@@ -22,6 +22,8 @@
 
 #include "TriggerEditor.h"
 #include "MapNamespace.h"
+#include "Lua/LuaKeywords.h"
+
 #include "../resource.h"
 #include "../version.h"
 #include <CommCtrl.h>
@@ -85,6 +87,8 @@ int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 	SendSciMessage(SCI_EMPTYUNDOBUFFER, 0, 0);
 	SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_CONTRACT, 0);
 	_textedited = false;
+
+	UpdateLuaKeywords();
 
 	HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
 	SetWindowText(hStatusBar, "TrigEditPlus loaded");
@@ -256,6 +260,9 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 
 			case IDM_FILE_COMPILE:
 			case IDM_FILE_COMPILENONAG:
+				// Update keyword with every compile. - Frequent just enough.
+				UpdateLuaKeywords();
+
 				if(te->EncodeTriggerCode()) {
 					// OK.
 					HWND hStatusBar = GetDlgItem(hWnd, StatusBarID);

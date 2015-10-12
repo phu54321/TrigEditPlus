@@ -314,6 +314,9 @@
     <ClCompile Include="Editor\Lua\LuaCommon.cpp">
       <Filter>Editor\Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\Lua\LuaKeywords.cpp">
+      <Filter>Editor\Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -577,6 +580,9 @@
       <Filter>Editor\Lua\lib</Filter>
     </ClInclude>
     <ClInclude Include="Editor\Lua\LuaCommon.h">
+      <Filter>Editor\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Lua\LuaKeywords.h">
       <Filter>Editor\Lua</Filter>
     </ClInclude>
   </ItemGroup>

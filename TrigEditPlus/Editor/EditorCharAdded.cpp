@@ -23,8 +23,11 @@
 #include "TriggerEditor.h"
 #include "TriggerEncDec.h"
 
+#include "Lua/lib/lctype.h"  // for lislalnum
+
 void UpdateTip(TriggerEditor* te, const char* inputtedtext,
 			   int calltip_pos, const char* funcname, int argindex);
+void IssueGeneralAutocomplete(TriggerEditor* te);
 void ApplyAutocomplete(TriggerEditor* te);
 void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtedtext);
 
@@ -37,7 +40,6 @@ void Editor_CharAdded(SCNotification* ne, TriggerEditor* te) {
 			curpos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
 			te->SendSciMessage(SCI_SETSELECTION, curpos - 1, curpos - 1);
 			ApplyAutocomplete(te);
-			SetAutocompleteList(te, FIELDTYPE_NONE, NULL);
 			curpos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
 			te->SendSciMessage(SCI_SETSELECTION, curpos + 1, curpos + 1);
 		}
@@ -164,11 +166,19 @@ void Editor_CharAdded(SCNotification* ne, TriggerEditor* te) {
 			p--;
 		}
 
-		if(parenthesis_depth != 0) return; // cannot find matching function call start
+		if(parenthesis_depth != 0)  // cannot find matching function call start
+		{
+			IssueGeneralAutocomplete(te);
+			return;
+		}
 
 		// ok we found starting parenthesis.
 		int p_opening_pos = (p - strstart) + (current_pos - find_length);
-		if(p_opening_pos == 0) return;
+		if(p_opening_pos == 0)  // Line starts with ( : Not a function call, at least.
+		{
+			IssueGeneralAutocomplete(te);
+			return;
+		}
 		if(argstartpos == -1) argstartpos = p_opening_pos;
 		argstartpos++;
 
@@ -289,12 +299,16 @@ void UpdateTip(TriggerEditor* te, const char* inputtedtext,
 				   int calltip_pos, const char* funcname, int argindex) {
 	if(funcname == NULL) {
 		te->SendSciMessage(SCI_CALLTIPSETHLT, 0, 0);
-		SetAutocompleteList(te, FIELDTYPE_NONE, NULL);
+		IssueGeneralAutocomplete(te);
 		return;
 	}
 
 	int functype = GetFuncType(funcname);
-	if(functype == -1) return; //unknown function.
+	if(functype == -1)  //unknown function.
+	{
+		IssueGeneralAutocomplete(te);
+		return;
+	}
 
 	// Make calltip
 	const char* cond_calltiplist[] = {
@@ -439,6 +453,28 @@ void UpdateTip(TriggerEditor* te, const char* inputtedtext,
 
 	else {
 		te->SendSciMessage(SCI_CALLTIPSETHLT, 0, 0);
-		SetAutocompleteList(te, FIELDTYPE_NONE, NULL);
+		IssueGeneralAutocomplete(te);
 	}
+}
+
+
+// ------
+
+void IssueGeneralAutocomplete(TriggerEditor* te)
+{
+	// Get 128 chars before/after cursor.
+	int current_pos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
+	int text_length = te->SendSciMessage(SCI_GETTEXTLENGTH, 0, 0);
+	int fw_find_length = 128;
+	if(fw_find_length > current_pos) fw_find_length = current_pos;
+
+	const char* strstart = (const char*)
+		te->SendSciMessage(SCI_GETRANGEPOINTER, current_pos - fw_find_length, fw_find_length);
+	const char* p = strstart + fw_find_length;
+
+	const char *pstart = p, *pend = p;
+	while(pstart > strstart && lislalnum(*pstart)) pstart--;
+
+	const std::string str(pstart, pend);
+	SetAutocompleteList(te, FIELDTYPE_NONE, str.c_str());
 }
