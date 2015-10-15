@@ -86,6 +86,7 @@ public:
 
 	/// Select a list element that starts with word as the current element
 	void Select(const char *word);
+	void Select(int n);
 };
 
 #ifdef SCI_NAMESPACE

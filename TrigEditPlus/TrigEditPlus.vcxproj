@@ -143,6 +143,7 @@
     <ClCompile Include="Editor\Lua\lib\lvm.c" />
     <ClCompile Include="Editor\Lua\lib\lzio.c" />
     <ClCompile Include="Editor\Lua\LuaCommon.cpp" />
+    <ClCompile Include="Editor\Lua\LuaKeywords.cpp" />
     <ClCompile Include="Editor\MapNamespace.cpp" />
     <ClCompile Include="Editor\MapStrings.cpp" />
     <ClCompile Include="Editor\Scintilla\Accessor.cxx" />
@@ -224,6 +225,7 @@
     <ClInclude Include="Editor\Lua\lib\lvm.h" />
     <ClInclude Include="Editor\Lua\lib\lzio.h" />
     <ClInclude Include="Editor\Lua\LuaCommon.h" />
+    <ClInclude Include="Editor\Lua\LuaKeywords.h" />
     <ClInclude Include="Editor\MapNamespace.h" />
     <ClInclude Include="Editor\Scintilla\Accessor.h" />
     <ClInclude Include="Editor\Scintilla\AutoComplete.h" />

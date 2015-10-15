@@ -223,6 +223,12 @@ void AutoComplete::Move(int delta) {
 	lb->Select(current);
 }
 
+void AutoComplete::Select(int n)
+{
+	lb->Select(n);
+}
+
+
 void AutoComplete::Select(const char *word) {
 	size_t lenWord = strlen(word);
 	int location = -1;

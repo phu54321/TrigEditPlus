@@ -20,59 +20,39 @@
 * THE SOFTWARE.
 */
 
-#include "LuaCommon.h"
+#include "LuaKeywords.h"
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
-#include <vector>
+void LuaAutoRequireLibs(lua_State* L);
 
-#include "lib/lua.hpp"
-
-
-int LuaErrorf(lua_State* L, const char* format, ...)
+static std::vector<std::string> LuaGetGlobalNameList(lua_State* L)
 {
-	char errmsg[512];
-	va_list v;
-	va_start(v, format);
-	vsnprintf(errmsg, 512, format, v);
-	va_end(v);
+	std::vector<std::string> ret;
 
-	lua_pushstring(L, errmsg);
-	return lua_error(L);
-}
+	lua_pushglobaltable(L);
+	lua_pushnil(L);
 
-
-void LuaCheckTableEntry(lua_State* L, std::vector<std::string> accepted)
-{
-	if(!lua_istable(L, -1))
-	{
-		LuaErrorf(L, "table expected, got %s", lua_typename(L, lua_type(L, -1)));
-		return;
-	}
-
-	lua_pushnil(L);  /* first key */
 	while(lua_next(L, -2) != 0)
 	{
-		lua_pop(L, 1); // Remove value.
-
-		if(!lua_isstring(L, -1))
-		{
-			LuaErrorf(L, "table has non-string key of type %s", lua_typename(L, lua_type(L, -1)));
-			return;
-		}
-
-		const char* key = lua_tostring(L, -1);
-		bool accept = false;
-		for(auto entryname : accepted)
-		{
-			if(key == entryname) accept = true;
-		}
-
-		if(!accept)
-		{
-			LuaErrorf(L, "\"%s\" as a key of this table is disallowed", key);
-			return;
-		}
+		const char* str = lua_tostring(L, -2);
+		if(str[0] != '_') ret.push_back(str);
+		lua_pop(L, 1);
 	}
+
+	lua_pop(L, 1);
+	return ret;
+}
+
+static std::vector<std::string> _keywords;
+
+void UpdateLuaKeywords()
+{
+	lua_State* L = luaL_newstate();
+	LuaAutoRequireLibs(L);
+	_keywords = LuaGetGlobalNameList(L);
+	lua_close(L);
+}
+
+const std::vector<std::string>& GetLuaKeywords()
+{
+	return _keywords;
 }
