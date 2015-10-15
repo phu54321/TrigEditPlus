@@ -23,28 +23,17 @@
 #include "TriggerEditor.h"
 #include "TriggerEncDec.h"
 
+extern "C" {
 #include "Lua/lib/lctype.h"  // for lislalnum
+}
 
 void UpdateTip(TriggerEditor* te, const char* inputtedtext,
 			   int calltip_pos, const char* funcname, int argindex);
 void IssueGeneralAutocomplete(TriggerEditor* te);
-void ApplyAutocomplete(TriggerEditor* te);
 void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtedtext);
+bool isAutocompletionSet();
 
 void Editor_CharAdded(SCNotification* ne, TriggerEditor* te) {
-	// Apply autocompletion
-	if(ne->ch == ')' || ne->ch == ',') { // maybe need autocompletion
-		// If autocomplete is working, then issue autocomplete.
-		if(te->currentft != FIELDTYPE_NONE) {
-			int curpos;
-			curpos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
-			te->SendSciMessage(SCI_SETSELECTION, curpos - 1, curpos - 1);
-			ApplyAutocomplete(te);
-			curpos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
-			te->SendSciMessage(SCI_SETSELECTION, curpos + 1, curpos + 1);
-		}
-	}
-
 	// Process keys
 	if(ne->ch == '\n') { // Automatic indent
 		int pos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
@@ -148,11 +137,12 @@ void Editor_CharAdded(SCNotification* ne, TriggerEditor* te) {
 		int parenthesis_depth = 1;
 		int argindex = 0;
 		int argstartpos = -1;
-		while(p >= strstart && parenthesis_depth) {
+		while(p >= strstart) {
 			if(p == strstart) break;
 			else if(*p == ')') parenthesis_depth++;
 			else if(*p == '(') {
 				parenthesis_depth--;
+				if(parenthesis_depth == 0) break;
 			}
 			else if(*p == ',') {
 				if(argstartpos == -1) {
@@ -211,86 +201,86 @@ void Editor_CharAdded(SCNotification* ne, TriggerEditor* te) {
 
 int GetFuncType(const char* funcname) {
 	if(strcmp(funcname, "CountdownTimer") == 0)                    return         0;
-	else if(strcmp(funcname, "Command") == 0)                      return         1;
-	else if(strcmp(funcname, "Bring") == 0)                        return         2;
-	else if(strcmp(funcname, "Accumulate") == 0)                   return         3;
-	else if(strcmp(funcname, "Kills") == 0)                        return         4;
-	else if(strcmp(funcname, "CommandMost") == 0)                  return         5;
-	else if(strcmp(funcname, "CommandMostAt") == 0)                return         6;
-	else if(strcmp(funcname, "MostKills") == 0)                    return         7;
-	else if(strcmp(funcname, "HighestScore") == 0)                 return         8;
-	else if(strcmp(funcname, "MostResources") == 0)                return         9;
-	else if(strcmp(funcname, "Switch") == 0)                       return        10;
-	else if(strcmp(funcname, "ElapsedTime") == 0)                  return        11;
-	else if(strcmp(funcname, "Briefing") == 0)                     return        12;
-	else if(strcmp(funcname, "Opponents") == 0)                    return        13;
-	else if(strcmp(funcname, "Deaths") == 0)                       return        14;
-	else if(strcmp(funcname, "CommandLeast") == 0)                 return        15;
-	else if(strcmp(funcname, "CommandLeastAt") == 0)               return        16;
-	else if(strcmp(funcname, "LeastKills") == 0)                   return        17;
-	else if(strcmp(funcname, "LowestScore") == 0)                  return        18;
-	else if(strcmp(funcname, "LeastResources") == 0)               return        19;
-	else if(strcmp(funcname, "Score") == 0)                        return        20;
-	else if(strcmp(funcname, "Always") == 0)                       return        21;
-	else if(strcmp(funcname, "Never") == 0)                        return        22;
+	else if(_stricmp(funcname, "Command") == 0)                      return         1;
+	else if(_stricmp(funcname, "Bring") == 0)                        return         2;
+	else if(_stricmp(funcname, "Accumulate") == 0)                   return         3;
+	else if(_stricmp(funcname, "Kills") == 0)                        return         4;
+	else if(_stricmp(funcname, "CommandMost") == 0)                  return         5;
+	else if(_stricmp(funcname, "CommandMostAt") == 0)                return         6;
+	else if(_stricmp(funcname, "MostKills") == 0)                    return         7;
+	else if(_stricmp(funcname, "HighestScore") == 0)                 return         8;
+	else if(_stricmp(funcname, "MostResources") == 0)                return         9;
+	else if(_stricmp(funcname, "Switch") == 0)                       return        10;
+	else if(_stricmp(funcname, "ElapsedTime") == 0)                  return        11;
+	else if(_stricmp(funcname, "Briefing") == 0)                     return        12;
+	else if(_stricmp(funcname, "Opponents") == 0)                    return        13;
+	else if(_stricmp(funcname, "Deaths") == 0)                       return        14;
+	else if(_stricmp(funcname, "CommandLeast") == 0)                 return        15;
+	else if(_stricmp(funcname, "CommandLeastAt") == 0)               return        16;
+	else if(_stricmp(funcname, "LeastKills") == 0)                   return        17;
+	else if(_stricmp(funcname, "LowestScore") == 0)                  return        18;
+	else if(_stricmp(funcname, "LeastResources") == 0)               return        19;
+	else if(_stricmp(funcname, "Score") == 0)                        return        20;
+	else if(_stricmp(funcname, "Always") == 0)                       return        21;
+	else if(_stricmp(funcname, "Never") == 0)                        return        22;
 
-	else if(strcmp(funcname, "Victory") == 0)                      return 1000 +  0;
-	else if(strcmp(funcname, "Defeat") == 0)                       return 1000 +  1;
-	else if(strcmp(funcname, "PreserveTrigger") == 0)              return 1000 +  2;
-	else if(strcmp(funcname, "Wait") == 0)                         return 1000 +  3;
-	else if(strcmp(funcname, "PauseGame") == 0)                    return 1000 +  4;
-	else if(strcmp(funcname, "UnpauseGame") == 0)                  return 1000 +  5;
-	else if(strcmp(funcname, "Transmission") == 0)                 return 1000 +  6;
-	else if(strcmp(funcname, "PlayWAV") == 0)                      return 1000 +  7;
-	else if(strcmp(funcname, "DisplayText") == 0)                  return 1000 +  8;
-	else if(strcmp(funcname, "CenterView") == 0)                   return 1000 +  9;
-	else if(strcmp(funcname, "CreateUnitWithProperties") == 0)     return 1000 + 10;
-	else if(strcmp(funcname, "SetMissionObjectives") == 0)         return 1000 + 11;
-	else if(strcmp(funcname, "SetSwitch") == 0)                    return 1000 + 12;
-	else if(strcmp(funcname, "SetCountdownTimer") == 0)            return 1000 + 13;
-	else if(strcmp(funcname, "RunAIScript") == 0)                  return 1000 + 14;
-	else if(strcmp(funcname, "RunAIScriptAt") == 0)                return 1000 + 15;
-	else if(strcmp(funcname, "LeaderBoardControl") == 0)           return 1000 + 16;
-	else if(strcmp(funcname, "LeaderBoardControlAt") == 0)         return 1000 + 17;
-	else if(strcmp(funcname, "LeaderBoardResources") == 0)         return 1000 + 18;
-	else if(strcmp(funcname, "LeaderBoardKills") == 0)             return 1000 + 19;
-	else if(strcmp(funcname, "LeaderBoardScore") == 0)             return 1000 + 20;
-	else if(strcmp(funcname, "KillUnit") == 0)                     return 1000 + 21;
-	else if(strcmp(funcname, "KillUnitAt") == 0)                   return 1000 + 22;
-	else if(strcmp(funcname, "RemoveUnit") == 0)                   return 1000 + 23;
-	else if(strcmp(funcname, "RemoveUnitAt") == 0)                 return 1000 + 24;
-	else if(strcmp(funcname, "SetResources") == 0)                 return 1000 + 25;
-	else if(strcmp(funcname, "SetScore") == 0)                     return 1000 + 26;
-	else if(strcmp(funcname, "MinimapPing") == 0)                  return 1000 + 27;
-	else if(strcmp(funcname, "TalkingPortrait") == 0)              return 1000 + 28;
-	else if(strcmp(funcname, "MuteUnitSpeech") == 0)               return 1000 + 29;
-	else if(strcmp(funcname, "UnMuteUnitSpeech") == 0)             return 1000 + 30;
-	else if(strcmp(funcname, "LeaderBoardComputerPlayers") == 0)   return 1000 + 31;
-	else if(strcmp(funcname, "LeaderBoardGoalControl") == 0)       return 1000 + 32;
-	else if(strcmp(funcname, "LeaderBoardGoalControlAt") == 0)     return 1000 + 33;
-	else if(strcmp(funcname, "LeaderBoardGoalResources") == 0)     return 1000 + 34;
-	else if(strcmp(funcname, "LeaderBoardGoalKills") == 0)         return 1000 + 35;
-	else if(strcmp(funcname, "LeaderBoardGoalScore") == 0)         return 1000 + 36;
-	else if(strcmp(funcname, "MoveLocation") == 0)                 return 1000 + 37;
-	else if(strcmp(funcname, "MoveUnit") == 0)                     return 1000 + 38;
-	else if(strcmp(funcname, "LeaderBoardGreed") == 0)             return 1000 + 39;
-	else if(strcmp(funcname, "SetNextScenario") == 0)              return 1000 + 40;
-	else if(strcmp(funcname, "SetDoodadState") == 0)               return 1000 + 41;
-	else if(strcmp(funcname, "SetInvincibility") == 0)             return 1000 + 42;
-	else if(strcmp(funcname, "CreateUnit") == 0)                   return 1000 + 43;
-	else if(strcmp(funcname, "SetDeaths") == 0)                    return 1000 + 44;
-	else if(strcmp(funcname, "Order") == 0)                        return 1000 + 45;
-	else if(strcmp(funcname, "Comment") == 0)                      return 1000 + 46;
-	else if(strcmp(funcname, "GiveUnits") == 0)                    return 1000 + 47;
-	else if(strcmp(funcname, "ModifyUnitHitPoints") == 0)          return 1000 + 48;
-	else if(strcmp(funcname, "ModifyUnitEnergy") == 0)             return 1000 + 49;
-	else if(strcmp(funcname, "ModifyUnitShields") == 0)            return 1000 + 50;
-	else if(strcmp(funcname, "ModifyUnitResourceAmount") == 0)     return 1000 + 51;
-	else if(strcmp(funcname, "ModifyUnitHangarCount") == 0)        return 1000 + 52;
-	else if(strcmp(funcname, "PauseTimer") == 0)                   return 1000 + 53;
-	else if(strcmp(funcname, "UnpauseTimer") == 0)                 return 1000 + 54;
-	else if(strcmp(funcname, "Draw") == 0)                         return 1000 + 55;
-	else if(strcmp(funcname, "SetAllianceStatus") == 0)            return 1000 + 56;
+	else if(_stricmp(funcname, "Victory") == 0)                      return 1000 +  0;
+	else if(_stricmp(funcname, "Defeat") == 0)                       return 1000 +  1;
+	else if(_stricmp(funcname, "PreserveTrigger") == 0)              return 1000 +  2;
+	else if(_stricmp(funcname, "Wait") == 0)                         return 1000 +  3;
+	else if(_stricmp(funcname, "PauseGame") == 0)                    return 1000 +  4;
+	else if(_stricmp(funcname, "UnpauseGame") == 0)                  return 1000 +  5;
+	else if(_stricmp(funcname, "Transmission") == 0)                 return 1000 +  6;
+	else if(_stricmp(funcname, "PlayWAV") == 0)                      return 1000 +  7;
+	else if(_stricmp(funcname, "DisplayText") == 0)                  return 1000 +  8;
+	else if(_stricmp(funcname, "CenterView") == 0)                   return 1000 +  9;
+	else if(_stricmp(funcname, "CreateUnitWithProperties") == 0)     return 1000 + 10;
+	else if(_stricmp(funcname, "SetMissionObjectives") == 0)         return 1000 + 11;
+	else if(_stricmp(funcname, "SetSwitch") == 0)                    return 1000 + 12;
+	else if(_stricmp(funcname, "SetCountdownTimer") == 0)            return 1000 + 13;
+	else if(_stricmp(funcname, "RunAIScript") == 0)                  return 1000 + 14;
+	else if(_stricmp(funcname, "RunAIScriptAt") == 0)                return 1000 + 15;
+	else if(_stricmp(funcname, "LeaderBoardControl") == 0)           return 1000 + 16;
+	else if(_stricmp(funcname, "LeaderBoardControlAt") == 0)         return 1000 + 17;
+	else if(_stricmp(funcname, "LeaderBoardResources") == 0)         return 1000 + 18;
+	else if(_stricmp(funcname, "LeaderBoardKills") == 0)             return 1000 + 19;
+	else if(_stricmp(funcname, "LeaderBoardScore") == 0)             return 1000 + 20;
+	else if(_stricmp(funcname, "KillUnit") == 0)                     return 1000 + 21;
+	else if(_stricmp(funcname, "KillUnitAt") == 0)                   return 1000 + 22;
+	else if(_stricmp(funcname, "RemoveUnit") == 0)                   return 1000 + 23;
+	else if(_stricmp(funcname, "RemoveUnitAt") == 0)                 return 1000 + 24;
+	else if(_stricmp(funcname, "SetResources") == 0)                 return 1000 + 25;
+	else if(_stricmp(funcname, "SetScore") == 0)                     return 1000 + 26;
+	else if(_stricmp(funcname, "MinimapPing") == 0)                  return 1000 + 27;
+	else if(_stricmp(funcname, "TalkingPortrait") == 0)              return 1000 + 28;
+	else if(_stricmp(funcname, "MuteUnitSpeech") == 0)               return 1000 + 29;
+	else if(_stricmp(funcname, "UnMuteUnitSpeech") == 0)             return 1000 + 30;
+	else if(_stricmp(funcname, "LeaderBoardComputerPlayers") == 0)   return 1000 + 31;
+	else if(_stricmp(funcname, "LeaderBoardGoalControl") == 0)       return 1000 + 32;
+	else if(_stricmp(funcname, "LeaderBoardGoalControlAt") == 0)     return 1000 + 33;
+	else if(_stricmp(funcname, "LeaderBoardGoalResources") == 0)     return 1000 + 34;
+	else if(_stricmp(funcname, "LeaderBoardGoalKills") == 0)         return 1000 + 35;
+	else if(_stricmp(funcname, "LeaderBoardGoalScore") == 0)         return 1000 + 36;
+	else if(_stricmp(funcname, "MoveLocation") == 0)                 return 1000 + 37;
+	else if(_stricmp(funcname, "MoveUnit") == 0)                     return 1000 + 38;
+	else if(_stricmp(funcname, "LeaderBoardGreed") == 0)             return 1000 + 39;
+	else if(_stricmp(funcname, "SetNextScenario") == 0)              return 1000 + 40;
+	else if(_stricmp(funcname, "SetDoodadState") == 0)               return 1000 + 41;
+	else if(_stricmp(funcname, "SetInvincibility") == 0)             return 1000 + 42;
+	else if(_stricmp(funcname, "CreateUnit") == 0)                   return 1000 + 43;
+	else if(_stricmp(funcname, "SetDeaths") == 0)                    return 1000 + 44;
+	else if(_stricmp(funcname, "Order") == 0)                        return 1000 + 45;
+	else if(_stricmp(funcname, "Comment") == 0)                      return 1000 + 46;
+	else if(_stricmp(funcname, "GiveUnits") == 0)                    return 1000 + 47;
+	else if(_stricmp(funcname, "ModifyUnitHitPoints") == 0)          return 1000 + 48;
+	else if(_stricmp(funcname, "ModifyUnitEnergy") == 0)             return 1000 + 49;
+	else if(_stricmp(funcname, "ModifyUnitShields") == 0)            return 1000 + 50;
+	else if(_stricmp(funcname, "ModifyUnitResourceAmount") == 0)     return 1000 + 51;
+	else if(_stricmp(funcname, "ModifyUnitHangarCount") == 0)        return 1000 + 52;
+	else if(_stricmp(funcname, "PauseTimer") == 0)                   return 1000 + 53;
+	else if(_stricmp(funcname, "UnpauseTimer") == 0)                 return 1000 + 54;
+	else if(_stricmp(funcname, "Draw") == 0)                         return 1000 + 55;
+	else if(_stricmp(funcname, "SetAllianceStatus") == 0)            return 1000 + 56;
 	else return -1;
 }
 
@@ -472,8 +462,9 @@ void IssueGeneralAutocomplete(TriggerEditor* te)
 		te->SendSciMessage(SCI_GETRANGEPOINTER, current_pos - fw_find_length, fw_find_length);
 	const char* p = strstart + fw_find_length;
 
-	const char *pstart = p, *pend = p;
+	const char *pstart = p - 1, *pend = p;
 	while(pstart > strstart && lislalnum(*pstart)) pstart--;
+	pstart++;
 
 	const std::string str(pstart, pend);
 	SetAutocompleteList(te, FIELDTYPE_NONE, str.c_str());

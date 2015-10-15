@@ -334,7 +334,7 @@ void ScintillaBase::AutoCompleteMove(int delta) {
 
 void ScintillaBase::AutoCompleteMoveToCurrentWord() {
 	std::string wordCurrent = RangeText(ac.posStart - ac.startLen, sel.MainCaret());
-	ac.Select(wordCurrent.c_str());
+	//ac.Select(wordCurrent.c_str());
 }
 
 void ScintillaBase::AutoCompleteCharacterAdded(char ch) {
@@ -803,6 +803,10 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 
 	case SCI_AUTOCSELECT:
 		ac.Select(reinterpret_cast<char *>(lParam));
+		break;
+
+	case SCI_AUTOCSELECT_NUMERIC:
+		ac.Select(lParam);
 		break;
 
 	case SCI_AUTOCGETCURRENT:

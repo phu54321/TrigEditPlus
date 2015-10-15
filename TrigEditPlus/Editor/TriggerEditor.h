@@ -164,7 +164,6 @@ public:
 	HWND hTrigDlg;
 	HWND hTriggerList;
 	HWND hScintilla;
-	HWND hElmnTable;
 	HWND hFindDlg;
 	FINDREPLACE fr;
 	FieldType currentft;
