@@ -219,9 +219,10 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 		int, 
 		std::shared_ptr<std::string>>
 	> autocomplete_list;
+	std::wstring unpacked_keyword = unpack_hangeul(keyword);
 	for(const std::string& s : stringlist)
 	{
-		int rank = CalculateStringAcceptance(keyword, s2ws(s));
+		int rank = CalculateStringAcceptance(unpacked_keyword, unpack_hangeul(s2ws(s)));
 		if(rank > 0)
 		{
 			autocomplete_list.push_back(std::make_pair(
@@ -260,7 +261,7 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 				*p++ = -1;
 			}
 			*(--p) = '\0';
-			te->SendSciMessage(SCI_AUTOCSHOW, keyword.size(), (LPARAM)aclists);
+			te->SendSciMessage(SCI_AUTOCSHOW, _keyword.size(), (LPARAM)aclists);
 			te->SendSciMessage(SCI_AUTOCSELECT_NUMERIC, 0, 0);  // Force select first element
 			delete[] aclists;
 			_isAutocompleteWorking = true;
