@@ -141,7 +141,13 @@ int LuaParseUnit(lua_State* L);
 int LuaParseLocation(lua_State* L);
 int LuaParseSwitchName(lua_State* L);
 int LuaParseString(lua_State* L);
-int LuaParseProperty(lua_State* L);
+int LuaParseUPRP(lua_State* L);
+
+int LuaDecodeUnit(lua_State* L);
+int LuaDecodeLocation(lua_State* L);
+int LuaDecodeSwitchName(lua_State* L);
+int LuaDecodeString(lua_State* L);
+int LuaDecodeUPRP(lua_State* L);
 
 void LuaAutoRequireLibs(lua_State* L)
 {
@@ -163,5 +169,11 @@ void LuaAutoRequireLibs(lua_State* L)
 	lua_register(L, "ParseLocation", LuaParseLocation);
 	lua_register(L, "ParseSwitchName", LuaParseSwitchName);
 	lua_register(L, "ParseString", LuaParseString);
-	lua_register(L, "ParseProperty", LuaParseProperty);
+	lua_register(L, "ParseUPRP", LuaParseUPRP);
+
+	lua_register(L, "DecodeUnit", LuaDecodeUnit);
+	lua_register(L, "DecodeLocation", LuaDecodeLocation);
+	lua_register(L, "DecodeSwitchName", LuaDecodeSwitchName);
+	lua_register(L, "DecodeString", LuaDecodeString);
+	lua_register(L, "DecodeUPRP", LuaDecodeUPRP);
 }

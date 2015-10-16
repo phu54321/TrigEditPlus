@@ -67,7 +67,7 @@ function CreateUnitWithProperties(Count, Unit, Where, Player, Properties)
     Unit = ParseUnit(Unit)
     Where = ParseLocation(Where)
     Player = ParsePlayer(Player)
-    Properties = ParseProperty(Properties)
+    Properties = ParseUPRP(Properties)
     return Action(Where, 0, 0, 0, Player, Properties, Unit, 11, Count, 28)
 end
 

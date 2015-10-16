@@ -54,7 +54,7 @@ char* GetUPRPChunkData() {
 }
 
 
-int LuaParseProperty(lua_State* L) {
+int LuaParseUPRP(lua_State* L) {
 	if(lua_isnumber(L, -1)) return 1; // return as-is;
 
 	if(!lua_istable(L, -1)) {
