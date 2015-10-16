@@ -1,8 +1,3 @@
-function NoCondition()
-    return Condition(0, 0, 0, 0, 0, 0, 0, 0)
-end
-
-
 function CountdownTimer(Comparison, Time)
     Comparison = ParseComparison(Comparison)
     return Condition(0, 0, Time, 0, Comparison, 1, 0, 0)
