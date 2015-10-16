@@ -1,15 +1,12 @@
--- return Action(0, 0, 0, 0, Player, Number, Unit, 45, Modifier, 20)
-RegisterActionHook(function(a1, a2, a3, a4, Player, Number, Unit, ACTTYPE, Modifier, a10)
-	if ACTTYPE == 45 and ((Player > 28) or (Unit > 228)) then
-		local offset = bit32.band((0x58A364 + (Player + Unit * 12) * 4), 0xFFFFFFFF)
-		if 0x6C9C78 <= offset and offset <= 0x6C9C78 + 208 * 2 then
-			ID = (offset - 0x6C9C78) / 2
-			if Number >= 65536 then
-				Number = Number / 65536
-				ID = ID + 1
-			end
-			return "F가속도("  .. ID .. ", " .. Modifier .. ", " .. Number .. ");", 100
+RegisterSetDeathsHook(function(Player, Modifier, Number, Unit)
+	local offset = bit32.band((0x58A364 + (Player + Unit * 12) * 4), 0xFFFFFFFF)
+	if 0x6C9C78 <= offset and offset <= 0x6C9C78 + 208 * 2 then
+		ID = (offset - 0x6C9C78) / 2
+		if Number >= 65536 then
+			Number = Number / 65536
+			ID = ID + 1
 		end
+		return "F가속도("  .. ID .. ", " .. Modifier .. ", " .. Number .. ");", 100
 	end
 end)
 
