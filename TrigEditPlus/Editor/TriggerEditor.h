@@ -36,6 +36,8 @@
 #include "StringUtils/stringbuffer.h"
 #include "TriggerEncDec.h"
 
+#include "Lua/lib/lua.hpp"
+
 //Trigger structure
 #include <packon.h>
 typedef struct {
@@ -117,9 +119,9 @@ public:
 	// Decode part : Binary Data -> Text
 	std::string DecodeTriggers(CChunkData* input) const;
 
-	void DecodeTrigger(StringBuffer& buf, const Trig& content) const;
-	void DecodeCondition(StringBuffer& buf, const TrigCond& content) const;
-	void DecodeAction(StringBuffer& buf, const TrigAct& content) const;
+	void DecodeTrigger(lua_State* L, StringBuffer& buf, const Trig& content) const;
+	void DecodeCondition(lua_State* L, StringBuffer& buf, const TrigCond& content) const;
+	void DecodeAction(lua_State* L, StringBuffer& buf, const TrigAct& content) const;
 
 	std::string DecodeNumber(int value) const;
 	std::string DecodeAllyStatus(int value) const;

@@ -31,6 +31,7 @@ LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
 //
 
 IDR_BASESCRIPT          RCDATA                  "Editor\\Lua\\basescript.lua"
+IDR_LUAHOOK             RCDATA                  "Editor\\Lua\\luahook.lua"
 IDR_LUALICENSE          RCDATA                  "License\\license_lua.txt"
 IDR_SCINTILLALICENSE    RCDATA                  "License\\license_scintilla.txt"
 
@@ -53,8 +54,6 @@ BEGIN
         MENUITEM "Replace\tCtrl+H",             IDM_EDIT_REPLACE
         MENUITEM SEPARATOR
         MENUITEM "New trigger\tCtrl+T",         IDM_EDIT_NEWTRIGGER
-        MENUITEM SEPARATOR
-        MENUITEM "Issue Autocomplete\tCtrl+G",  IDM_EDIT_AUTOCOMPLETE
     END
     POPUP "View"
     BEGIN
@@ -80,7 +79,6 @@ IDR_ACCELERATOR ACCELERATORS
 BEGIN
     VK_UP,          2000,                   VIRTKEY, CONTROL, NOINVERT
     VK_DOWN,        2001,                   VIRTKEY, CONTROL, NOINVERT
-    "G",            IDM_EDIT_AUTOCOMPLETE,  VIRTKEY, CONTROL, NOINVERT
     "F",            IDM_EDIT_FIND,          VIRTKEY, CONTROL, NOINVERT
     "H",            IDM_EDIT_REPLACE,       VIRTKEY, CONTROL, NOINVERT
     "T",            IDM_EDIT_NEWTRIGGER,    VIRTKEY, CONTROL, NOINVERT

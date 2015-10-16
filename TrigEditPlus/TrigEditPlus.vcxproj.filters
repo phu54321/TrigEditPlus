@@ -317,6 +317,9 @@
     <ClCompile Include="Editor\Lua\LuaKeywords.cpp">
       <Filter>Editor\Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\Decoder\ProcCondActHook.cpp">
+      <Filter>Editor\Decoder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -626,6 +629,9 @@
       <Filter>Editor\Scintilla</Filter>
     </None>
     <None Include="Editor\Lua\basescript.lua">
+      <Filter>Editor\Lua</Filter>
+    </None>
+    <None Include="Editor\Lua\luahook.lua">
       <Filter>Editor\Lua</Filter>
     </None>
   </ItemGroup>

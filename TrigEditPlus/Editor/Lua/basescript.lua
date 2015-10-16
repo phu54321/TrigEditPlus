@@ -50,6 +50,7 @@ end
 
 setmetatable(_G, __trigeditplus_mt)
 
+
 function Trigger(args)
     if args.players then
         args.players = FlattenList(args.players)

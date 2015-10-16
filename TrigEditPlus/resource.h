@@ -7,6 +7,7 @@
 #define IDR_LUALICENSE                    4002
 #define IDR_SCINTILLALICENSE              4003
 #define IDR_BASESCRIPT                    4004
+#define IDR_LUAHOOK                       4005
 
 #define IDM_EDIT_FINDREPLACE              6000
 #define IDM_EDIT_FIND                     6001
@@ -19,5 +20,4 @@
 #define IDM_HELP_LICENSES                 6009
 #define IDM_VIEW_FOLDALL                  6010
 #define IDM_VIEW_UNFOLDALL                6011
-#define IDM_EDIT_AUTOCOMPLETE             6012
 #define IDM_FILE_COMPILENONAG             6013

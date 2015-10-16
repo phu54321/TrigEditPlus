@@ -94,6 +94,7 @@
     <ClCompile Include="Editor\Decoder\AIScriptDecode.cpp" />
     <ClCompile Include="Editor\Decoder\ConstDecoder.cpp" />
     <ClCompile Include="Editor\Decoder\crc32.cpp" />
+    <ClCompile Include="Editor\Decoder\ProcCondActHook.cpp" />
     <ClCompile Include="Editor\Decoder\SpecialCommentDec.cpp" />
     <ClCompile Include="Editor\Decoder\StringDecoder.cpp" />
     <ClCompile Include="Editor\Decoder\TriggerDecodeAction.cpp" />
@@ -295,6 +296,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Editor\Lua\basescript.lua" />
+    <None Include="Editor\Lua\luahook.lua" />
     <None Include="Editor\Scintilla\Scintilla.iface" />
     <None Include="Editor\Scintilla\SciTE.properties" />
     <None Include="PluginBase\DllMain.def" />

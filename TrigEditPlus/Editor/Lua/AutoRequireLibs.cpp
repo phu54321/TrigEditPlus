@@ -27,7 +27,7 @@
 #include <vector>
 
 
-void LuaRunResource(lua_State* L, LPCSTR respath)
+void LuaRunResource(lua_State* L, LPCSTR respath, LPCSTR resname)
 {
 	HRSRC res = FindResource(hInstance, respath, RT_RCDATA);
 	if(res)
@@ -40,14 +40,22 @@ void LuaRunResource(lua_State* L, LPCSTR respath)
 		str[fsize] = '\0';
 		UnlockResource(resd);
 
-		luaL_loadbuffer(L, str, fsize, "basescript");
-		lua_pcall(L, 0, LUA_MULTRET, 0);
-
+		if(luaL_loadbuffer(L, str, fsize, resname) || lua_pcall(L, 0, 0, 0))
+		{
+			char str[1024];
+			_snprintf(str, 1023, "resource %s load failed : %s\n", resname, lua_tostring(L, -1));
+			str[1023] = '\0';
+			MessageBox(NULL, str, "lua init error", MB_OK);
+			lua_pop(L, 1);
+		}
 		delete[] str;
 	}
 	else
 	{
-		fprintf(stderr, "resource load failed : %d\n", GetLastError());
+		char str[1024];
+		_snprintf(str, 1023, "resource %s load failed : %d\n", resname, GetLastError());
+		str[1023] = '\0';
+		MessageBox(NULL, str, "lua init error", MB_OK);
 	}
 }
 
@@ -63,8 +71,14 @@ static void LuaRequire(lua_State* L, const char* modulePath, const char* moduleN
 	fread(fcontent.data(), 1, fsize, fp);
 	fclose(fp);
 
-	luaL_loadbuffer(L, fcontent.data(), fsize, moduleName);
-	lua_pcall(L, 0, LUA_MULTRET, 0);
+	if(luaL_loadbuffer(L, fcontent.data(), fsize, moduleName) || lua_pcall(L, 0, 0, 0))
+	{
+		char str[1024];
+		_snprintf(str, 1023, "resource %s load failed : %s\n", moduleName, lua_tostring(L, -1));
+		str[1023] = '\0';
+		MessageBox(NULL, str, "lua init error", MB_OK);
+		lua_pop(L, 1);
+	}
 }
 
 void LoadUserLuaLibs(lua_State* L)
@@ -106,7 +120,8 @@ void LuaAutoRequireLibs(lua_State* L)
 	luaL_openlibs(L);
 
 	// Load basic script.
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT));
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT), "basescript");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_LUAHOOK), "luahook");
 	// basescript.lua contains case-insensitive patch, so this should be called
 	// before any variable is declared
 
@@ -121,4 +136,18 @@ void LuaAutoRequireLibs(lua_State* L)
 	lua_register(L, "ParseSwitchName", LuaParseSwitchName);
 	lua_register(L, "ParseString", LuaParseString);
 	lua_register(L, "ParseProperty", LuaParseProperty);
+
+	FILE *fp = fopen("out.txt", "w");
+
+	lua_pushglobaltable(L);
+	lua_pushnil(L);
+
+	while(lua_next(L, -2) != 0)
+	{
+		const char* str = lua_tostring(L, -2);
+		fprintf(fp, "%s\n", str);
+		lua_pop(L, 1);
+	}
+
+	lua_pop(L, 1);
 }
