@@ -41,8 +41,6 @@ void TriggerEditor::DecodeAction(lua_State* L, StringBuffer& buf, const TrigAct&
 		return;
 	}
 
-	buf << "\t\t";
-
 	if(content.prop & 0x2) {
 		buf << "Disabled(";
 	}

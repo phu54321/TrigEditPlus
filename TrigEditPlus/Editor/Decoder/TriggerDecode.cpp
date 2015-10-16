@@ -40,9 +40,6 @@ std::string TriggerEditor::DecodeTriggers(CChunkData* Triggers) const {
 	lua_State* L = luaL_newstate();
 	lua_atpanic(L, lPanic);
 	LuaAutoRequireLibs(L);
-	lua_getglobal(L, "SetDeaths");
-	lua_getglobal(L, "RegisterConditionHook");
-	lua_getglobal(L, "__trigeditplus_conditionhooks");
 
 	// Some notice
 	StringBuffer decode_out;
