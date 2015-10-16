@@ -81,31 +81,59 @@ static void LuaRequire(lua_State* L, const char* modulePath, const char* moduleN
 	}
 }
 
-void LoadUserLuaLibs(lua_State* L)
-{
-	char path[MAX_PATH];
-	GetModuleFileName(NULL, path, MAX_PATH);
-	char *lastslash = strrchr(path, '\\');
-	if(!lastslash) lastslash = path;
-	else lastslash++;
-	strcpy(lastslash, "lua\\*.lua");
-	lastslash += 4;
 
+// Recursive directory iterator
+void LoadUserLuaLibs_Sub(lua_State* L)
+{
 	WIN32_FIND_DATA ffd;
-	HANDLE hFind = FindFirstFile(path, &ffd);
+	HANDLE hFind = FindFirstFile("*.*", &ffd);
 	if(INVALID_HANDLE_VALUE == hFind) return;
 	do
 	{
-		if(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+		if(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			if(ffd.cFileName[0] != '.' && SetCurrentDirectory(ffd.cFileName))
+			{
+				LoadUserLuaLibs_Sub(L);
+				SetCurrentDirectory("..");
+			}
+		}
 		else
 		{
-			strcpy(lastslash, ffd.cFileName);
-			LuaRequire(L, path, ffd.cFileName);
+			// Check extension
+			int slen = strlen(ffd.cFileName);
+			if(slen > 4 && strcmp(ffd.cFileName + slen - 4, ".lua") == 0)
+			{
+				LuaRequire(L, ffd.cFileName, ffd.cFileName);
+			}
 		}
 	} while(FindNextFile(hFind, &ffd) != 0);
 
 	FindClose(hFind);
 }
+
+
+void LoadUserLuaLibs(lua_State* L)
+{
+	// Backup current directory
+	char currentPath[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, currentPath);
+
+	// Goto root directory
+	char path[MAX_PATH];
+	GetModuleFileName(NULL, path, MAX_PATH);
+	char *lastslash = strrchr(path, '\\');
+	if(!lastslash) lastslash = path;
+	else lastslash++;
+	strcpy(lastslash, "lua");
+	SetCurrentDirectory(path);
+
+	// Require all
+	LoadUserLuaLibs_Sub(L);
+	SetCurrentDirectory(currentPath);
+}
+
+
 
 // --------------------
 
@@ -136,18 +164,4 @@ void LuaAutoRequireLibs(lua_State* L)
 	lua_register(L, "ParseSwitchName", LuaParseSwitchName);
 	lua_register(L, "ParseString", LuaParseString);
 	lua_register(L, "ParseProperty", LuaParseProperty);
-
-	FILE *fp = fopen("out.txt", "w");
-
-	lua_pushglobaltable(L);
-	lua_pushnil(L);
-
-	while(lua_next(L, -2) != 0)
-	{
-		const char* str = lua_tostring(L, -2);
-		fprintf(fp, "%s\n", str);
-		lua_pop(L, 1);
-	}
-
-	lua_pop(L, 1);
 }
