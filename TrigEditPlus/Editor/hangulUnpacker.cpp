@@ -78,7 +78,7 @@ std::wstring unpack_hangeul(const std::wstring& in)
 
 	for(auto ch : in)
 	{
-		if(ch > 44032 && ch < 44032 + 11172)
+		if(ch >= 44032 && ch < 44032 + 11172)
 		{
 			ch -= 44032;
 			unpacked_ptr = wsc(unpacked_ptr, chosungList[ch / 588]);
