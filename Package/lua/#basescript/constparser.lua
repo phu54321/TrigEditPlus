@@ -56,31 +56,31 @@ Random = {__trg_magic="trgconst"}
 Cleared = {__trg_magic="trgconst"}
 
 
-AllyStatusDict = {
+local AllyStatusDict = {
     [Enemy] =  0,
     [Ally] =  1,
     [AlliedVictory] =  2,
 }
 
-ComparisonDict = {
+local ComparisonDict = {
     [AtLeast] =  0,
     [AtMost] =  1,
     [Exactly] =  10,
 }
 
-ModifierDict = {
+local ModifierDict = {
     [SetTo] =  7,
     [Add] =  8,
     [Subtract] =  9,
 }
 
-OrderDict = {
+local OrderDict = {
     [Move] =  0,
     [Patrol] =  1,
     [Attack] =  2,
 }
 
-PlayerDict = {
+local PlayerDict = {
     [P1] =  0,
     [P2] =  1,
     [P3] =  2,
@@ -105,19 +105,19 @@ PlayerDict = {
     [NonAlliedVictoryPlayers] =  26,
 }
 
-PropStateDict = {
+local PropStateDict = {
     [Enable] =  4,
     [Disable] =  5,
     [Toggle] =  6,
 }
 
-ResourceDict = {
+local ResourceDict = {
     [Ore] =  0,
     [Gas] =  1,
     [OreAndGas] =  2,
 }
 
-ScoreDict = {
+local ScoreDict = {
     [Total] =  0,
     [Units] =  1,
     [Buildings] =  2,
@@ -128,20 +128,20 @@ ScoreDict = {
     [Custom] =  7,
 }
 
-SwitchActionDict = {
+local SwitchActionDict = {
     [Set] =  4,
     [Clear] =  5,
     [Toggle] =  6,
     [Random] =  11,
 }
 
-SwitchStateDict = {
+local SwitchStateDict = {
     [Set] =  2,
     [Cleared] =  3,
 }
 
 
-AIScriptDict = {
+local AIScriptDict = {
     ["Terran Custom Level"] = 1967344980,
     ["Zerg Custom Level"] = 1967344986,
     ["Protoss Custom Level"] = 1967344976,
@@ -440,7 +440,7 @@ AIScriptDict = {
 
 
 
-function ParseConst(d, s)
+local function ParseConst(d, s)
     local val = d[s]
     if val == nil then
         return s
