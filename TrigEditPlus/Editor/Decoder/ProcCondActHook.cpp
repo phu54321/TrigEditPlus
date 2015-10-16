@@ -25,6 +25,8 @@
 
 bool CallConditionHook(lua_State* L, const TrigCond& cond, std::string& ret)
 {
+	int current_max_priority = INT_MIN;
+
 	lua_getglobal(L, "__trigeditplus_conditionhooks");
 	lua_pushnil(L);
 	while(lua_next(L, -2) != 0)
@@ -38,29 +40,32 @@ bool CallConditionHook(lua_State* L, const TrigCond& cond, std::string& ret)
 		lua_pushinteger(L, cond.res_setting);
 		lua_pushinteger(L, cond.prop);
 
-		if(lua_pcall(L, 8, 1, 0) != LUA_OK)
+		if(lua_pcall(L, 8, 2, 0) != LUA_OK)
 		{
 			fprintf(stderr, "[CallConditionHook] Error on parsing condition (%d, %d, %d, %d, %d, %d, %d, %d) :\n%s\n",
 				cond.locid, cond.player, cond.res, cond.uid, cond.setting, cond.condtype, cond.res_setting, cond.prop,
 				lua_tostring(L, -1));
 			lua_pop(L, 1);
 		}
-		else if(lua_isstring(L, -1))
+		else if(lua_isstring(L, -2) && lua_isnumber(L, -1) && lua_tointeger(L, -1) > current_max_priority)
 		{
-			ret = lua_tostring(L, -1);
+			ret = lua_tostring(L, -2);
+			current_max_priority = lua_tointeger(L, -1);
 			lua_pop(L, 2);
-			return true;
 		}
-		else lua_pop(L, 1);
+		else lua_pop(L, 2);
 	}
 	lua_pop(L, 1);
-	return false;
+	if(current_max_priority != INT_MIN) return true;
+	else return false;
 }
 
 
 
 bool CallActionHook(lua_State* L, const TrigAct& act, std::string& ret)
 {
+	int current_max_priority = INT_MIN;
+
 	lua_getglobal(L, "__trigeditplus_actionhooks");
 	lua_pushnil(L);
 	while(lua_next(L, -2) != 0)
@@ -76,21 +81,23 @@ bool CallActionHook(lua_State* L, const TrigAct& act, std::string& ret)
 		lua_pushinteger(L, act.num);
 		lua_pushinteger(L, act.prop);
 
-		if(lua_pcall(L, 10, 1, 0) != LUA_OK)
+		if(lua_pcall(L, 10, 2, 0) != LUA_OK)
 		{
 			fprintf(stderr, "[CallActionHook] Error on parsing condition (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d) :\n%s\n",
 				act.locid, act.strid, act.wavid, act.time, act.player, act.target, act.setting, act.acttype, act.num, act.prop,
 				lua_tostring(L, -1));
 			lua_pop(L, 1);
 		}
-		else if(lua_isstring(L, -1))
+		else if(lua_isstring(L, -2) && lua_isnumber(L, -1) && lua_tointeger(L, -1) > current_max_priority)
 		{
-			ret = lua_tostring(L, -1);
+			ret = lua_tostring(L, -2);
+			current_max_priority = lua_tointeger(L, -1);
 			lua_pop(L, 2);
-			return true;
 		}
-		else lua_pop(L, 1);
+		else lua_pop(L, 2);
 	}
 	lua_pop(L, 1);
-	return false;
+
+	if(current_max_priority != INT_MIN) return true;
+	else return false;
 }

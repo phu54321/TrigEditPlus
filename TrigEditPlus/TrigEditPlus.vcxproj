@@ -110,6 +110,7 @@
     <ClCompile Include="Editor\hangulUnpacker.cpp" />
     <ClCompile Include="Editor\LuaStyle.cpp" />
     <ClCompile Include="Editor\Lua\AutoRequireLibs.cpp" />
+    <ClCompile Include="Editor\Lua\lib\bit.c" />
     <ClCompile Include="Editor\Lua\lib\lapi.c" />
     <ClCompile Include="Editor\Lua\lib\lauxlib.c" />
     <ClCompile Include="Editor\Lua\lib\lbaselib.c" />

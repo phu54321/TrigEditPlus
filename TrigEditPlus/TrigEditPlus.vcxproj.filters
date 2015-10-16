@@ -320,6 +320,9 @@
     <ClCompile Include="Editor\Decoder\ProcCondActHook.cpp">
       <Filter>Editor\Decoder</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\Lua\lib\bit.c">
+      <Filter>Editor\Lua\lib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
