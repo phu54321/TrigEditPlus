@@ -136,7 +136,6 @@ end
 
 
 -- Function declaration inspector
--- Snippet from http://stackoverflow.com/questions/3097209/lua-get-the-list-of-parameter-names-of-a-function-from-outside-the-function
 
 local function getArgs(fun)
     local args = {}
@@ -164,12 +163,14 @@ local function getArgs(fun)
 end
 
 function GetFunctionDeclaration(fname)
+    fname = keytable[fname:lower()]
+    if fname == nil then return end
+
     local fun = _G[fname]
     if fun == nil or type(fun) ~= "function" then
         return
     end
 
-    fname = debug.getinfo(fun, "n").name
 
     local farglist = getArgs(fun)
     return fname .. '(' .. table.concat(farglist, ", ") .. ')'

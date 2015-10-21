@@ -135,10 +135,9 @@ static std::wstring s2ws(const std::string& s)
 std::wstring unpack_hangeul(const std::wstring& in);
 
 
-bool _isAutocompleteWorking = false;
-bool isAutocompletionSet()
+bool isAutocompletionSet(TriggerEditor* te)
 {
-	return _isAutocompleteWorking;
+	return !!te->SendSciMessage(SCI_AUTOCACTIVE, 0, 0);
 }
 
 void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
@@ -158,11 +157,10 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 	// Nothing inputted yet -> no autocomplete
 	if(keyword.size() == 0)
 	{
-		if(_isAutocompleteWorking)
+		if(isAutocompletionSet(te))
 		{
 			te->SendSciMessage(SCI_AUTOCCANCEL, 0, 0);
 		}
-		_isAutocompleteWorking = false;
 		return;
 	}
 
@@ -238,7 +236,7 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 	// _isAutocompleteWorking wav false -> it becomes true
 	// if autocomplete happens, it is set to true
 	// -- goto (*)
-	_isAutocompleteWorking = !_isAutocompleteWorking;
+	bool shouldAutocompletePersist = !isAutocompletionSet(te);
 	if(!autocomplete_list.empty() && autocomplete_list.size() < 300)
 	{
 		// Update listbox
@@ -265,15 +263,15 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 			te->SendSciMessage(SCI_AUTOCSHOW, _keyword.size(), (LPARAM)aclists);
 			te->SendSciMessage(SCI_AUTOCSELECT_NUMERIC, 0, 0);  // Force select first element
 			delete[] aclists;
-			_isAutocompleteWorking = true;
+			shouldAutocompletePersist = true;
 		}
 	}
 
-	// (*) So, if _isAutocompleteWorking happens to be false here, it means that
-	//   - _isAutocompleteWorking was true
+	// (*) So, if shouldAutocompletePersist happens to be false here, it means that
+	//   - isAutocompletionSet(te) was true
 	//   - Autocompletion list failed to build
-	// So, it shoud disappear!
-	if(!_isAutocompleteWorking)
+	// So, autocomplete list shoud disappear!
+	if(!shouldAutocompletePersist)
 	{
 		te->SendSciMessage(SCI_AUTOCCANCEL, 0, 0);
 	}
