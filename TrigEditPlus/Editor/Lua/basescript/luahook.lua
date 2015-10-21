@@ -63,11 +63,10 @@ end
 ---- Hook processors
 
 function ProcessHooks_Sub(beststr, bestpriority, hooklist, hookcaller, errhandler)
-    local retstr, retpriority
     for i = 1, #hooklist do
         local hookf = hooklist[i]
         if not erroredf[hookf] and not pcall(function()
-            retstr, retpriority = hookcaller(hookf)
+            local retstr, retpriority = hookcaller(hookf)
             if retstr and retpriority > bestpriority then
                 beststr, bestpriority = retstr, retpriority
             end
@@ -75,6 +74,7 @@ function ProcessHooks_Sub(beststr, bestpriority, hooklist, hookcaller, errhandle
             erroredf[hookf] = true
         end
     end
+    return beststr, bestpriority
 end
 
 function ProcessConditionHook(errhandler, a1, a2, a3, a4, a5, a6, a7, a8)

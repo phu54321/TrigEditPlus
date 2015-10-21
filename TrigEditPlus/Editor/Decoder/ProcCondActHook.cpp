@@ -86,9 +86,9 @@ bool CallConditionHook(lua_State* L, const TrigCond& cond, std::string& ret)
 	{
 		lua_pop(L, 1);
 	}
-	else if(lua_isstring(L, -2))
+	else if(lua_isstring(L, -1))
 	{
-		ret = lua_tostring(L, -2);
+		ret = lua_tostring(L, -1);
 		lua_pop(L, 1);
 		return true;
 	}
@@ -121,9 +121,9 @@ bool CallActionHook(lua_State* L, const TrigAct& act, std::string& ret)
 	{
 		lua_pop(L, 1);
 	}
-	else if(lua_isstring(L, -2))
+	else if(lua_isstring(L, -1))
 	{
-		ret = lua_tostring(L, -2);
+		ret = lua_tostring(L, -1);
 		lua_pop(L, 1);
 		return true;
 	}
