@@ -65,6 +65,9 @@ void DisableVisualStyle() {
 // Activator end
 
 void Initialize() {
+	freopen("stderr.txt", "w", stderr);
+	setvbuf(stderr, NULL, _IONBF, 0);
+
 	// Initialize common controls.
 	Scintilla_RegisterClasses(hInstance);
 	Scintilla_LinkLexers();

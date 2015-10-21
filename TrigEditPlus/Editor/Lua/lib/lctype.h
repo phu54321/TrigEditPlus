@@ -49,7 +49,7 @@
 /*
 ** add 1 to char to allow index -1 (EOZ)
 */
-#define testprop(c,p)	(luai_ctype_[(c)+1] & (p))
+#define testprop(c,p)	(luai_ctype_[(unsigned char)(c)+1] & (p))
 
 /*
 ** 'lalpha' (Lua alphabetic) and 'lalnum' (Lua alphanumeric) both include '_'

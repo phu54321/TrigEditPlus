@@ -7,6 +7,14 @@
 #define IDR_LUALICENSE                    4002
 #define IDR_SCINTILLALICENSE              4003
 #define IDR_BASESCRIPT                    4004
+#define IDR_LUAHOOK                       4005
+#define IDR_MEMSMEM                       4006
+#define IDR_STOCKCOND                     4007
+#define IDR_STOCKACT                      4008
+#define IDR_STOCKCONDHOOK                 4009
+#define IDR_STOCKACTHOOK                  4010
+#define IDR_CONSTPARSER                   4011
+#define IDR_CONSTDECODER                  4012
 
 #define IDM_EDIT_FINDREPLACE              6000
 #define IDM_EDIT_FIND                     6001
@@ -19,5 +27,4 @@
 #define IDM_HELP_LICENSES                 6009
 #define IDM_VIEW_FOLDALL                  6010
 #define IDM_VIEW_UNFOLDALL                6011
-#define IDM_EDIT_AUTOCOMPLETE             6012
 #define IDM_FILE_COMPILENONAG             6013

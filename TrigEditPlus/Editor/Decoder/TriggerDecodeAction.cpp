@@ -24,12 +24,22 @@
 #include "../TriggerEncDec.h"
 #include "../UnitProp.h"
 
-extern TriggerStatementDecl ActionFields[57];
-
 std::string DecodeUPRPData(const UPRPData* data);
 
-void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) const {
+extern TriggerStatementDecl ActionFields[57];
+
+bool CallActionHook(lua_State* L, const TrigAct& cond, std::string& ret);
+
+void TriggerEditor::DecodeAction(lua_State* L, StringBuffer& buf, const TrigAct& content) const
+{
+	static std::string ret;
 	buf << "\t\t";
+
+	if(CallActionHook(L, content, ret))
+	{
+		buf << ret << "\r\n";
+		return;
+	}
 
 	if(content.prop & 0x2) {
 		buf << "Disabled(";

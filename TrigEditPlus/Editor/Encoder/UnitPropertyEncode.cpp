@@ -23,7 +23,7 @@
 #include <map>
 #include <vector>
 
-#include "Lua/lua.hpp"
+#include "../Lua/lib/lua.hpp"
 #include "../UnitProp.h"
 
 int LuaErrorf(lua_State* L, const char* format, ...);
@@ -54,7 +54,7 @@ char* GetUPRPChunkData() {
 }
 
 
-int LuaParseProperty(lua_State* L) {
+int LuaParseUPRP(lua_State* L) {
 	if(lua_isnumber(L, -1)) return 1; // return as-is;
 
 	if(!lua_istable(L, -1)) {

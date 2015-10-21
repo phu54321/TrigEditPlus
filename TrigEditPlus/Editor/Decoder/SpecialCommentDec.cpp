@@ -29,8 +29,8 @@ void DecodeSpecialComment(const Trig& trg, char output[2320], int& outputlength)
 	}
 
 	// Get data
-	memcpy(output + 0, &trg.cond[1], 300); // 15 conditions
-	memcpy(output + 30, &trg.act[1], 2020); // 63 actions + flag)
+	memcpy(output + 20, &trg.cond[1], 300); // 15 conditions
+	memcpy(output + 340, &trg.act[1], 2020); // 63 actions + flag)
 
 	for(int i = 0 ; i < 2320 ; i++) {
 

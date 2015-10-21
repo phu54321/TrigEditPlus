@@ -22,6 +22,8 @@
 
 #include "TriggerEditor.h"
 #include "MapNamespace.h"
+#include "Lua/LuaKeywords.h"
+
 #include "../resource.h"
 #include "../version.h"
 #include <CommCtrl.h>
@@ -32,7 +34,6 @@
 const int TreeViewID = 1000;
 const int ScintillaID = 1001;
 const int TabID = 1002;
-const int ElmnTableID = 1003;
 const int StatusBarID = 1004;
 
 ///////
@@ -47,11 +48,11 @@ struct SearchQuery
 };
 
 
-void ApplyAutocomplete(TriggerEditor* te);
 void ProcessSearchMessage(HWND hTrigDlg, TriggerEditor* te, SearchQuery* q);
+void LuaAutoRequireLibs(lua_State* L);
 
 TriggerEditor::TriggerEditor() : hTrigDlg(NULL), hScintilla(NULL),
-	hFindDlg(NULL), _textedited(false) {}
+	hFindDlg(NULL), _textedited(false), _nsLua(NULL) {}
 TriggerEditor::~TriggerEditor() {}
 
 int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
@@ -84,7 +85,25 @@ int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 	SendSciMessage(SCI_SETSAVEPOINT, 0, 0);
 	SendSciMessage(SCI_EMPTYUNDOBUFFER, 0, 0);
 	SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_CONTRACT, 0);
+	SendSciMessage(SCI_SETWORDCHARS, 0, LPARAM("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+		// Hangul characters
+		"\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF"
+		"\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF"
+		"\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF"
+		"\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF"
+		"\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF"
+		"\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF"
+		));
+
+	SendSciMessage(SCI_AUTOCSETORDER, SC_ORDER_CUSTOM, 0);
+	SendSciMessage(SCI_AUTOCSETAUTOHIDE, 0, 0);
+	SendSciMessage(SCI_AUTOCSETSEPARATOR, 0xFF, 0);
+
 	_textedited = false;
+
+	_nsLua = luaL_newstate();
+	LuaAutoRequireLibs(_nsLua);
+	UpdateLuaKeywords(_nsLua);
 
 	HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
 	SetWindowText(hStatusBar, "TrigEditPlus loaded");
@@ -146,309 +165,290 @@ static FINDREPLACE fr;
 
 void Editor_CharAdded(SCNotification* ne, TriggerEditor* te);
 void ApplyEditorStyle(TriggerEditor* te);
-void ApplyAutocomplete(TriggerEditor* te);
 
 LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	TriggerEditor* te = reinterpret_cast<TriggerEditor*>(GetWindowLong(hWnd, GWL_USERDATA));
 	const static int FindReplaceMsg = RegisterWindowMessage(FINDMSGSTRING);
 
 
-	switch(msg) {
+	switch(msg)
+	{
 	case WM_SETFOCUS:
 		SetFocus(te->hScintilla);
 		break;
 
 	case WM_CREATE:
-		{
-			EnableWindow(hSCMD2MainWindow, FALSE);
-			te = (TriggerEditor*)((CREATESTRUCT*)lParam)->lpCreateParams;
-			SetWindowLong(hWnd, GWL_USERDATA, (LONG)te);
+	{
+		EnableWindow(hSCMD2MainWindow, FALSE);
+		te = (TriggerEditor*)((CREATESTRUCT*)lParam)->lpCreateParams;
+		SetWindowLong(hWnd, GWL_USERDATA, (LONG)te);
 
-			// Init trigger list
-			te->hTriggerList = CreateWindowEx(
-				0,
-				WC_TREEVIEW,
-				TEXT("Tree View"),
-				WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS,
-				0,
-				0,
-				200,
-				600,
-				hWnd,
-				(HMENU)TreeViewID,
-				hInstance,
-				NULL);
+		// Init trigger list
+		te->hTriggerList = CreateWindowEx(
+			0,
+			WC_TREEVIEW,
+			TEXT("Tree View"),
+			WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS,
+			0,
+			0,
+			200,
+			600,
+			hWnd,
+			(HMENU)TreeViewID,
+			hInstance,
+			NULL);
 
-			// Init editor window
-			te->hScintilla = CreateWindow(
-				"Scintilla",
-				"",
-				WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_VSCROLL,
-				200,
-				0,
-				400,
-				600,
-				hWnd,
-				(HMENU)ScintillaID,
-				hInstance,
-				NULL
-				);
+		// Init editor window
+		te->hScintilla = CreateWindow(
+			"Scintilla",
+			"",
+			WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_VSCROLL,
+			200,
+			0,
+			400,
+			600,
+			hWnd,
+			(HMENU)ScintillaID,
+			hInstance,
+			NULL
+			);
 
-			te->_pSciMsg = (SciFnDirect)SendMessage(te->hScintilla, SCI_GETDIRECTFUNCTION, 0, 0);
-			te->_pSciWndData = (sptr_t)SendMessage(te->hScintilla, SCI_GETDIRECTPOINTER, 0, 0);
-			CreateStatusWindow(SBARS_SIZEGRIP | WS_CHILD | WS_VISIBLE, 
-				"Loading triggers...", hWnd, StatusBarID);
+		te->_pSciMsg = (SciFnDirect)SendMessage(te->hScintilla, SCI_GETDIRECTFUNCTION, 0, 0);
+		te->_pSciWndData = (sptr_t)SendMessage(te->hScintilla, SCI_GETDIRECTPOINTER, 0, 0);
+		CreateStatusWindow(SBARS_SIZEGRIP | WS_CHILD | WS_VISIBLE,
+			"Loading triggers...", hWnd, StatusBarID);
 
-			ApplyEditorStyle(te);
-
-			// Autocomplete list
-			HWND hElmnTable = CreateWindow("listbox", NULL,
-				WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_VSCROLL |
-				LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | LBS_SORT | LBS_WANTKEYBOARDINPUT,
-				600, 0, 200, 600, hWnd, (HMENU)ElmnTableID, hInstance, NULL);
-
-			SendMessage(hElmnTable, WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT), TRUE);
-			te->hElmnTable = hElmnTable;
-		}
-		return 0;
+		ApplyEditorStyle(te);
+	}
+	return 0;
 
 	case WM_SIZE:
-		{
-			HWND hStatusBar = GetDlgItem(hWnd, StatusBarID);
-			SendMessage(hStatusBar, msg, wParam, lParam);
+	{
+		HWND hStatusBar = GetDlgItem(hWnd, StatusBarID);
+		SendMessage(hStatusBar, msg, wParam, lParam);
 
-			RECT statusbarRect;
-			SendMessage(hStatusBar, SB_GETRECT, 0, (LPARAM)&statusbarRect);
-			int statusbar_height = statusbarRect.bottom - statusbarRect.top;
+		RECT statusbarRect;
+		SendMessage(hStatusBar, SB_GETRECT, 0, (LPARAM)&statusbarRect);
+		int statusbar_height = statusbarRect.bottom - statusbarRect.top;
 
 
-			HWND hElmnTable = te->hElmnTable;
+		RECT rt;
+		GetClientRect(hWnd, &rt);
+		int scrW = rt.right - rt.left;
+		int scrH = rt.bottom - rt.top - statusbar_height;
 
-			RECT rt;
-			GetClientRect(hWnd, &rt);
-			int scrW = rt.right - rt.left;
-			int scrH = rt.bottom - rt.top - statusbar_height;
-
-			HDWP hdwp = BeginDeferWindowPos(2);
-			DeferWindowPos(hdwp, te->hTriggerList, NULL, 0, 0, 200, scrH - 3, SWP_NOZORDER);
-			DeferWindowPos(hdwp, te->hScintilla, NULL, 205, 0, scrW - 410, scrH - 3, SWP_NOZORDER);
-			DeferWindowPos(hdwp, hElmnTable, NULL, scrW - 200, 0, 200, scrH - 3, SWP_NOZORDER);
-			EndDeferWindowPos(hdwp);
-		}
-		return 0;
-
-	case WM_VKEYTOITEM:
-		{
-			// when user pressed enter while selecting item
-			if(LOWORD(lParam) == ElmnTableID && wParam == 13) {
-				ApplyAutocomplete(te);
-				SetFocus(te->hScintilla);
-			}
-		}
-		return 0;
+		HDWP hdwp = BeginDeferWindowPos(2);
+		DeferWindowPos(hdwp, te->hTriggerList, NULL, 0, 0, 200, scrH - 3, SWP_NOZORDER);
+		DeferWindowPos(hdwp, te->hScintilla, NULL, 205, 0, scrW - 205, scrH - 3, SWP_NOZORDER);
+		EndDeferWindowPos(hdwp);
+	}
+	return 0;
 
 	case WM_COMMAND:
+	{
+		switch(LOWORD(wParam))
 		{
-			switch(LOWORD(wParam)) {
-			case IDM_FILE_EXIT:
-				PostMessage(hWnd, WM_CLOSE, 0, 0);
-				return 0;
+		case IDM_FILE_EXIT:
+			PostMessage(hWnd, WM_CLOSE, 0, 0);
+			return 0;
 
-			case IDM_FILE_COMPILE:
-			case IDM_FILE_COMPILENONAG:
-				if(te->EncodeTriggerCode()) {
-					// OK.
-					HWND hStatusBar = GetDlgItem(hWnd, StatusBarID);
-					SetWindowText(hStatusBar, "Trigger successfully updated");
-					if(LOWORD(wParam) == IDM_FILE_COMPILE) MessageBox(hWnd, "Trigger successfully updated", "OK", MB_OK);
-					te->SendSciMessage(SCI_SETSAVEPOINT, 0, 0);
-					te->_textedited = false;
-				}
-
-				else {
-					// Print error
-					HWND hStatusBar = GetDlgItem(hWnd, StatusBarID);
-					SetWindowText(hStatusBar, "Error on compiling");
-					MessageBox(hWnd, te->_errlist.str().c_str(), NULL, MB_OK);
-				}
-				return 0;
-
-			case IDM_VIEW_FOLDALL:
-				te->SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_CONTRACT, 0);
-				te->SendSciMessage(SCI_SCROLLCARET, 0, 0);
-				break;
-
-			case IDM_VIEW_UNFOLDALL:
-				te->SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_EXPAND, 0);
-				te->SendSciMessage(SCI_SCROLLCARET, 0, 0);
-				break;
-
-				// EDIT
-			case IDM_EDIT_FIND:
-			case IDM_EDIT_REPLACE:
+		case IDM_FILE_COMPILE:
+		case IDM_FILE_COMPILENONAG:
+			// Update keyword with every compile. - Frequent just enough.
+			if(te->_nsLua)
 			{
-					if(te->hFindDlg)
-					{
-						DestroyWindow(te->hFindDlg);
-						te->hFindDlg = NULL;
-					}
+				lua_close(te->_nsLua);
+				te->_nsLua = luaL_newstate();
+				LuaAutoRequireLibs(te->_nsLua);
+			}
+			UpdateLuaKeywords(te->_nsLua);
 
-					ZeroMemory(&fr, sizeof(fr));
-
-					// Initialize FINDREPLACE
-					fr.lStructSize = sizeof(fr);
-					fr.hwndOwner = hWnd;
-					//fr.hInstance = hInstance;
-					fr.Flags = FR_DOWN;
-					fr.lpstrFindWhat = szFindText;
-					fr.lpstrReplaceWith = szReplaceText;
-					ZeroMemory(szFindText, 4096);
-					ZeroMemory(szReplaceText, 4096);
-
-					// Get selected text and fill lpstrFindWhat with it.
-					int selstart = te->SendSciMessage(SCI_GETSELECTIONSTART, 0, 0);
-					int selend = te->SendSciMessage(SCI_GETSELECTIONEND, 0, 0);
-					if(selend != selstart)
-					{
-						Sci_TextRange tr;
-						tr.chrg.cpMin = selstart;
-						tr.chrg.cpMax = selend;
-						tr.lpstrText = new char[selend - selstart + 1];
-						te->SendSciMessage(SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
-						strncpy(szFindText, tr.lpstrText, 4096);
-						szFindText[4095] = '\0';
-						delete[] tr.lpstrText;
-					}
-
-					fr.wFindWhatLen = 4096;
-					fr.wReplaceWithLen = 4096;
-
-					if(LOWORD(wParam) == IDM_EDIT_FIND) te->hFindDlg = FindText(&fr);
-					else te->hFindDlg = ReplaceText(&fr);
-				}
-				return 0;
-
-			case IDM_EDIT_AUTOCOMPLETE:
-				ApplyAutocomplete(te);
-				break;
-
-
-
-			case IDM_HELP_ABOUTTRIGEDITPLUS:
-				MessageBox(hWnd,
-					"TrigEditPlus " VERSION ". Made by trgk(phu54321@naver.com)\r\n"
-					"Simple & powerful trigger editor.\r\n"
-					"This program uses Scintilla and Lua.",
-
-					"Info", MB_OK);
-
-				return 0;
-
-			case IDM_HELP_LICENSES:
-				MessageBox(hWnd,
-					"TrigEditPlus is distributed in MIT License.\r\n"
-					"Source code can be obtained at http://github.com/phu54321/TrigEditPlus/\r\n"
-					"\r\n"
-					"Copyright (c) 2014 trgk(phu54321@naver.com)\r\n"
-					"\r\n"
-					"Permission is hereby granted, free of charge, to any person obtaining a copy\r\n"
-					"of this software and associated documentation files (the \"Software\"), to deal\r\n"
-					"in the Software without restriction, including without limitation the rights\r\n"
-					"to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\r\n"
-					"copies of the Software, and to permit persons to whom the Software is\r\n"
-					"furnished to do so, subject to the following conditions:\r\n"
-					"\r\n"
-					"The above copyright notice and this permission notice shall be included in\r\n"
-					"all copies or substantial portions of the Software.\r\n"
-					"\r\n"
-					"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\n"
-					"IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\n"
-					"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\n"
-					"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\n"
-					"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\n"
-					"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\r\n"
-					"THE SOFTWARE.\r\n"
-					, "TrigEditPlus License", MB_OK);
-
-				MessageBox(hWnd,
-					"Copyright 1994-2014 Lua.org, PUC-Rio.\r\n"
-					"Permission is hereby granted, free of charge, to any person obtaining a copy of\r\n"
-					"this software and associated documentation files (the \"Software\"), to deal in\r\n"
-					"the Software without restriction, including without limitation the rights to\r\n"
-					"use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies\r\n"
-					"of the Software, and to permit persons to whom the Software is furnished to do\r\n"
-					"so, subject to the following conditions:\r\n"
-					"\r\n"
-					"The above copyright notice and this permission notice shall be included in all\r\n"
-					"copies or substantial portions of the Software.\r\n"
-					"\r\n"
-					"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\n"
-					"IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\n"
-					"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\n"
-					"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\n"
-					"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\n"
-					"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\r\n"
-					"SOFTWARE.\r\n",
-					"Lua License",
-					MB_OK);
-
-				MessageBox(hWnd,
-					"License for Scintilla and SciTE\r\n"
-					"\r\n"
-					"Copyright 1998-2002 by Neil Hodgson <neilh@scintilla.org>\r\n"
-					"\r\n"
-					"All Rights Reserved \r\n"
-					"\r\n"
-					"Permission to use, copy, modify, and distribute this software and its \r\n"
-					"documentation for any purpose and without fee is hereby granted, \r\n"
-					"provided that the above copyright notice appear in all copies and that \r\n"
-					"both that copyright notice and this permission notice appear in \r\n"
-					"supporting documentation. \r\n"
-					"\r\n"
-					"NEIL HODGSON DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS \r\n"
-					"SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY \r\n"
-					"AND FITNESS, IN NO EVENT SHALL NEIL HODGSON BE LIABLE FOR ANY \r\n"
-					"SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES \r\n"
-					"WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, \r\n"
-					"WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER \r\n"
-					"TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE \r\n"
-					"OR PERFORMANCE OF THIS SOFTWARE. \r\n",
-					"Scintilla License",
-					MB_OK);
-
-				return 0;
-
-
-
-
-			case IDM_EDIT_NEWTRIGGER:
-				{
-					const char* newtriggertext = 
-						"Trigger {\r\n"
-						"	players = {},\r\n"
-						"	conditions = {},\r\n"
-						"	actions = {}\r\n"
-						"}\r\n"
-						;
-					te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)newtriggertext);
-				}
-				return 0;
-
-			case ElmnTableID:
-				if(HIWORD(wParam) == LBN_DBLCLK) {
-					ApplyAutocomplete(te);
-					SetFocus(te->hScintilla);
-				}
-				return 0;
+			if(te->EncodeTriggerCode())
+			{
+				// OK.
+				HWND hStatusBar = GetDlgItem(hWnd, StatusBarID);
+				SetWindowText(hStatusBar, "Trigger successfully updated");
+				if(LOWORD(wParam) == IDM_FILE_COMPILE) MessageBox(hWnd, "Trigger successfully updated", "OK", MB_OK);
+				te->SendSciMessage(SCI_SETSAVEPOINT, 0, 0);
+				te->_textedited = false;
 			}
 
+			else
+			{
+				// Print error
+				HWND hStatusBar = GetDlgItem(hWnd, StatusBarID);
+				SetWindowText(hStatusBar, "Error on compiling");
+				MessageBox(hWnd, te->_errlist.str().c_str(), NULL, MB_OK);
+			}
+			return 0;
+
+		case IDM_VIEW_FOLDALL:
+			te->SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_CONTRACT, 0);
+			te->SendSciMessage(SCI_SCROLLCARET, 0, 0);
+			break;
+
+		case IDM_VIEW_UNFOLDALL:
+			te->SendSciMessage(SCI_FOLDALL, SC_FOLDACTION_EXPAND, 0);
+			te->SendSciMessage(SCI_SCROLLCARET, 0, 0);
+			break;
+
+			// EDIT
+		case IDM_EDIT_FIND:
+		case IDM_EDIT_REPLACE:
+		{
+			if(te->hFindDlg)
+			{
+				DestroyWindow(te->hFindDlg);
+				te->hFindDlg = NULL;
+			}
+
+			ZeroMemory(&fr, sizeof(fr));
+
+			// Initialize FINDREPLACE
+			fr.lStructSize = sizeof(fr);
+			fr.hwndOwner = hWnd;
+			//fr.hInstance = hInstance;
+			fr.Flags = FR_DOWN;
+			fr.lpstrFindWhat = szFindText;
+			fr.lpstrReplaceWith = szReplaceText;
+			ZeroMemory(szFindText, 4096);
+			ZeroMemory(szReplaceText, 4096);
+
+			// Get selected text and fill lpstrFindWhat with it.
+			int selstart = te->SendSciMessage(SCI_GETSELECTIONSTART, 0, 0);
+			int selend = te->SendSciMessage(SCI_GETSELECTIONEND, 0, 0);
+			if(selend != selstart)
+			{
+				Sci_TextRange tr;
+				tr.chrg.cpMin = selstart;
+				tr.chrg.cpMax = selend;
+				tr.lpstrText = new char[selend - selstart + 1];
+				te->SendSciMessage(SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
+				strncpy(szFindText, tr.lpstrText, 4096);
+				szFindText[4095] = '\0';
+				delete[] tr.lpstrText;
+			}
+
+			fr.wFindWhatLen = 4096;
+			fr.wReplaceWithLen = 4096;
+
+			if(LOWORD(wParam) == IDM_EDIT_FIND) te->hFindDlg = FindText(&fr);
+			else te->hFindDlg = ReplaceText(&fr);
+		}
+		return 0;
+
+
+
+		case IDM_HELP_ABOUTTRIGEDITPLUS:
+			MessageBox(hWnd,
+				"TrigEditPlus " VERSION ". Made by trgk(phu54321@naver.com)\r\n"
+				"Simple & powerful trigger editor.\r\n"
+				"This program uses Scintilla and Lua.",
+
+				"Info", MB_OK);
+
+			return 0;
+
+		case IDM_HELP_LICENSES:
+			MessageBox(hWnd,
+				"TrigEditPlus is distributed in MIT License.\r\n"
+				"Source code can be obtained at http://github.com/phu54321/TrigEditPlus/\r\n"
+				"\r\n"
+				"Copyright (c) 2014 trgk(phu54321@naver.com)\r\n"
+				"\r\n"
+				"Permission is hereby granted, free of charge, to any person obtaining a copy\r\n"
+				"of this software and associated documentation files (the \"Software\"), to deal\r\n"
+				"in the Software without restriction, including without limitation the rights\r\n"
+				"to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\r\n"
+				"copies of the Software, and to permit persons to whom the Software is\r\n"
+				"furnished to do so, subject to the following conditions:\r\n"
+				"\r\n"
+				"The above copyright notice and this permission notice shall be included in\r\n"
+				"all copies or substantial portions of the Software.\r\n"
+				"\r\n"
+				"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\n"
+				"IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\n"
+				"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\n"
+				"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\n"
+				"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\n"
+				"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\r\n"
+				"THE SOFTWARE.\r\n"
+				, "TrigEditPlus License", MB_OK);
+
+			MessageBox(hWnd,
+				"Copyright 1994-2014 Lua.org, PUC-Rio.\r\n"
+				"Permission is hereby granted, free of charge, to any person obtaining a copy of\r\n"
+				"this software and associated documentation files (the \"Software\"), to deal in\r\n"
+				"the Software without restriction, including without limitation the rights to\r\n"
+				"use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies\r\n"
+				"of the Software, and to permit persons to whom the Software is furnished to do\r\n"
+				"so, subject to the following conditions:\r\n"
+				"\r\n"
+				"The above copyright notice and this permission notice shall be included in all\r\n"
+				"copies or substantial portions of the Software.\r\n"
+				"\r\n"
+				"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\n"
+				"IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\n"
+				"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\n"
+				"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\n"
+				"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\n"
+				"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\r\n"
+				"SOFTWARE.\r\n",
+				"Lua License",
+				MB_OK);
+
+			MessageBox(hWnd,
+				"License for Scintilla and SciTE\r\n"
+				"\r\n"
+				"Copyright 1998-2002 by Neil Hodgson <neilh@scintilla.org>\r\n"
+				"\r\n"
+				"All Rights Reserved \r\n"
+				"\r\n"
+				"Permission to use, copy, modify, and distribute this software and its \r\n"
+				"documentation for any purpose and without fee is hereby granted, \r\n"
+				"provided that the above copyright notice appear in all copies and that \r\n"
+				"both that copyright notice and this permission notice appear in \r\n"
+				"supporting documentation. \r\n"
+				"\r\n"
+				"NEIL HODGSON DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS \r\n"
+				"SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY \r\n"
+				"AND FITNESS, IN NO EVENT SHALL NEIL HODGSON BE LIABLE FOR ANY \r\n"
+				"SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES \r\n"
+				"WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, \r\n"
+				"WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER \r\n"
+				"TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE \r\n"
+				"OR PERFORMANCE OF THIS SOFTWARE. \r\n",
+				"Scintilla License",
+				MB_OK);
+
+			return 0;
+
+
+
+
+		case IDM_EDIT_NEWTRIGGER:
+		{
+			const char* newtriggertext =
+				"Trigger {\r\n"
+				"	players = {},\r\n"
+				"	conditions = {\r\n"
+				"	},\r\n"
+				"	actions = {\r\n"
+				"	}\r\n"
+				"}\r\n"
+				;
+			te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)newtriggertext);
+		}
+		return 0;
 		}
 		break;
 
 	case WM_NOTIFY:
-		if(wParam == ScintillaID) {
+		if(wParam == ScintillaID)
+		{
 			SCNotification *ne = reinterpret_cast<SCNotification*>(lParam);
-			switch(ne->nmhdr.code) {
+			switch(ne->nmhdr.code)
+			{
 			case SCN_SAVEPOINTREACHED:
 				SetWindowText(hWnd, "TrigEditPlus " VERSION);
 				te->_textedited = false;
@@ -460,21 +460,22 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 				return 0;
 
 			case SCN_MARGINCLICK:
-				{
-					const int modifiers = ne->modifiers;
-					const int position = ne->position;
-					const int margin = ne->margin;
-					const int line_number = te->SendSciMessage(SCI_LINEFROMPOSITION, position, 0);
+			{
+				const int modifiers = ne->modifiers;
+				const int position = ne->position;
+				const int margin = ne->margin;
+				const int line_number = te->SendSciMessage(SCI_LINEFROMPOSITION, position, 0);
 
-					switch (margin) {
-					case 2:
-						{
-							te->SendSciMessage(SCI_TOGGLEFOLD, line_number, 0);
-						}
-						break;
-					}
+				switch(margin)
+				{
+				case 2:
+				{
+					te->SendSciMessage(SCI_TOGGLEFOLD, line_number, 0);
 				}
-				return 0;
+				break;
+				}
+			}
+			return 0;
 
 			case SCN_CHARADDED:
 				Editor_CharAdded(ne, te);
@@ -501,37 +502,41 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 		break;
 
 	case WM_CLOSE:
+	{
+		if(te->_textedited)
 		{
-			if(te->_textedited) {
-				int select = MessageBox(hWnd, "There are unsaved change in trigger text. Compile?", "Save warning", MB_YESNOCANCEL);
-				/**/ if(select == IDCANCEL) return 0;
-				else if(select == IDNO);
-				else {
-					if(te->EncodeTriggerCode());
-					else {
-						MessageBox(hWnd, te->_errlist.str().c_str(), NULL, MB_OK);
-						return 0;
-					}
+			int select = MessageBox(hWnd, "There are unsaved change in trigger text. Compile?", "Save warning", MB_YESNOCANCEL);
+			/**/ if(select == IDCANCEL) return 0;
+			else if(select == IDNO);
+			else
+			{
+				if(te->EncodeTriggerCode());
+				else
+				{
+					MessageBox(hWnd, te->_errlist.str().c_str(), NULL, MB_OK);
+					return 0;
 				}
 			}
 		}
-		break;
+	}
+	break;
 
 	case WM_DESTROY:
-		{
-			if(te->hFindDlg) DestroyWindow(te->hFindDlg);
-			EnableWindow(hSCMD2MainWindow, TRUE);
-			te->hTrigDlg = NULL;
-			te->hScintilla = NULL;
-			te->hFindDlg = NULL;
-			te->_pSciMsg = NULL;
-			te->_pSciWndData = NULL;
-			SetFocus(hSCMD2MainWindow);
-		}
-		return 0;
+	{
+		if(te->hFindDlg) DestroyWindow(te->hFindDlg);
+		EnableWindow(hSCMD2MainWindow, TRUE);
+		te->hTrigDlg = NULL;
+		te->hScintilla = NULL;
+		te->hFindDlg = NULL;
+		te->_pSciMsg = NULL;
+		te->_pSciWndData = NULL;
+		SetFocus(hSCMD2MainWindow);
+	}
+	return 0;
 
 	}
 
+	}
 
 	if(msg == FindReplaceMsg) {
 		ProcessSearchMessage(hWnd, te, (SearchQuery*)lParam);

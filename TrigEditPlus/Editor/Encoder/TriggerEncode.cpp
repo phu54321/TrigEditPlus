@@ -21,33 +21,14 @@
  */
 
 #include "../TriggerEditor.h"
-#include "Lua/lua.hpp"
+#include "../Lua/lib/lua.hpp"
 #include "../../resource.h"
-#include "LuaCommon.h"
+#include "../Lua/LuaCommon.h"
 #include <stdio.h>
 #include <stdarg.h>
 
-void LuaRunResource(lua_State* L, LPCSTR respath) {
-	HRSRC res = FindResource(hInstance, respath, RT_RCDATA);
-	if(res) {
-		HGLOBAL resd = LoadResource(hInstance, res);
-		size_t fsize = SizeofResource(hInstance, res);
-		void* data = LockResource(resd);
-		char* str = new char[fsize + 1];
-		memcpy(str, data, fsize);
-		str[fsize] = '\0';
-		UnlockResource(resd);
-
-		luaL_loadbuffer(L, str, fsize, "basescript");
-		lua_pcall(L, 0, LUA_MULTRET, 0);
-
-		delete[] str;
-	}
-	else {
-		fprintf(stderr, "resource load failed : %d\n", GetLastError());
-	}
-}
-
+// User lua loader
+void LuaAutoRequireLibs(lua_State* L);
 
 TriggerEditor* LuaGetEditor(lua_State* L) {
 	lua_getglobal(L, "__inst_global_TriggerEditor");
@@ -297,31 +278,14 @@ bool TriggerEditor::EncodeTriggerCode() {
 	// Initialize new lua state.
 	lua_State *L;
 	L = luaL_newstate();
-
-
-	// Init
-	luaL_openlibs(L);
-
-	// Load basic script.
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT));
-	// basescript.lua contains case-insensitive patch, so this should be called
-	// before any variable is declared
-
-	// Declare global thing.
+	LuaAutoRequireLibs(L);
+	
+	// Add various compile-related functions.
 	lua_pushlightuserdata(L, this);
 	lua_setglobal(L, "__inst_global_TriggerEditor");
-
-	// Load basic functions.
-	lua_register(L, "ParseUnit", LuaParseUnit);
-	lua_register(L, "ParseLocation", LuaParseLocation);
-	lua_register(L, "ParseSwitchName", LuaParseSwitchName);
-	lua_register(L, "ParseString", LuaParseString);
 	lua_register(L, "__internal__AddTrigger", LuaParseTrigger);
-	lua_register(L, "ParseProperty", LuaParseProperty);
-
-	// Run trigger code.
 	lua_pushcfunction(L, LuaErrorHandler); // Error handler
-
+	
 	std::string editortext = GetEditorText();
 	if(luaL_loadbufferx(L, editortext.data(), editortext.size(), "main", "t") != LUA_OK) {
 		PrintErrorMessage(lua_tostring(L, -1));
