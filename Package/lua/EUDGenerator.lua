@@ -12,7 +12,7 @@ local function SetMemory2(a,b,c)
     return string
 end
 
-function Uì´ë¦„(a,b,c) -- (ID, OldCode, NewCode)
+function UÀÌ¸§(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x660260 + a*2
@@ -28,7 +28,7 @@ function Uì´ë¦„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì²´ë ¥(a,b,c) -- (ID, OldCode, NewCode)
+function UÃ¼·Â(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x662350 + a*4
@@ -44,7 +44,7 @@ function Uì²´ë ¥(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì‰´ë“œ(a,b,c) -- (ID, OldCode, NewCode)
+function U½¯µå(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x660E00 + a*2
@@ -60,7 +60,7 @@ function Uì‰´ë“œ(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì‰´ë“œì—¬ë¶€(a,b,c) -- (ID, OldCode, NewCode)
+function U½¯µå¿©ºÎ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6647B0 + a*1
@@ -76,7 +76,7 @@ function Uì‰´ë“œì—¬ë¶€(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uë°©ì–´ë ¥(a,b,c) -- (ID, OldCode, NewCode)
+function U¹æ¾î·Â(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x65FEC8 + a*1
@@ -92,7 +92,7 @@ function Uë°©ì–´ë ¥(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uë°©ì–´êµ¬(a,b,c) -- (ID, OldCode, NewCode)
+function U¹æ¾î±¸(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6635D0 + a*1
@@ -108,7 +108,7 @@ function Uë°©ì–´êµ¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uë¯¸ë„¤ë„(a,b,c) -- (ID, OldCode, NewCode)
+function U¹Ì³×¶ö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663888 + a*2
@@ -124,7 +124,7 @@ function Uë¯¸ë„¤ë„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uê°€ìŠ¤(a,b,c) -- (ID, OldCode, NewCode)
+function U°¡½º(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x65FD00 + a*2
@@ -140,7 +140,7 @@ function Uê°€ìŠ¤(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uìƒì‚°ì†ë„(a,b,c) -- (ID, OldCode, NewCode)
+function U»ı»ê¼Óµµ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x660428 + a*2
@@ -156,7 +156,7 @@ function Uìƒì‚°ì†ë„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì§€ìƒë¬´ê¸°(a,b,c) -- (ID, OldCode, NewCode)
+function UÁö»ó¹«±â(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6636B8 + a*1
@@ -172,7 +172,7 @@ function Uì§€ìƒë¬´ê¸°(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uê³µì¤‘ë¬´ê¸°(a,b,c) -- (ID, OldCode, NewCode)
+function U°øÁß¹«±â(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6616E0 + a*1
@@ -188,7 +188,7 @@ function Uê³µì¤‘ë¬´ê¸°(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì¸êµ¬ì†Œëª¨ëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
+function UÀÎ±¸¼Ò¸ğ·®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663CE8 + a*1
@@ -204,7 +204,7 @@ function Uì¸êµ¬ì†Œëª¨ëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì¸êµ¬ê³µê¸‰ëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
+function UÀÎ±¸°ø±Ş·®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6646C8 + a*1
@@ -220,7 +220,7 @@ function Uì¸êµ¬ê³µê¸‰ëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uê·¸ë£¹í”Œë˜ê·¸(a,b,c) -- (ID, OldCode, NewCode)
+function U±×·ìÇÃ·¡±×(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6637A0 + a*1
@@ -236,7 +236,7 @@ function Uê·¸ë£¹í”Œë˜ê·¸(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uìˆ˜ì†¡ì†Œëª¨ëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
+function U¼ö¼Û¼Ò¸ğ·®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x664410 + a*1
@@ -252,7 +252,7 @@ function Uìˆ˜ì†¡ì†Œëª¨ëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uìˆ˜ì†¡ì œê³µëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
+function U¼ö¼ÛÁ¦°ø·®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x660988 + a*1
@@ -268,7 +268,7 @@ function Uìˆ˜ì†¡ì œê³µëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uìƒì‚°ì‹œì ìˆ˜(a,b,c) -- (ID, OldCode, NewCode)
+function U»ı»ê½ÃÁ¡¼ö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663408 + a*2
@@ -284,7 +284,7 @@ function Uìƒì‚°ì‹œì ìˆ˜(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UíŒŒê´´ì‹œì ìˆ˜(a,b,c) -- (ID, OldCode, NewCode)
+function UÆÄ±«½ÃÁ¡¼ö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663EB8 + a*2
@@ -300,7 +300,7 @@ function UíŒŒê´´ì‹œì ìˆ˜(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uë°©ì–´íƒ€ì…(a,b,c) -- (ID, OldCode, NewCode)
+function U¹æ¾îÅ¸ÀÔ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x662180 + a*1
@@ -316,7 +316,7 @@ function Uë°©ì–´íƒ€ì…(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì‹œì•¼(a,b,c) -- (ID, OldCode, NewCode)
+function U½Ã¾ß(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663238 + a*1
@@ -332,7 +332,7 @@ function Uì‹œì•¼(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uë¶€ê°€ì‚¬ê±°ë¦¬(a,b,c) -- (ID, OldCode, NewCode)
+function UºÎ°¡»ç°Å¸®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x662DB8 + a*1
@@ -348,7 +348,7 @@ function Uë¶€ê°€ì‚¬ê±°ë¦¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UìŠ¤í˜ì…œì–´ë¹Œë¦¬í‹°(a,b,c) -- (ID, OldCode, NewCode)
+function U½ºÆä¼È¾îºô¸®Æ¼(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x664080 + a*4
@@ -364,7 +364,7 @@ function UìŠ¤í˜ì…œì–´ë¹Œë¦¬í‹°(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uë¶€ê°€ìœ ë‹›(a,b,c) -- (ID, OldCode, NewCode)
+function UºÎ°¡À¯´Ö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6607C0 + a*2
@@ -380,7 +380,7 @@ function Uë¶€ê°€ìœ ë‹›(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uìƒì‚°ì†Œë¦¬(a,b,c) -- (ID, OldCode, NewCode)
+function U»ı»ê¼Ò¸®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x661FC0 + a*2
@@ -396,7 +396,7 @@ function Uìƒì‚°ì†Œë¦¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uyesì†Œë¦¬ì²˜ìŒ(a,b,c) -- (ID, OldCode, NewCode)
+function Uyes¼Ò¸®Ã³À½(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663C10 + a*2
@@ -412,7 +412,7 @@ function Uyesì†Œë¦¬ì²˜ìŒ(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uyesì†Œë¦¬ë(a,b,c) -- (ID, OldCode, NewCode)
+function Uyes¼Ò¸®³¡(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x661440 + a*2
@@ -428,7 +428,7 @@ function Uyesì†Œë¦¬ë(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uwhatì†Œë¦¬ì²˜ìŒ(a,b,c) -- (ID, OldCode, NewCode)
+function Uwhat¼Ò¸®Ã³À½(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x65FFB0 + a*2
@@ -444,7 +444,7 @@ function Uwhatì†Œë¦¬ì²˜ìŒ(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uwhatì†Œë¦¬ë(a,b,c) -- (ID, OldCode, NewCode)
+function Uwhat¼Ò¸®³¡(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x662BF0 + a*2
@@ -460,7 +460,7 @@ function Uwhatì†Œë¦¬ë(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Upissedì†Œë¦¬ì²˜ìŒ(a,b,c) -- (ID, OldCode, NewCode)
+function Upissed¼Ò¸®Ã³À½(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663B38 + a*2
@@ -476,7 +476,7 @@ function Upissedì†Œë¦¬ì²˜ìŒ(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Upissedì†Œë¦¬ë(a,b,c) -- (ID, OldCode, NewCode)
+function Upissed¼Ò¸®³¡(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x661EE8 + a*2
@@ -492,7 +492,7 @@ function Upissedì†Œë¦¬ë(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì™¸í˜•(a,b,c) -- (ID, OldCode, NewCode)
+function U¿ÜÇü(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6644F8 + a*1
@@ -508,7 +508,7 @@ function Uì™¸í˜•(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uìƒì‚°ëª¨ìŠµ(a,b,c) -- (ID, OldCode, NewCode)
+function U»ı»ê¸ğ½À(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6610B0 + a*4
@@ -524,7 +524,7 @@ function Uìƒì‚°ëª¨ìŠµ(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uí¬íŠ¸ë ˆì´íŠ¸(a,b,c) -- (ID, OldCode, NewCode)
+function UÆ÷Æ®·¹ÀÌÆ®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x662F88 + a*2
@@ -540,7 +540,7 @@ function Uí¬íŠ¸ë ˆì´íŠ¸(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uë†’ì´(a,b,c) -- (ID, OldCode, NewCode)
+function U³ôÀÌ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663150 + a*1
@@ -556,7 +556,7 @@ function Uë†’ì´(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uìƒì„±ë°©í–¥(a,b,c) -- (ID, OldCode, NewCode)
+function U»ı¼º¹æÇâ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6605F0 + a*1
@@ -572,7 +572,7 @@ function Uìƒì„±ë°©í–¥(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì—ë””í„°ì–´ë¹Œë¦¬í‹°(a,b,c) -- (ID, OldCode, NewCode)
+function U¿¡µğÅÍ¾îºô¸®Æ¼(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x661518 + a*2
@@ -588,7 +588,7 @@ function Uì—ë””í„°ì–´ë¹Œë¦¬í‹°(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uê³„ê¸‰(a,b,c) -- (ID, OldCode, NewCode)
+function U°è±Ş(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663DD0 + a*1
@@ -604,7 +604,7 @@ function Uê³„ê¸‰(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì»´í“¨í„°ê¸°ë³¸AI(a,b,c) -- (ID, OldCode, NewCode)
+function UÄÄÇ»ÅÍ±âº»AI(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x662EA0 + a*1
@@ -620,7 +620,7 @@ function Uì»´í“¨í„°ê¸°ë³¸AI(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì‚¬ëŒê¸°ë³¸AI(a,b,c) -- (ID, OldCode, NewCode)
+function U»ç¶÷±âº»AI(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x662268 + a*1
@@ -636,7 +636,7 @@ function Uì‚¬ëŒê¸°ë³¸AI(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uê³µê²©í›„AI(a,b,c) -- (ID, OldCode, NewCode)
+function U°ø°İÈÄAI(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x664898 + a*1
@@ -652,7 +652,7 @@ function Uê³µê²©í›„AI(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uê³µê²©AI(a,b,c) -- (ID, OldCode, NewCode)
+function U°ø°İAI(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663320 + a*1
@@ -668,7 +668,7 @@ function Uê³µê²©AI(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì–´íƒë•…AI(a,b,c) -- (ID, OldCode, NewCode)
+function U¾îÅÃ¶¥AI(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x663A50 + a*1
@@ -684,7 +684,7 @@ function Uì–´íƒë•…AI(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uìš°í´ë¦­ëª…ë ¹(a,b,c) -- (ID, OldCode, NewCode)
+function U¿ìÅ¬¸¯¸í·É(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x662098 + a*1
@@ -700,7 +700,7 @@ function Uìš°í´ë¦­ëª…ë ¹(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uë‚´ë¶€ì¸ê³µì§€ëŠ¥(a,b,c) -- (ID, OldCode, NewCode)
+function U³»ºÎÀÎ°øÁö´É(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x660178 + a*1
@@ -716,7 +716,7 @@ function Uë‚´ë¶€ì¸ê³µì§€ëŠ¥(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uì¸í˜ìŠ¤í‹°ë“œìœ ë‹›(a,b,c) -- (ID, OldCode, NewCode)
+function UÀÎÆä½ºÆ¼µåÀ¯´Ö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x664980 + a*4
@@ -732,7 +732,7 @@ function Uì¸í˜ìŠ¤í‹°ë“œìœ ë‹›(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wê³µê²©ë ¥(a,b,c) -- (ID, OldCode, NewCode)
+function W°ø°İ·Â(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656EB0 + a*2
@@ -748,7 +748,7 @@ function Wê³µê²©ë ¥(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wê³µê²©ë ¥ì¦ê°€ëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
+function W°ø°İ·ÂÁõ°¡·®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x657678 + a*2
@@ -764,7 +764,7 @@ function Wê³µê²©ë ¥ì¦ê°€ëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wê³µê²©íšŸìˆ˜(a,b,c) -- (ID, OldCode, NewCode)
+function W°ø°İÈ½¼ö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6564E0 + a*1
@@ -780,7 +780,7 @@ function Wê³µê²©íšŸìˆ˜(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wê³µê²©ì†ë„(a,b,c) -- (ID, OldCode, NewCode)
+function W°ø°İ¼Óµµ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656FB8 + a*1
@@ -796,7 +796,7 @@ function Wê³µê²©ì†ë„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wì´ë¦„(a,b,c) -- (ID, OldCode, NewCode)
+function WÀÌ¸§(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6572E0 + a*2
@@ -812,7 +812,7 @@ function Wì´ë¦„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wë¯¸ì‚¬ì¼ë°©ì‹(a,b,c) -- (ID, OldCode, NewCode)
+function W¹Ì»çÀÏ¹æ½Ä(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656670 + a*1
@@ -828,7 +828,7 @@ function Wë¯¸ì‚¬ì¼ë°©ì‹(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wì™¸í˜•(a,b,c) -- (ID, OldCode, NewCode)
+function W¿ÜÇü(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656CA8 + a*4
@@ -844,7 +844,7 @@ function Wì™¸í˜•(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wì•„ì´ì½˜(a,b,c) -- (ID, OldCode, NewCode)
+function W¾ÆÀÌÄÜ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656780 + a*2
@@ -860,7 +860,7 @@ function Wì•„ì´ì½˜(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wê³µê²©ê°ë„(a,b,c) -- (ID, OldCode, NewCode)
+function W°ø°İ°¢µµ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656990 + a*1
@@ -876,7 +876,7 @@ function Wê³µê²©ê°ë„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wíˆ¬ì‚¬ì²´ì§€ì†ì‹œê°„(a,b,c) -- (ID, OldCode, NewCode)
+function WÅõ»çÃ¼Áö¼Ó½Ã°£(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x657040 + a*1
@@ -892,7 +892,7 @@ function Wíˆ¬ì‚¬ì²´ì§€ì†ì‹œê°„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wë°œì‚¬íšŒì „ê°’(a,b,c) -- (ID, OldCode, NewCode)
+function W¹ß»çÈ¸Àü°ª(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x657888 + a*1
@@ -908,7 +908,7 @@ function Wë°œì‚¬íšŒì „ê°’(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wê³µê²©ëŒ€ìƒ(a,b,c) -- (ID, OldCode, NewCode)
+function W°ø°İ´ë»ó(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x657998 + a*2
@@ -924,7 +924,7 @@ function Wê³µê²©ëŒ€ìƒ(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wìµœì†Œì‚¬ê±°ë¦¬(a,b,c) -- (ID, OldCode, NewCode)
+function WÃÖ¼Ò»ç°Å¸®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656A18 + a*4
@@ -940,7 +940,7 @@ function Wìµœì†Œì‚¬ê±°ë¦¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function WìµœëŒ€ì‚¬ê±°ë¦¬(a,b,c) -- (ID, OldCode, NewCode)
+function WÃÖ´ë»ç°Å¸®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x657470 + a*4
@@ -956,7 +956,7 @@ function WìµœëŒ€ì‚¬ê±°ë¦¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function WìŠ¤í”Œë˜ì‰¬ì•ˆìª½(a,b,c) -- (ID, OldCode, NewCode)
+function W½ºÇÃ·¡½¬¾ÈÂÊ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656888 + a*2
@@ -972,7 +972,7 @@ function WìŠ¤í”Œë˜ì‰¬ì•ˆìª½(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function WìŠ¤í”Œë˜ì‰¬ì¤‘ê°„(a,b,c) -- (ID, OldCode, NewCode)
+function W½ºÇÃ·¡½¬Áß°£(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6570C8 + a*2
@@ -988,7 +988,7 @@ function WìŠ¤í”Œë˜ì‰¬ì¤‘ê°„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function WìŠ¤í”Œë˜ì‰¬ì™¸ê³½(a,b,c) -- (ID, OldCode, NewCode)
+function W½ºÇÃ·¡½¬¿Ü°û(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x657780 + a*2
@@ -1004,7 +1004,7 @@ function WìŠ¤í”Œë˜ì‰¬ì™¸ê³½(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wí­ë°œì†ì„±(a,b,c) -- (ID, OldCode, NewCode)
+function WÆø¹ß¼Ó¼º(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6566F8 + a*1
@@ -1020,7 +1020,7 @@ function Wí­ë°œì†ì„±(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wë°ë¯¸ì§€í˜•ì‹(a,b,c) -- (ID, OldCode, NewCode)
+function Wµ¥¹ÌÁöÇü½Ä(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x657258 + a*1
@@ -1036,7 +1036,7 @@ function Wë°ë¯¸ì§€í˜•ì‹(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wì—…ê·¸ë ˆì´ë“œ(a,b,c) -- (ID, OldCode, NewCode)
+function W¾÷±×·¹ÀÌµå(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6571D0 + a*1
@@ -1052,7 +1052,7 @@ function Wì—…ê·¸ë ˆì´ë“œ(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wíƒ€ê²Ÿì—ëŸ¬ë©”ì„¸ì§€(a,b,c) -- (ID, OldCode, NewCode)
+function WÅ¸°Ù¿¡·¯¸Ş¼¼Áö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656568 + a*2
@@ -1068,7 +1068,7 @@ function Wíƒ€ê²Ÿì—ëŸ¬ë©”ì„¸ì§€(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wë¬´ê¸°Xì¢Œí‘œ(a,b,c) -- (ID, OldCode, NewCode)
+function W¹«±âXÁÂÇ¥(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x657910 + a*1
@@ -1084,7 +1084,7 @@ function Wë¬´ê¸°Xì¢Œí‘œ(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Wë¬´ê¸°Yì¢Œí‘œ(a,b,c) -- (ID, OldCode, NewCode)
+function W¹«±âYÁÂÇ¥(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656C20 + a*1
@@ -1100,7 +1100,7 @@ function Wë¬´ê¸°Yì¢Œí‘œ(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Fìµœê³ ì†ë„(a,b,c) -- (ID, OldCode, NewCode)
+function FÃÖ°í¼Óµµ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6C9EF8 + a*4
@@ -1116,7 +1116,7 @@ function Fìµœê³ ì†ë„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Fê°€ì†ë„(a,b,c) -- (ID, OldCode, NewCode)
+function F°¡¼Óµµ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6C9C78 + a*2
@@ -1132,7 +1132,7 @@ function Fê°€ì†ë„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Fë©ˆì¶”ëŠ”ê±°ë¦¬(a,b,c) -- (ID, OldCode, NewCode)
+function F¸ØÃß´Â°Å¸®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6C9930 + a*4
@@ -1148,7 +1148,7 @@ function Fë©ˆì¶”ëŠ”ê±°ë¦¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function FíšŒì „ë°˜ê²½(a,b,c) -- (ID, OldCode, NewCode)
+function FÈ¸Àü¹İ°æ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6C9E20 + a*1
@@ -1164,7 +1164,7 @@ function FíšŒì „ë°˜ê²½(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Fì´ë™ì œì–´(a,b,c) -- (ID, OldCode, NewCode)
+function FÀÌµ¿Á¦¾î(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6C9858 + a*1
@@ -1180,7 +1180,7 @@ function Fì´ë™ì œì–´(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function FìŠ¤í”„ë¼ì´íŠ¸(a,b,c) -- (ID, OldCode, NewCode)
+function F½ºÇÁ¶óÀÌÆ®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6CA318 + a*2
@@ -1196,7 +1196,7 @@ function FìŠ¤í”„ë¼ì´íŠ¸(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Së³´ì—¬ì§ì—¬ë¶€(a,b,c) -- (ID, OldCode, NewCode)
+function Sº¸¿©Áü¿©ºÎ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x665C48 + a*1
@@ -1212,7 +1212,7 @@ function Së³´ì—¬ì§ì—¬ë¶€(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Sì„ íƒì›í¬ê¸°(a,b,c) -- (ID, OldCode, NewCode)
+function S¼±ÅÃ¿øÅ©±â(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x665AC0 + a*1
@@ -1228,7 +1228,7 @@ function Sì„ íƒì›í¬ê¸°(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Sì²´ë ¥ë°”í¬ê¸°(a,b,c) -- (ID, OldCode, NewCode)
+function SÃ¼·Â¹ÙÅ©±â(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x665E50 + a*1
@@ -1244,7 +1244,7 @@ function Sì²´ë ¥ë°”í¬ê¸°(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Sì›ìœ„ì¹˜(a,b,c) -- (ID, OldCode, NewCode)
+function S¿øÀ§Ä¡(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x665FD8 + a*1
@@ -1260,7 +1260,7 @@ function Sì›ìœ„ì¹˜(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Sì´ë¯¸ì§€(a,b,c) -- (ID, OldCode, NewCode)
+function SÀÌ¹ÌÁö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x666160 + a*2
@@ -1276,7 +1276,7 @@ function Sì´ë¯¸ì§€(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function IGRPíŒŒì¼(a,b,c) -- (ID, OldCode, NewCode)
+function IGRPÆÄÀÏ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x668AA0 + a*4
@@ -1292,7 +1292,7 @@ function IGRPíŒŒì¼(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function IìŠ¤í¬ë¦½íŠ¸(a,b,c) -- (ID, OldCode, NewCode)
+function I½ºÅ©¸³Æ®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x66EC48 + a*4
@@ -1308,7 +1308,7 @@ function IìŠ¤í¬ë¦½íŠ¸(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function IíšŒì „(a,b,c) -- (ID, OldCode, NewCode)
+function IÈ¸Àü(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x66E860 + a*1
@@ -1324,7 +1324,7 @@ function IíšŒì „(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Ií´ë¦­(a,b,c) -- (ID, OldCode, NewCode)
+function IÅ¬¸¯(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x66C150 + a*1
@@ -1340,7 +1340,7 @@ function Ií´ë¦­(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Ií´ë¡œí‚¹(a,b,c) -- (ID, OldCode, NewCode)
+function IÅ¬·ÎÅ·(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x667718 + a*1
@@ -1356,7 +1356,7 @@ function Ií´ë¡œí‚¹(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Ië¦¬ë§µí•‘ìƒ‰ìƒ(a,b,c) -- (ID, OldCode, NewCode)
+function I¸®¸ÊÇÎ»ö»ó(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x669A40 + a*1
@@ -1372,7 +1372,7 @@ function Ië¦¬ë§µí•‘ìƒ‰ìƒ(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Ië¦¬ë§µí•‘ê¸°ëŠ¥(a,b,c) -- (ID, OldCode, NewCode)
+function I¸®¸ÊÇÎ±â´É(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x669E28 + a*1
@@ -1388,7 +1388,7 @@ function Ië¦¬ë§µí•‘ê¸°ëŠ¥(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Iê³µê²©ì˜¤ë²„ë ˆì´(a,b,c) -- (ID, OldCode, NewCode)
+function I°ø°İ¿À¹ö·¹ÀÌ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x66B1B0 + a*4
@@ -1404,7 +1404,7 @@ function Iê³µê²©ì˜¤ë²„ë ˆì´(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Ië°ë¯¸ì§€ì˜¤ë²„ë ˆì´(a,b,c) -- (ID, OldCode, NewCode)
+function Iµ¥¹ÌÁö¿À¹ö·¹ÀÌ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x66A210 + a*4
@@ -1420,7 +1420,7 @@ function Ië°ë¯¸ì§€ì˜¤ë²„ë ˆì´(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function IíŠ¹ìˆ˜ì˜¤ë²„ë ˆì´(a,b,c) -- (ID, OldCode, NewCode)
+function IÆ¯¼ö¿À¹ö·¹ÀÌ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x667B00 + a*4
@@ -1436,7 +1436,7 @@ function IíŠ¹ìˆ˜ì˜¤ë²„ë ˆì´(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Iì°©ì§€ì‹œì—°ê¸°(a,b,c) -- (ID, OldCode, NewCode)
+function IÂøÁö½Ã¿¬±â(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x666778 + a*4
@@ -1452,7 +1452,7 @@ function Iì°©ì§€ì‹œì—°ê¸°(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Ië„ìš¸ë•Œì—°ê¸°(a,b,c) -- (ID, OldCode, NewCode)
+function I¶ç¿ï¶§¿¬±â(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x66D8C0 + a*4
@@ -1468,7 +1468,7 @@ function Ië„ìš¸ë•Œì—°ê¸°(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Iì‰´ë“œê·¸ë˜í”½(a,b,c) -- (ID, OldCode, NewCode)
+function I½¯µå±×·¡ÇÈ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x66C538 + a*4
@@ -1484,7 +1484,7 @@ function Iì‰´ë“œê·¸ë˜í”½(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UPì•„ì´ì½˜(a,b,c) -- (ID, OldCode, NewCode)
+function UP¾ÆÀÌÄÜ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x655AC0 + a*2
@@ -1500,7 +1500,7 @@ function UPì•„ì´ì½˜(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UPì´ë¦„(a,b,c) -- (ID, OldCode, NewCode)
+function UPÀÌ¸§(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x655A40 + a*2
@@ -1516,7 +1516,7 @@ function UPì´ë¦„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UPë¯¸ë„¤ë„(a,b,c) -- (ID, OldCode, NewCode)
+function UP¹Ì³×¶ö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x655740 + a*2
@@ -1532,7 +1532,7 @@ function UPë¯¸ë„¤ë„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UPê°€ìŠ¤(a,b,c) -- (ID, OldCode, NewCode)
+function UP°¡½º(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x655840 + a*2
@@ -1548,7 +1548,7 @@ function UPê°€ìŠ¤(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UPì‹œê°„(a,b,c) -- (ID, OldCode, NewCode)
+function UP½Ã°£(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x655B80 + a*2
@@ -1564,7 +1564,7 @@ function UPì‹œê°„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UPì¶”ê°€ë¯¸ë„¤ë„(a,b,c) -- (ID, OldCode, NewCode)
+function UPÃß°¡¹Ì³×¶ö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6559C0 + a*2
@@ -1580,7 +1580,7 @@ function UPì¶”ê°€ë¯¸ë„¤ë„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UPì¶”ê°€ê°€ìŠ¤(a,b,c) -- (ID, OldCode, NewCode)
+function UPÃß°¡°¡½º(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6557C0 + a*2
@@ -1596,7 +1596,7 @@ function UPì¶”ê°€ê°€ìŠ¤(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UPì¶”ê°€ì‹œê°„(a,b,c) -- (ID, OldCode, NewCode)
+function UPÃß°¡½Ã°£(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x655B80 + a*2
@@ -1612,7 +1612,7 @@ function UPì¶”ê°€ì‹œê°„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UPìµœëŒ€ë ˆë²¨(a,b,c) -- (ID, OldCode, NewCode)
+function UPÃÖ´ë·¹º§(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x655700 + a*1
@@ -1628,7 +1628,7 @@ function UPìµœëŒ€ë ˆë²¨(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function UPì¢…ì¡±(a,b,c) -- (ID, OldCode, NewCode)
+function UPÁ¾Á·(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x655BFC + a*1
@@ -1644,7 +1644,7 @@ function UPì¢…ì¡±(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Tì•„ì´ì½˜(a,b,c) -- (ID, OldCode, NewCode)
+function T¾ÆÀÌÄÜ(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656430 + a*2
@@ -1660,7 +1660,7 @@ function Tì•„ì´ì½˜(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Tì´ë¦„(a,b,c) -- (ID, OldCode, NewCode)
+function TÀÌ¸§(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6562A0 + a*2
@@ -1676,7 +1676,7 @@ function Tì´ë¦„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Të¯¸ë„¤ë„(a,b,c) -- (ID, OldCode, NewCode)
+function T¹Ì³×¶ö(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656248 + a*2
@@ -1692,7 +1692,7 @@ function Të¯¸ë„¤ë„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Tê°€ìŠ¤(a,b,c) -- (ID, OldCode, NewCode)
+function T°¡½º(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6561F0 + a*2
@@ -1708,7 +1708,7 @@ function Tê°€ìŠ¤(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Tì‹œê°„(a,b,c) -- (ID, OldCode, NewCode)
+function T½Ã°£(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x6563D8 + a*2
@@ -1724,7 +1724,7 @@ function Tì‹œê°„(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Të§ˆë‚˜ëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
+function T¸¶³ª·®(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656380 + a*2
@@ -1740,7 +1740,7 @@ function Të§ˆë‚˜ëŸ‰(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Tì¢…ì¡±(a,b,c) -- (ID, OldCode, NewCode)
+function TÁ¾Á·(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x656488 + a*1
@@ -1756,7 +1756,7 @@ function Tì¢…ì¡±(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Pì €ê·¸ì‚¬ìš©ê°€ëŠ¥ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
+function PÀú±×»ç¿ë°¡´ÉÀÎ±¸(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x582144 + a*4
@@ -1772,7 +1772,7 @@ function Pì €ê·¸ì‚¬ìš©ê°€ëŠ¥ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Pì €ê·¸ì‚¬ìš©ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
+function PÀú±×»ç¿ëÀÎ±¸(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x582174 + a*4
@@ -1788,7 +1788,7 @@ function Pì €ê·¸ì‚¬ìš©ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Pì €ê·¸ìµœëŒ€ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
+function PÀú±×ÃÖ´ëÀÎ±¸(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x5821A4 + a*4
@@ -1804,7 +1804,7 @@ function Pì €ê·¸ìµœëŒ€ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Pí…Œë€ì‚¬ìš©ê°€ëŠ¥ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
+function PÅ×¶õ»ç¿ë°¡´ÉÀÎ±¸(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x5821D4 + a*4
@@ -1820,7 +1820,7 @@ function Pí…Œë€ì‚¬ìš©ê°€ëŠ¥ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Pí…Œë€ì‚¬ìš©ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
+function PÅ×¶õ»ç¿ëÀÎ±¸(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x582204 + a*4
@@ -1836,7 +1836,7 @@ function Pí…Œë€ì‚¬ìš©ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Pí…Œë€ìµœëŒ€ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
+function PÅ×¶õÃÖ´ëÀÎ±¸(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x582234 + a*4
@@ -1852,7 +1852,7 @@ function Pí…Œë€ìµœëŒ€ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Pí”„ë¡œí† ìŠ¤ì‚¬ìš©ê°€ëŠ¥ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
+function PÇÁ·ÎÅä½º»ç¿ë°¡´ÉÀÎ±¸(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x582264 + a*4
@@ -1868,7 +1868,7 @@ function Pí”„ë¡œí† ìŠ¤ì‚¬ìš©ê°€ëŠ¥ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Pí”„ë¡œí† ìŠ¤ì‚¬ìš©ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
+function PÇÁ·ÎÅä½º»ç¿ëÀÎ±¸(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x582294 + a*4
@@ -1884,7 +1884,7 @@ function Pí”„ë¡œí† ìŠ¤ì‚¬ìš©ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Pí”„ë¡œí† ìŠ¤ìµœëŒ€ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
+function PÇÁ·ÎÅä½ºÃÖ´ëÀÎ±¸(a,b,c) -- (ID, OldCode, NewCode)
     local d, e
     if b == SetTo then
         e = 0x5822C4 + a*4
@@ -1900,33 +1900,33 @@ function Pí”„ë¡œí† ìŠ¤ìµœëŒ€ì¸êµ¬(a,b,c) -- (ID, OldCode, NewCode)
     return string
 end
 
-function Uí¬ê¸°(a,b,c,d,e) -- (UnitID,Left,Right,Up,Down)
+function UÅ©±â(a,b,c,d,e) -- (UnitID,Left,Right,Up,Down)
     tu = {} 
     table.insert(tu, SetMemory(0x6617C8+a*8,SetTo,b+d*65536))   
     table.insert(tu, SetMemory(0x6617C8+a*8+4,SetTo,c+e*65536))
     return tu
 end
 
-function Uí¬ê¸°LU(a,b,c) -- (UnitID,Left,Up)
+function UÅ©±âLU(a,b,c) -- (UnitID,Left,Up)
     tu = {} 
     table.insert(tu, SetMemory(0x6617C8+a*8,SetTo,b+c*65536))   
     return tu
 end
 
-function Uí¬ê¸°RD(a,b,c) -- (UnitID,Righ,Down)
+function UÅ©±âRD(a,b,c) -- (UnitID,Righ,Down)
     tu = {} 
     table.insert(tu, SetMemory(0x6617C8+a*8 + 4,SetTo,b+c*65536))   
     return tu
 end
 
 
-function Uìƒì‚°í¬ê¸°(a,b,c) -- (UnitID,ê°€ë¡œ,ì„¸ë¡œ)
+function U»ı»êÅ©±â(a,b,c) -- (UnitID,°¡·Î,¼¼·Î)
     tu = {} 
     table.insert(tu, SetMemory(0x662860+a*4,SetTo,b+c*65536))   
     return tu
 end
 
-function Lìœ„ì¹˜ì„¤ì •(a,b,c,d,e) -- (LocationNum,Left,Up,Right,Down)
+function LÀ§Ä¡¼³Á¤(a,b,c,d,e) -- (LocationNum,Left,Up,Right,Down)
     tu = {}
     table.insert(tu, SetMemory(0x58DC60 + 0x14*a + 4*0, SetTo, b))
     table.insert(tu, SetMemory(0x58DC60 + 0x14*a + 4*1, SetTo, c))
@@ -1935,25 +1935,25 @@ function Lìœ„ì¹˜ì„¤ì •(a,b,c,d,e) -- (LocationNum,Left,Up,Right,Down)
     return tu
 end
 
-function Lìœ„ì¹˜L(a,b,c) -- (LocationNum,Modify,Num)
+function LÀ§Ä¡L(a,b,c) -- (LocationNum,Modify,Num)
     tu = {}
     table.insert(tu, SetMemory(0x58DC60 + 0x14*a + 4*0, b, c))
     return tu
 end
 
-function Lìœ„ì¹˜U(a,b,c) -- (LocationNum,Modify,Num)
+function LÀ§Ä¡U(a,b,c) -- (LocationNum,Modify,Num)
     tu = {}
     table.insert(tu, SetMemory(0x58DC60 + 0x14*a + 4*1, b, c))
     return tu
 end
 
-function Lìœ„ì¹˜R(a,b,c) -- (LocationNum,Modify,Num)
+function LÀ§Ä¡R(a,b,c) -- (LocationNum,Modify,Num)
     tu = {}
     table.insert(tu, SetMemory(0x58DC60 + 0x14*a + 4*2, b, c)) 
     return tu
 end
 
-function Lìœ„ì¹˜D(a,b,c) -- (LocationNum,Modify,Num)
+function LÀ§Ä¡D(a,b,c) -- (LocationNum,Modify,Num)
     tu = {}
     table.insert(tu, SetMemory(0x58DC60 + 0x14*a + 4*3, b, c))
     return tu
@@ -1961,7 +1961,7 @@ end
 
 
 
-function Lìœ„ì¹˜ì´ë™(a,b,c) -- (LocationNum,Type,Value)
+function LÀ§Ä¡ÀÌµ¿(a,b,c) -- (LocationNum,Type,Value)
     tu = {}
     if b == 'R' then
         table.insert(tu, SetMemory(0x58DC60 + 0x14*a + 4*0, Add, c))
@@ -1982,7 +1982,7 @@ function Lìœ„ì¹˜ì´ë™(a,b,c) -- (LocationNum,Type,Value)
     return tu
 end
 
-function PìµœëŒ€ì—…ê·¸ë ˆì´ë“œ(a,b,c) -- (Player, Upnum, Upcount)
+function PÃÖ´ë¾÷±×·¹ÀÌµå(a,b,c) -- (Player, Upnum, Upcount)
     if b < 46 then
         if c > 0 then
             string = SetMemory2(0x58D088 + 0x2E*a + b, Add, c)
@@ -1999,7 +1999,7 @@ function PìµœëŒ€ì—…ê·¸ë ˆì´ë“œ(a,b,c) -- (Player, Upnum, Upcount)
     return string
 end
 
-function Pí˜„ì¬í…Œí¬(a,b,c) -- (Player, Upnum, Upcount)
+function PÇöÀçÅ×Å©(a,b,c) -- (Player, Upnum, Upcount)
     if b < 24 then
         if c > 0 then
             string = SetMemory2(0x58CE24 + 0x18*a + b, Add, c)
@@ -2016,7 +2016,7 @@ function Pí˜„ì¬í…Œí¬(a,b,c) -- (Player, Upnum, Upcount)
     return string
 end
 
-function Pí˜„ì¬ì—…ê·¸ë ˆì´ë“œ(a,b,c) -- (Player, Upnum, Upcount)
+function PÇöÀç¾÷±×·¹ÀÌµå(a,b,c) -- (Player, Upnum, Upcount)
     if b < 46 then
         if c > 0 then
             string = SetMemory2(0x58D2B0 + 0x2E*a + b, Add, c)
@@ -2033,7 +2033,7 @@ function Pí˜„ì¬ì—…ê·¸ë ˆì´ë“œ(a,b,c) -- (Player, Upnum, Upcount)
     return string
 end
 
-function Pí˜„ì¬í…Œí¬(a,b,c) -- (Player, Upnum, Upcount)
+function PÇöÀçÅ×Å©(a,b,c) -- (Player, Upnum, Upcount)
     if b < 24 then
         if c > 0 then
             string = SetMemory2(0x58CF44 + 0x18*a + b, Add, c)
