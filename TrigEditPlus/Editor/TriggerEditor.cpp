@@ -431,8 +431,10 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 			const char* newtriggertext =
 				"Trigger {\r\n"
 				"	players = {},\r\n"
-				"	conditions = {},\r\n"
-				"	actions = {}\r\n"
+				"	conditions = {\r\n"
+				"	},\r\n"
+				"	actions = {\r\n"
+				"	}\r\n"
 				"}\r\n"
 				;
 			te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)newtriggertext);
