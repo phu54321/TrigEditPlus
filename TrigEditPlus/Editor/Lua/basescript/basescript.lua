@@ -20,32 +20,47 @@
 -- THE SOFTWARE.
 ---------------------------------------------------------------------------------
 
--- Code based from snippet at http://stackoverflow.com/questions/9102931/can-lua-support-case-insensitive-method-calls
 
-__trigeditplus_mt = getmetatable(_G) or {}
+-- Case-insensitive patch & Block accessing undefined variable
 
-__trigeditplus_mt.__newindex = function(table, key, value)
+local global_metatable = getmetatable(_G) or {}
+local keytable = {}
+
+global_metatable.__newindex = function(table, key, value)
     if type(key) == "string" then
-        key = key:lower()
+        local lkey = key:lower()
+        if keytable[lkey] ~= nil then
+            rawset(table, keytable[lkey], nil)
+        end
+
+        if value == nil then
+            keytable[lkey] = nil
+        else
+            rawset(table, key, value)
+            keytable[lkey] = key
+        end
+    else
+        rawset(table, key, value)
     end
-    rawset(table, key, value)
 end
 
-__trigeditplus_mt.__index = function(table, key)
-    local value
-
+global_metatable.__index = function(table, key)
     if type(key) == "string" then
-        key = key:lower()
+        local lkey = key:lower()
+        local ckey = keytable[lkey]
+        if ckey == nil then
+            error("Attempt to access undefined variable (" .. key .. ")")
+        end
+        return rawget(table, ckey)
+    else
+        local value = rawget(table, key)
+        if value == nil then
+            error("Attempt to access undefined variable (" .. key .. ")")
+        end
     end
-
-    value = rawget(table, key)
-    if value == nil then
-        error("Attempt to access undefined variable (" .. key .. ")")
-    end
-    return value
 end
 
-setmetatable(_G, __trigeditplus_mt)
+setmetatable(_G, global_metatable)
 
 
 -- Trigger / condition / action def
@@ -116,4 +131,45 @@ end
 function Disabled(stmt)
     stmt["disabled"] = true
     return stmt
+end
+
+
+
+-- Function declaration inspector
+
+local function getArgs(fun)
+    local args = {}
+    local hook = debug.gethook()
+
+    local argHook = function( ... )
+        local info = debug.getinfo(3)
+        if 'pcall' ~= info.name then return end
+
+        for i = 1, math.huge do
+            local name, value = debug.getlocal(2, i)
+            if '(*temporary)' == name then
+                debug.sethook(hook)
+                error('')
+                return
+            end
+            table.insert(args,name)
+        end
+    end
+
+    debug.sethook(argHook, "c")
+    pcall(fun)
+
+    return args
+end
+
+function GetFunctionDeclaration(fname)
+    local fun = _G[fname]
+    if fun == nil or type(fun) ~= "function" then
+        return
+    end
+
+    fname = debug.getinfo(fun, "n").name
+
+    local farglist = getArgs(fun)
+    return fname .. '(' .. table.concat(farglist, ", ") .. ')'
 end

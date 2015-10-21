@@ -296,8 +296,15 @@
     <ResourceCompile Include="TrigEditPlus.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Editor\Lua\basescript.lua" />
-    <None Include="Editor\Lua\luahook.lua" />
+    <None Include="Editor\Lua\basescript\basescript.lua" />
+    <None Include="Editor\Lua\basescript\constdecoder.lua" />
+    <None Include="Editor\Lua\basescript\constparser.lua" />
+    <None Include="Editor\Lua\basescript\luahook.lua" />
+    <None Include="Editor\Lua\basescript\memsmem.lua" />
+    <None Include="Editor\Lua\basescript\stockact.lua" />
+    <None Include="Editor\Lua\basescript\stockacthook.lua" />
+    <None Include="Editor\Lua\basescript\stockcond.lua" />
+    <None Include="Editor\Lua\basescript\stockcondhook.lua" />
     <None Include="Editor\Scintilla\Scintilla.iface" />
     <None Include="Editor\Scintilla\SciTE.properties" />
     <None Include="PluginBase\DllMain.def" />

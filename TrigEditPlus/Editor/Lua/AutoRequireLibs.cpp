@@ -43,7 +43,7 @@ void LuaRunResource(lua_State* L, LPCSTR respath, LPCSTR resname)
 		if(luaL_loadbuffer(L, str, fsize, resname) || lua_pcall(L, 0, 0, 0))
 		{
 			char str[1024];
-			_snprintf(str, 1023, "resource %s load failed : %s\n", resname, lua_tostring(L, -1));
+			_snprintf(str, 1023, "resource \"%s\" load failed : \n%s", resname, lua_tostring(L, -1));
 			str[1023] = '\0';
 			MessageBox(NULL, str, "lua init error", MB_OK);
 			lua_pop(L, 1);
@@ -53,7 +53,7 @@ void LuaRunResource(lua_State* L, LPCSTR respath, LPCSTR resname)
 	else
 	{
 		char str[1024];
-		_snprintf(str, 1023, "resource %s load failed : %d\n", resname, GetLastError());
+		_snprintf(str, 1023, "resource \"%s\" load failed : %d\n", resname, GetLastError());
 		str[1023] = '\0';
 		MessageBox(NULL, str, "lua init error", MB_OK);
 	}
@@ -74,7 +74,7 @@ static void LuaRequire(lua_State* L, const char* modulePath, const char* moduleN
 	if(luaL_loadbuffer(L, fcontent.data(), fsize, moduleName) || lua_pcall(L, 0, 0, 0))
 	{
 		char str[1024];
-		_snprintf(str, 1023, "resource %s load failed : %s\n", moduleName, lua_tostring(L, -1));
+		_snprintf(str, 1023, "resource \"%s\" load failed : \n%s", moduleName, lua_tostring(L, -1));
 		str[1023] = '\0';
 		MessageBox(NULL, str, "lua init error", MB_OK);
 		lua_pop(L, 1);
@@ -154,15 +154,18 @@ void LuaAutoRequireLibs(lua_State* L)
 	luaL_openlibs(L);
 
 	// Load basic script.
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT), "basescript");
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_LUAHOOK), "luahook");
 	// basescript.lua contains case-insensitive patch, so this should be called
 	// before any variable is declared
 
-	// Load user-specific scripts.
-	// NOTE : USER LIBRARY SHOULDN'T ADD ANY TRIGGERS OR SOMETHING. TO ENFORCE IT, WE LOAD
-	// USER LIBRARY BEFORE WE DECLARE VARIOUS __internal__AddTrigger function.
-	LoadUserLuaLibs(L);
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT), "basescript");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_LUAHOOK), "luahook");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKCOND), "stockcond");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKACT), "stockact");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKCONDHOOK), "stockcondhook");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKACTHOOK), "stockacthook");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_MEMSMEM), "memsmem");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_CONSTPARSER), "constparser");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_CONSTDECODER), "constdecoder");
 
 	// Load basic functions.
 	lua_register(L, "ParseUnit", LuaParseUnit);
@@ -176,4 +179,9 @@ void LuaAutoRequireLibs(lua_State* L)
 	lua_register(L, "DecodeSwitchName", LuaDecodeSwitchName);
 	lua_register(L, "DecodeString", LuaDecodeString);
 	lua_register(L, "DecodeUPRP", LuaDecodeUPRP);
+
+	// Load user-specific scripts.
+	// NOTE : USER LIBRARY SHOULDN'T ADD ANY TRIGGERS OR SOMETHING. TO ENFORCE IT, WE LOAD
+	// USER LIBRARY BEFORE DECLARING VARIOUS __internal__AddTrigger function.
+	LoadUserLuaLibs(L);
 }

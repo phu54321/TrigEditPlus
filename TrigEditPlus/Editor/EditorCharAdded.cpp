@@ -294,113 +294,40 @@ void UpdateTip(TriggerEditor* te, const char* inputtedtext,
 	}
 
 	int functype = GetFuncType(funcname);
-	if(functype == -1)  //unknown function.
-	{
-		IssueGeneralAutocomplete(te);
-		return;
-	}
 
 	// Make calltip
-	const char* cond_calltiplist[] = {
-		"CountdownTimer(Comparison, Time);",
-		"Command(Player, Comparison, Number, Unit);",
-		"Bring(Player, Comparison, Number, Unit, Location);",
-		"Accumulate(Player, Comparison, Number, ResourceType);",
-		"Kills(Player, Comparison, Number, Unit);",
-		"CommandMost(Unit);",
-		"CommandMostAt(Unit, Location);",
-		"MostKills(Unit);",
-		"HighestScore(ScoreType);",
-		"MostResources(ResourceType);",
-		"Switch(Switch, State);",
-		"ElapsedTime(Comparison, Time);",
-		"Briefing();",
-		"Opponents(Player, Comparison, Number);",
-		"Deaths(Player, Comparison, Number, Unit);",
-		"CommandLeast(Unit);",
-		"CommandLeastAt(Unit, Location);",
-		"LeastKills(Unit);",
-		"LowestScore(ScoreType);",
-		"LeastResources(ResourceType);",
-		"Score(Player, ScoreType, Comparison, Number);",
-		"Always();",
-		"Never();",
-	};
-
-	const char* act_calltiplist[] = {
-		"Victory();",
-		"Defeat();",
-		"PreserveTrigger();",
-		"Wait(Time);",
-		"PauseGame();",
-		"UnpauseGame();",
-		"Transmission(Unit, Where, WAVName, TimeModifier, Time, Text, AlwaysDisplay);",
-		"PlayWAV(WAVName);",
-		"DisplayText(Text, AlwaysDisplay);",
-		"CenterView(Where);",
-		"CreateUnitWithProperties(Count, Unit, Where, Player, Properties);",
-		"SetMissionObjectives(Text);",
-		"SetSwitch(Switch, State);",
-		"SetCountdownTimer(TimeModifier, Time);",
-		"RunAIScript(Script);",
-		"RunAIScriptAt(Script, Where);",
-		"LeaderBoardControl(Unit, Label);",
-		"LeaderBoardControlAt(Unit, Location, Label);",
-		"LeaderBoardResources(ResourceType, Label);",
-		"LeaderBoardKills(Unit, Label);",
-		"LeaderBoardScore(ScoreType, Label);",
-		"KillUnit(Unit, Player);",
-		"KillUnitAt(Count, Unit, Where, ForPlayer);",
-		"RemoveUnit(Unit, Player);",
-		"RemoveUnitAt(Count, Unit, Where, ForPlayer);",
-		"SetResources(Player, Modifier, Amount, ResourceType);",
-		"SetScore(Player, Modifier, Amount, ScoreType);",
-		"MinimapPing(Where);",
-		"TalkingPortrait(Unit, Time);",
-		"MuteUnitSpeech();",
-		"UnMuteUnitSpeech();",
-		"LeaderBoardComputerPlayers(State);",
-		"LeaderBoardGoalControl(Goal, Unit, Label);",
-		"LeaderBoardGoalControlAt(Goal, Unit, Location, Label);",
-		"LeaderBoardGoalResources(Goal, ResourceType, Label);",
-		"LeaderBoardGoalKills(Goal, Unit, Label);",
-		"LeaderBoardGoalScore(Goal, ScoreType, Label);",
-		"MoveLocation(Location, OnUnit, Owner, DestLocation);",
-		"MoveUnit(Count, UnitType, Owner, StartLocation, DestLocation);",
-		"LeaderBoardGreed(Goal);",
-		"SetNextScenario(ScenarioName);",
-		"SetDoodadState(State, Unit, Owner, Where);",
-		"SetInvincibility(State, Unit, Owner, Where);",
-		"CreateUnit(Number, Unit, Where, ForPlayer);",
-		"SetDeaths(Player, Modifier, Number, Unit);",
-		"Order(Unit, Owner, StartLocation, OrderType, DestLocation);",
-		"Comment(Text);",
-		"GiveUnits(Count, Unit, Owner, Where, NewOwner);",
-		"ModifyUnitHitPoints(Count, Unit, Owner, Where, Percent);",
-		"ModifyUnitEnergy(Count, Unit, Owner, Where, Percent);",
-		"ModifyUnitShields(Count, Unit, Owner, Where, Percent);",
-		"ModifyUnitResourceAmount(Count, Owner, Where, NewValue);",
-		"ModifyUnitHangarCount(Add, Count, Unit, Owner, Where);",
-		"PauseTimer();",
-		"UnpauseTimer();",
-		"Draw();",
-		"SetAllianceStatus(Player, Status);"
-	};
-
 	FieldType ft;
 	const char* calltip;
+	{
+		lua_State* L = te->_nsLua;
+		lua_getglobal(L, "GetFunctionDeclaration");
+		lua_pushstring(L, funcname);
+		if(lua_pcall(L, 1, 1, 0) != LUA_OK || !lua_isstring(L, -1))
+		{
+			lua_pop(L, 1);
+			IssueGeneralAutocomplete(te);
+			return;
+		}
+		else
+		{
+			calltip = lua_tostring(L, -1);
+			lua_pop(L, 1);
+		}
+	}
 
-	if(functype < 1000) { //condition
-		calltip = cond_calltiplist[functype];
 
+	if(functype == -1)
+	{
+		ft = FIELDTYPE_NONE;
+	}
+
+	else if(functype < 1000) { //condition
 		if(argindex < 0 || argindex >= MAX_FIELD_NUM) ft = FIELDTYPE_NONE;
 		else ft = ConditionFields[functype].fields[argindex].Type;
 	}
 
 	else {
 		functype -= 1000;
-		calltip = act_calltiplist[functype];
-
 		if(argindex < 0 || argindex >= MAX_FIELD_NUM) ft = FIELDTYPE_NONE;
 		else ft = ActionFields[functype].fields[argindex].Type;
 	}

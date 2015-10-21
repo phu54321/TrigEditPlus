@@ -162,6 +162,9 @@ public:
 	std::string GetEditorText() const;
 	void SetEditorText(const std::string& str);
 
+	// Lua part
+	lua_State* _nsLua;
+
 	// Window part
 	HWND hTrigDlg;
 	HWND hTriggerList;

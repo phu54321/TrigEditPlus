@@ -608,9 +608,6 @@
     <Filter Include="Editor\Encoder">
       <UniqueIdentifier>{bfaf4f33-6410-414d-b27e-5518223358bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Editor\Scintilla">
-      <UniqueIdentifier>{71d3d1d4-1201-4c50-adf6-54f17ac6eeaf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Editor\StringUtils">
       <UniqueIdentifier>{1248fe6e-0808-44f8-972c-75b17d0cc546}</UniqueIdentifier>
     </Filter>
@@ -619,6 +616,12 @@
     </Filter>
     <Filter Include="Editor\Lua\lib">
       <UniqueIdentifier>{5370ced4-f11c-46b5-ba15-105e41307858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Scintilla">
+      <UniqueIdentifier>{71d3d1d4-1201-4c50-adf6-54f17ac6eeaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Lua\basescript">
+      <UniqueIdentifier>{8f070e5f-81dc-4215-8ea3-b6765f4f376c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -631,11 +634,32 @@
     <None Include="Editor\Scintilla\Scintilla.iface">
       <Filter>Editor\Scintilla</Filter>
     </None>
-    <None Include="Editor\Lua\basescript.lua">
-      <Filter>Editor\Lua</Filter>
+    <None Include="Editor\Lua\basescript\basescript.lua">
+      <Filter>Editor\Lua\basescript</Filter>
     </None>
-    <None Include="Editor\Lua\luahook.lua">
-      <Filter>Editor\Lua</Filter>
+    <None Include="Editor\Lua\basescript\luahook.lua">
+      <Filter>Editor\Lua\basescript</Filter>
+    </None>
+    <None Include="Editor\Lua\basescript\memsmem.lua">
+      <Filter>Editor\Lua\basescript</Filter>
+    </None>
+    <None Include="Editor\Lua\basescript\stockact.lua">
+      <Filter>Editor\Lua\basescript</Filter>
+    </None>
+    <None Include="Editor\Lua\basescript\stockacthook.lua">
+      <Filter>Editor\Lua\basescript</Filter>
+    </None>
+    <None Include="Editor\Lua\basescript\stockcond.lua">
+      <Filter>Editor\Lua\basescript</Filter>
+    </None>
+    <None Include="Editor\Lua\basescript\stockcondhook.lua">
+      <Filter>Editor\Lua\basescript</Filter>
+    </None>
+    <None Include="Editor\Lua\basescript\constdecoder.lua">
+      <Filter>Editor\Lua\basescript</Filter>
+    </None>
+    <None Include="Editor\Lua\basescript\constparser.lua">
+      <Filter>Editor\Lua\basescript</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

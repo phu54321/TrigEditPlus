@@ -30,10 +30,18 @@ LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
 // RCDATA
 //
 
-IDR_BASESCRIPT          RCDATA                  "Editor\\Lua\\basescript.lua"
-IDR_LUAHOOK             RCDATA                  "Editor\\Lua\\luahook.lua"
 IDR_LUALICENSE          RCDATA                  "License\\license_lua.txt"
 IDR_SCINTILLALICENSE    RCDATA                  "License\\license_scintilla.txt"
+
+IDR_BASESCRIPT          RCDATA                  "Editor\\Lua\\basescript\\basescript.lua"
+IDR_LUAHOOK             RCDATA                  "Editor\\Lua\\basescript\\luahook.lua"
+IDR_MEMSMEM             RCDATA                  "Editor\\Lua\\basescript\\memsmem.lua"
+IDR_STOCKCOND           RCDATA                  "Editor\\Lua\\basescript\\stockcond.lua"
+IDR_STOCKACT            RCDATA                  "Editor\\Lua\\basescript\\stockact.lua"
+IDR_STOCKCONDHOOK       RCDATA                  "Editor\\Lua\\basescript\\stockcondhook.lua"
+IDR_STOCKACTHOOK        RCDATA                  "Editor\\Lua\\basescript\\stockacthook.lua"
+IDR_CONSTPARSER         RCDATA                  "Editor\\Lua\\basescript\\constparser.lua"
+IDR_CONSTDECODER        RCDATA                  "Editor\\Lua\\basescript\\constdecoder.lua"
 
 /////////////////////////////////////////////////////////////////////////////
 //

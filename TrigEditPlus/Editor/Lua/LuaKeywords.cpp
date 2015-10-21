@@ -22,8 +22,6 @@
 
 #include "LuaKeywords.h"
 
-void LuaAutoRequireLibs(lua_State* L);
-
 static std::vector<std::string> LuaGetGlobalNameList(lua_State* L)
 {
 	std::vector<std::string> ret;
@@ -44,12 +42,9 @@ static std::vector<std::string> LuaGetGlobalNameList(lua_State* L)
 
 static std::vector<std::string> _keywords;
 
-void UpdateLuaKeywords()
+void UpdateLuaKeywords(lua_State* L)
 {
-	lua_State* L = luaL_newstate();
-	LuaAutoRequireLibs(L);
 	_keywords = LuaGetGlobalNameList(L);
-	lua_close(L);
 }
 
 const std::vector<std::string>& GetLuaKeywords()

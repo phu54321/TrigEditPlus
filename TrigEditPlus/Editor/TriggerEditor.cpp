@@ -49,9 +49,10 @@ struct SearchQuery
 
 
 void ProcessSearchMessage(HWND hTrigDlg, TriggerEditor* te, SearchQuery* q);
+void LuaAutoRequireLibs(lua_State* L);
 
 TriggerEditor::TriggerEditor() : hTrigDlg(NULL), hScintilla(NULL),
-	hFindDlg(NULL), _textedited(false) {}
+	hFindDlg(NULL), _textedited(false), _nsLua(NULL) {}
 TriggerEditor::~TriggerEditor() {}
 
 int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
@@ -100,7 +101,9 @@ int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 
 	_textedited = false;
 
-	UpdateLuaKeywords();
+	_nsLua = luaL_newstate();
+	LuaAutoRequireLibs(_nsLua);
+	UpdateLuaKeywords(_nsLua);
 
 	HWND hStatusBar = GetDlgItem(hTrigDlg, StatusBarID);
 	SetWindowText(hStatusBar, "TrigEditPlus loaded");
@@ -252,7 +255,13 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 		case IDM_FILE_COMPILE:
 		case IDM_FILE_COMPILENONAG:
 			// Update keyword with every compile. - Frequent just enough.
-			UpdateLuaKeywords();
+			if(te->_nsLua)
+			{
+				lua_close(te->_nsLua);
+				te->_nsLua = luaL_newstate();
+				LuaAutoRequireLibs(te->_nsLua);
+			}
+			UpdateLuaKeywords(te->_nsLua);
 
 			if(te->EncodeTriggerCode())
 			{
