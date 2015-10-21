@@ -155,21 +155,22 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 	else _keyword.assign(inputtext + trimstart, inputtext + trimend);
 	std::wstring keyword = s2ws(_keyword);
 
+	// Nothing inputted yet -> no autocomplete
+	if(keyword.size() == 0)
+	{
+		if(_isAutocompleteWorking)
+		{
+			te->SendSciMessage(SCI_AUTOCCANCEL, 0, 0);
+		}
+		_isAutocompleteWorking = false;
+		return;
+	}
 
 	// Get list of available arguments for field type
 	std::vector<std::string> stringlist;
 
 	if(ft == FIELDTYPE_NONE)
 	{
-		if(keyword.size() == 0)
-		{
-			if(_isAutocompleteWorking)
-			{
-				te->SendSciMessage(SCI_AUTOCCANCEL, 0, 0);
-			}
-			_isAutocompleteWorking = false;
-			return;
-		}
 		stringlist = GetLuaKeywords();
 	}
 	else if(ft == FIELDTYPE_NUMBER);
