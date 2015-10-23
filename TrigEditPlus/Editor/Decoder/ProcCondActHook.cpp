@@ -26,32 +26,10 @@
 
 TriggerEditor* LuaGetEditor(lua_State* L);
 
-#define HOOK_CONDITION 0
-#define HOOK_ACTION 1
-
-int _currentHookType;
-void* _currentObject;
-
-
-int stderr_errorreporter(lua_State* L)
+static int stderr_errorreporter(lua_State* L)
 {
 	std::stringstream ss;
-
-	// Create error header
-	char errheader[512] = "";
-	if(_currentHookType == HOOK_CONDITION)
-	{
-		TrigCond& cond = *(TrigCond*)_currentObject;
-		sprintf(errheader, "[CallConditionHook] Error on parsing condition (%d, %d, %d, %d, %d, %d, %d, %d)\n\n",
-			cond.locid, cond.player, cond.res, cond.uid, cond.setting, cond.condtype, cond.res_setting, cond.prop);
-	}
-	else if(_currentHookType == HOOK_ACTION)
-	{
-		TrigAct& act = *(TrigAct*)_currentObject;
-		sprintf(errheader, "[CallActionHook] Error on parsing condition (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d)\n\n",
-			act.locid, act.strid, act.wavid, act.time, act.player, act.target, act.setting, act.acttype, act.num, act.prop);
-	}
-	ss << errheader;
+	ss << "Error on hook processing";
 
 	// Create traceback
 	lua_State *L1 = luaL_newstate();
@@ -66,38 +44,55 @@ int stderr_errorreporter(lua_State* L)
 }
 
 
-bool CallConditionHook(lua_State* L, const TrigCond& cond, std::string& ret)
+bool DecodeConditions(lua_State* L, const TrigCond conds[16], std::string* ret)
 {
-	_currentHookType = HOOK_CONDITION;
-	_currentObject = (void*)&cond;
-
-	lua_getglobal(L, "ProcessConditionHook");
 	lua_pushcfunction(L, stderr_errorreporter);
 	int errrp_f = lua_gettop(L);
-	lua_pushinteger(L, cond.locid);
-	lua_pushinteger(L, cond.player);
-	lua_pushinteger(L, cond.res);
-	lua_pushinteger(L, cond.uid);
-	lua_pushinteger(L, cond.setting);
-	lua_pushinteger(L, cond.condtype);
-	lua_pushinteger(L, cond.res_setting);
-	lua_pushinteger(L, cond.prop);
-	if(lua_pcall(L, 9, 1, errrp_f) != LUA_OK)
+
+	lua_getglobal(L, "ProcessConditionHooks");
+	lua_newtable(L);
+	for(int i = 0; i < 16; i++)
 	{
-		lua_pop(L, 1);
+		const TrigCond& cond = conds[i];
+		if(cond.condtype == 0) break;
+
+		lua_pushinteger(L, i + 1);
+
+		lua_newtable(L);
+		lua_pushinteger(L, 1); lua_pushinteger(L, cond.locid); lua_rawset(L, -3);
+		lua_pushinteger(L, 2); lua_pushinteger(L, cond.player); lua_rawset(L, -3);
+		lua_pushinteger(L, 3); lua_pushinteger(L, cond.res); lua_rawset(L, -3);
+		lua_pushinteger(L, 4); lua_pushinteger(L, cond.uid); lua_rawset(L, -3);
+		lua_pushinteger(L, 5); lua_pushinteger(L, cond.setting); lua_rawset(L, -3);
+		lua_pushinteger(L, 6); lua_pushinteger(L, cond.condtype); lua_rawset(L, -3);
+		lua_pushinteger(L, 7); lua_pushinteger(L, cond.res_setting); lua_rawset(L, -3);
+		lua_pushinteger(L, 8); lua_pushinteger(L, cond.prop); lua_rawset(L, -3);
+		lua_pushstring(L, "__trg_magic"); lua_pushstring(L, "condition"); lua_rawset(L, -3);
+
+		lua_rawset(L, -3);
 	}
-	else if(lua_isstring(L, -1))
+
+	if(lua_pcall(L, 1, 1, errrp_f) != LUA_OK)
 	{
-		ret = lua_tostring(L, -1);
-		lua_pop(L, 1);
-		return true;
+		lua_pop(L, 2);
+		return false;
+	}
+	else
+	{
+		for(int i = 0; i < 16; i++)
+		{
+			if(conds[i].condtype == 0) break;
+			lua_pushinteger(L, i + 1);
+			lua_rawget(L, -2);
+			ret[i].assign(lua_tostring(L, -1));
+		}
 	}
 	return false;
 }
 
 
 
-bool CallActionHook(lua_State* L, const TrigAct& act, std::string& ret)
+bool CallActionHook(lua_State* L, const TrigAct acts[16], std::string* ret)
 {
 	_currentHookType = HOOK_ACTION;
 	_currentObject = (void*)&act;

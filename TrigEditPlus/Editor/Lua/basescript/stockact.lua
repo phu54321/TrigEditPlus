@@ -409,3 +409,307 @@ function SetAllianceStatus(Player, Status)
     return Action(0, 0, 0, 0, Player, 0, Status, 57, 0, 4)
 end
 
+
+-------
+
+function GetVictoryActionFields(acts) end
+
+function GetDefeatActionFields(acts) end
+
+function GetPreserveTriggerActionFields(acts) end
+
+function GetWaitActionFields(acts)
+    local a1, a2, a3, Time, a4, a5, a6, acttype, a8, a9 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Time
+end
+
+function GetPauseGameActionFields(acts) end
+
+function GetUnpauseGameActionFields(acts) end
+
+function GetTransmissionActionFields(acts)
+    local Where, Text, WAVName, a1, a2, Time, Unit, acttype, TimeModifier, AlwaysDisplay =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Unit, Where, WAVName, TimeModifier, Time, Text, AlwaysDisplay
+end
+
+function GetPlayWAVActionFields(acts)
+    local a1, a2, WAVName, a3, a4, a5, a6, acttype, a8, a9 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return WAVName
+end
+
+function GetDisplayTextActionFields(acts)
+    local a1, Text, a2, a3, a4, a5, a6, acttype, a8, AlwaysDisplay =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Text, AlwaysDisplay
+end
+
+function GetCenterViewActionFields(acts)
+    local Where, a1, a2, a3, a4, a5, a6, acttype, a8, a9 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Where
+end
+
+function GetCreateUnitWithPropertiesActionFields(acts)
+    local Where, a1, a2, a3, Player, Properties, Unit, acttype, Count, a5 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Count, Unit, Where, Player, Properties
+end
+
+function GetSetMissionObjectivesActionFields(acts)
+    local a1, Text, a2, a3, a4, a5, a6, acttype, a8, a9 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Text
+end
+
+function GetSetSwitchActionFields(acts)
+    local a1, a2, a3, a4, a5, Switch, a6, acttype, State, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Switch, State
+end
+
+function GetSetCountdownTimerActionFields(acts)
+    local a1, a2, a3, Time, a4, a5, a6, acttype, TimeModifier, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return TimeModifier, Time
+end
+
+function GetRunAIScriptActionFields(acts)
+    local a1, a2, a3, a4, a5, Script, a6, acttype, a8, a9 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Script
+end
+
+function GetRunAIScriptAtActionFields(acts)
+    local Where, a1, a2, a3, a4, Script, a5, acttype, a7, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Script, Where
+end
+
+function GetLeaderBoardControlActionFields(acts)
+    local a1, Label, a2, a3, a4, a5, Unit, acttype, a7, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Unit, Label
+end
+
+function GetLeaderBoardControlAtActionFields(acts)
+    local Location, Label, a1, a2, a3, a4, Unit, acttype, a6, a7 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Unit, Location, Label
+end
+
+function GetLeaderBoardResourcesActionFields(acts)
+    local a1, Label, a2, a3, a4, a5, ResourceType, acttype, a7, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return ResourceType, Label
+end
+
+function GetLeaderBoardKillsActionFields(acts)
+    local a1, Label, a2, a3, a4, a5, Unit, acttype, a7, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Unit, Label
+end
+
+function GetLeaderBoardScoreActionFields(acts)
+    local a1, Label, a2, a3, a4, a5, ScoreType, acttype, a7, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return ScoreType, Label
+end
+
+function GetKillUnitActionFields(acts)
+    local a1, a2, a3, a4, Player, a5, Unit, acttype, a7, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Unit, Player
+end
+
+function GetKillUnitAtActionFields(acts)
+    local Where, a1, a2, a3, ForPlayer, a4, Unit, acttype, Count, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Count, Unit, Where, ForPlayer
+end
+
+function GetRemoveUnitActionFields(acts)
+    local a1, a2, a3, a4, Player, a5, Unit, acttype, a7, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Unit, Player
+end
+
+function GetRemoveUnitAtActionFields(acts)
+    local Where, a1, a2, a3, ForPlayer, a4, Unit, acttype, Count, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Count, Unit, Where, ForPlayer
+end
+
+function GetSetResourcesActionFields(acts)
+    local a1, a2, a3, a4, Player, Amount, ResourceType, acttype, Modifier, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Player, Modifier, Amount, ResourceType
+end
+
+function GetSetScoreActionFields(acts)
+    local a1, a2, a3, a4, Player, Amount, ScoreType, acttype, Modifier, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Player, Modifier, Amount, ScoreType
+end
+
+function GetMinimapPingActionFields(acts)
+    local Where, a1, a2, a3, a4, a5, a6, acttype, a8, a9 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Where
+end
+
+function GetTalkingPortraitActionFields(acts)
+    local a1, a2, a3, Time, a4, a5, Unit, acttype, a7, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Unit, Time
+end
+
+function GetMuteUnitSpeechActionFields(acts) end
+
+function GetUnMuteUnitSpeechActionFields(acts) end
+
+function GetLeaderBoardComputerPlayersActionFields(acts)
+    local a1, a2, a3, a4, a5, a6, a7, acttype, State, a9 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return State
+end
+
+function GetLeaderBoardGoalControlActionFields(acts)
+    local a1, Label, a2, a3, a4, Goal, Unit, acttype, a6, a7 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Goal, Unit, Label
+end
+
+function GetLeaderBoardGoalControlAtActionFields(acts)
+    local Location, Label, a1, a2, a3, Goal, Unit, acttype, a5, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Goal, Unit, Location, Label
+end
+
+function GetLeaderBoardGoalResourcesActionFields(acts)
+    local a1, Label, a2, a3, a4, Goal, ResourceType, acttype, a6, a7 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Goal, ResourceType, Label
+end
+
+function GetLeaderBoardGoalKillsActionFields(acts)
+    local a1, Label, a2, a3, a4, Goal, Unit, acttype, a6, a7 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Goal, Unit, Label
+end
+
+function GetLeaderBoardGoalScoreActionFields(acts)
+    local a1, Label, a2, a3, a4, Goal, ScoreType, acttype, a6, a7 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Goal, ScoreType, Label
+end
+
+function GetMoveLocationActionFields(acts)
+    local DestLocation, a1, a2, a3, Owner, Location, OnUnit, acttype, a5, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Location, OnUnit, Owner, DestLocation
+end
+
+function GetMoveUnitActionFields(acts)
+    local StartLocation, a1, a2, a3, Owner, DestLocation, UnitType, acttype, Count, a4 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Count, UnitType, Owner, StartLocation, DestLocation
+end
+
+function GetLeaderBoardGreedActionFields(acts)
+    local a1, a2, a3, a4, a5, Goal, a6, acttype, a8, a9 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Goal
+end
+
+function GetSetNextScenarioActionFields(acts)
+    local a1, ScenarioName, a2, a3, a4, a5, a6, acttype, a8, a9 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return ScenarioName
+end
+
+function GetSetDoodadStateActionFields(acts)
+    local Where, a1, a2, a3, Owner, a4, Unit, acttype, State, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return State, Unit, Owner, Where
+end
+
+function GetSetInvincibilityActionFields(acts)
+    local Where, a1, a2, a3, Owner, a4, Unit, acttype, State, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return State, Unit, Owner, Where
+end
+
+function GetCreateUnitActionFields(acts)
+    local Where, a1, a2, a3, ForPlayer, a4, Unit, acttype, Number, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Number, Unit, Where, ForPlayer
+end
+
+function GetSetDeathsActionFields(acts)
+    local a1, a2, a3, a4, Player, Number, Unit, acttype, Modifier, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Player, Modifier, Number, Unit
+end
+
+function GetOrderActionFields(acts)
+    local StartLocation, a1, a2, a3, Owner, DestLocation, Unit, acttype, OrderType, a4 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Unit, Owner, StartLocation, OrderType, DestLocation
+end
+
+function GetCommentActionFields(acts)
+    local a1, Text, a2, a3, a4, a5, a6, acttype, a8, a9 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Text
+end
+
+function GetGiveUnitsActionFields(acts)
+    local Where, a1, a2, a3, Owner, NewOwner, Unit, acttype, Count, a5 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Count, Unit, Owner, Where, NewOwner
+end
+
+function GetModifyUnitHitPointsActionFields(acts)
+    local Where, a1, a2, a3, Owner, Percent, Unit, acttype, Count, a5 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Count, Unit, Owner, Where, Percent
+end
+
+function GetModifyUnitEnergyActionFields(acts)
+    local Where, a1, a2, a3, Owner, Percent, Unit, acttype, Count, a5 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Count, Unit, Owner, Where, Percent
+end
+
+function GetModifyUnitShieldsActionFields(acts)
+    local Where, a1, a2, a3, Owner, Percent, Unit, acttype, Count, a5 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Count, Unit, Owner, Where, Percent
+end
+
+function GetModifyUnitResourceAmountActionFields(acts)
+    local Where, a1, a2, a3, Owner, NewValue, a4, acttype, Count, a6 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Count, Owner, Where, NewValue
+end
+
+function GetModifyUnitHangarCountActionFields(acts)
+    local Where, a1, a2, a3, Owner, Add, Unit, acttype, Count, a5 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Add, Count, Unit, Owner, Where
+end
+
+function GetPauseTimerActionFields(acts) end
+
+function GetUnpauseTimerActionFields(acts) end
+
+function GetDrawActionFields(acts) end
+
+function GetSetAllianceStatusActionFields(acts)
+    local a1, a2, a3, a4, Player, a5, Status, acttype, a7, a8 =
+        acts[0], acts[1], acts[2], acts[3], acts[4], acts[5], acts[6], acts[7], acts[8], acts[9]
+    return Player, Status
+end

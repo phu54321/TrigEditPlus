@@ -2,6 +2,12 @@ function EPD(offset)
     return (offset - 0x58A364) / 4
 end
 
+function Offset(Player, Unit)
+    return bit32.band(0x58A364 + (Player + Unit * 12) * 4, 0xFFFFFFFF)
+end
+
+----------------------------------------------------------
+
 function Memory(offset, comparison, number)
     assert(offset % 4 == 0, "[Memory] Offset should be divisible by 4")
 
@@ -33,14 +39,14 @@ end
 
 RegisterDeathsHook(function(Player, Comparison, Number, Unit)
     if Player >= 28 or (Player < 12 and Unit >= 233) then
-        Offset = 0x58A364 + (Player + Unit * 12)
-        return "SetMemory(0x" .. string.format("%06X", Offset) .. ", " .. DecodeComparison(Comparison) .. ", " .. Number .. ");", -65536
+        local Offset = Offset(Player, Unit)
+        return "Memory(0x" .. string.format("%06X", Offset) .. ", " .. DecodeComparison(Comparison) .. ", " .. Number .. ");"
     end
-end)
+end, -100000000)
 
 RegisterSetDeathsHook(function(Player, ModType, Number, Unit)
     if Player >= 28 or (Player < 12 and Unit >= 233) then
-        Offset = 0x58A364 + (Player + Unit * 12)
-        return "SetMemory(0x" .. string.format("%06X", Offset) .. ", " .. DecodeModifier(ModType) .. ", " .. Number .. ");", -65536
+        local Offset = Offset(Player, Unit)
+        return "SetMemory(0x" .. string.format("%06X", Offset) .. ", " .. DecodeModifier(ModType) .. ", " .. Number .. ");"
     end
-end)
+end, -100000000)

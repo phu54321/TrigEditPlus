@@ -1,183 +1,157 @@
-function RegisterCountdownTimerHook(f)
-    RegisterConditionHook(function(a1, a2, Time, a3, Comparison, condtype, a5, a6)
-        if condtype == 1 then
-            return f(Comparison, Time)
-        end
-    end, 1)
+function RegisterCountdownTimerHook(f, priority)
+    RegisterConditionHook(1, function(conds)
+        a1, a2, Time, a3, Comparison, condtype, a5, a6 = conds[1]
+        return f(Comparison, Time)
+    end, priority)
 end
 
-function RegisterCommandHook(f)
-    RegisterConditionHook(function(a1, Player, Number, Unit, Comparison, condtype, a3, a4)
-        if condtype == 2 then
-            return f(Player, Comparison, Number, Unit)
-        end
-    end, 2)
+function RegisterCommandHook(f, priority)
+    RegisterConditionHook(2, function(conds)
+        a1, Player, Number, Unit, Comparison, condtype, a3, a4 = conds[1]
+        return f(Player, Comparison, Number, Unit)
+    end, priority)
 end
 
-function RegisterBringHook(f)
-    RegisterConditionHook(function(Location, Player, Number, Unit, Comparison, condtype, a2, a3)
-        if condtype == 3 then
-            return f(Player, Comparison, Number, Unit, Location)
-        end
-    end, 3)
+function RegisterBringHook(f, priority)
+    RegisterConditionHook(3, function(conds)
+        Location, Player, Number, Unit, Comparison, condtype, a2, a3 = conds[1]
+        return f(Player, Comparison, Number, Unit, Location)
+    end, priority)
 end
 
-function RegisterAccumulateHook(f)
-    RegisterConditionHook(function(a1, Player, Number, a2, Comparison, condtype, ResourceType, a4)
-        if condtype == 4 then
-            return f(Player, Comparison, Number, ResourceType)
-        end
-    end, 4)
+function RegisterAccumulateHook(f, priority)
+    RegisterConditionHook(4, function(conds)
+        a1, Player, Number, a2, Comparison, condtype, ResourceType, a4 = conds[1]
+        return f(Player, Comparison, Number, ResourceType)
+    end, priority)
 end
 
-function RegisterKillsHook(f)
-    RegisterConditionHook(function(a1, Player, Number, Unit, Comparison, condtype, a3, a4)
-        if condtype == 5 then
-            return f(Player, Comparison, Number, Unit)
-        end
-    end, 5)
+function RegisterKillsHook(f, priority)
+    RegisterConditionHook(5, function(conds)
+        a1, Player, Number, Unit, Comparison, condtype, a3, a4 = conds[1]
+        return f(Player, Comparison, Number, Unit)
+    end, priority)
 end
 
-function RegisterCommandMostHook(f)
-    RegisterConditionHook(function(a1, a2, a3, Unit, a4, condtype, a6, a7)
-        if condtype == 6 then
-            return f(Unit)
-        end
-    end, 6)
+function RegisterCommandMostHook(f, priority)
+    RegisterConditionHook(6, function(conds)
+        a1, a2, a3, Unit, a4, condtype, a6, a7 = conds[1]
+        return f(Unit)
+    end, priority)
 end
 
-function RegisterCommandMostAtHook(f)
-    RegisterConditionHook(function(Location, a1, a2, Unit, a3, condtype, a5, a6)
-        if condtype == 7 then
-            return f(Unit, Location)
-        end
-    end, 7)
+function RegisterCommandMostAtHook(f, priority)
+    RegisterConditionHook(7, function(conds)
+        Location, a1, a2, Unit, a3, condtype, a5, a6 = conds[1]
+        return f(Unit, Location)
+    end, priority)
 end
 
-function RegisterMostKillsHook(f)
-    RegisterConditionHook(function(a1, a2, a3, Unit, a4, condtype, a6, a7)
-        if condtype == 8 then
-            return f(Unit)
-        end
-    end, 8)
+function RegisterMostKillsHook(f, priority)
+    RegisterConditionHook(8, function(conds)
+        a1, a2, a3, Unit, a4, condtype, a6, a7 = conds[1]
+        return f(Unit)
+    end, priority)
 end
 
-function RegisterHighestScoreHook(f)
-    RegisterConditionHook(function(a1, a2, a3, a4, a5, condtype, ScoreType, a7)
-        if condtype == 9 then
-            return f(ScoreType)
-        end
-    end, 9)
+function RegisterHighestScoreHook(f, priority)
+    RegisterConditionHook(9, function(conds)
+        a1, a2, a3, a4, a5, condtype, ScoreType, a7 = conds[1]
+        return f(ScoreType)
+    end, priority)
 end
 
-function RegisterMostResourcesHook(f)
-    RegisterConditionHook(function(a1, a2, a3, a4, a5, condtype, ResourceType, a7)
-        if condtype == 10 then
-            return f(ResourceType)
-        end
-    end, 10)
+function RegisterMostResourcesHook(f, priority)
+    RegisterConditionHook(10, function(conds)
+        a1, a2, a3, a4, a5, condtype, ResourceType, a7 = conds[1]
+        return f(ResourceType)
+    end, priority)
 end
 
-function RegisterSwitchHook(f)
-    RegisterConditionHook(function(a1, a2, a3, a4, State, condtype, Switch, a6)
-        if condtype == 11 then
-            return f(Switch, State)
-        end
-    end, 11)
+function RegisterSwitchHook(f, priority)
+    RegisterConditionHook(11, function(conds)
+        a1, a2, a3, a4, State, condtype, Switch, a6 = conds[1]
+        return f(Switch, State)
+    end, priority)
 end
 
-function RegisterElapsedTimeHook(f)
-    RegisterConditionHook(function(a1, a2, Time, a3, Comparison, condtype, a5, a6)
-        if condtype == 12 then
-            return f(Comparison, Time)
-        end
-    end, 12)
+function RegisterElapsedTimeHook(f, priority)
+    RegisterConditionHook(12, function(conds)
+        a1, a2, Time, a3, Comparison, condtype, a5, a6 = conds[1]
+        return f(Comparison, Time)
+    end, priority)
 end
 
-function RegisterBriefingHook(f)
-    RegisterConditionHook(function(a1, a2, a3, a4, a5, condtype, a7, a8)
-        if condtype == 13 then
-            return f()
-        end
-    end, 13)
+function RegisterBriefingHook(f, priority)
+    RegisterConditionHook(13, function(conds)
+        return f()
+    end, priority)
 end
 
-function RegisterOpponentsHook(f)
-    RegisterConditionHook(function(a1, Player, Number, a2, Comparison, condtype, a4, a5)
-        if condtype == 14 then
-            return f(Player, Comparison, Number)
-        end
-    end, 14)
+function RegisterOpponentsHook(f, priority)
+    RegisterConditionHook(14, function(conds)
+        a1, Player, Number, a2, Comparison, condtype, a4, a5 = conds[1]
+        return f(Player, Comparison, Number)
+    end, priority)
 end
 
-function RegisterDeathsHook(f)
-    RegisterConditionHook(function(a1, Player, Number, Unit, Comparison, condtype, a3, a4)
-        if condtype == 15 then
-            return f(Player, Comparison, Number, Unit)
-        end
-    end, 15)
+function RegisterDeathsHook(f, priority)
+    RegisterConditionHook(15, function(conds)
+        a1, Player, Number, Unit, Comparison, condtype, a3, a4 = conds[1]
+        return f(Player, Comparison, Number, Unit)
+    end, priority)
 end
 
-function RegisterCommandLeastHook(f)
-    RegisterConditionHook(function(a1, a2, a3, Unit, a4, condtype, a6, a7)
-        if condtype == 16 then
-            return f(Unit)
-        end
-    end, 16)
+function RegisterCommandLeastHook(f, priority)
+    RegisterConditionHook(16, function(conds)
+        a1, a2, a3, Unit, a4, condtype, a6, a7 = conds[1]
+        return f(Unit)
+    end, priority)
 end
 
-function RegisterCommandLeastAtHook(f)
-    RegisterConditionHook(function(Location, a1, a2, Unit, a3, condtype, a5, a6)
-        if condtype == 17 then
-            return f(Unit, Location)
-        end
-    end, 17)
+function RegisterCommandLeastAtHook(f, priority)
+    RegisterConditionHook(17, function(conds)
+        Location, a1, a2, Unit, a3, condtype, a5, a6 = conds[1]
+        return f(Unit, Location)
+    end, priority)
 end
 
-function RegisterLeastKillsHook(f)
-    RegisterConditionHook(function(a1, a2, a3, Unit, a4, condtype, a6, a7)
-        if condtype == 18 then
-            return f(Unit)
-        end
-    end, 18)
+function RegisterLeastKillsHook(f, priority)
+    RegisterConditionHook(18, function(conds)
+        a1, a2, a3, Unit, a4, condtype, a6, a7 = conds[1]
+        return f(Unit)
+    end, priority)
 end
 
-function RegisterLowestScoreHook(f)
-    RegisterConditionHook(function(a1, a2, a3, a4, a5, condtype, ScoreType, a7)
-        if condtype == 19 then
-            return f(ScoreType)
-        end
-    end, 19)
+function RegisterLowestScoreHook(f, priority)
+    RegisterConditionHook(19, function(conds)
+        a1, a2, a3, a4, a5, condtype, ScoreType, a7 = conds[1]
+        return f(ScoreType)
+    end, priority)
 end
 
-function RegisterLeastResourcesHook(f)
-    RegisterConditionHook(function(a1, a2, a3, a4, a5, condtype, ResourceType, a7)
-        if condtype == 20 then
-            return f(ResourceType)
-        end
-    end, 20)
+function RegisterLeastResourcesHook(f, priority)
+    RegisterConditionHook(20, function(conds)
+        a1, a2, a3, a4, a5, condtype, ResourceType, a7 = conds[1]
+        return f(ResourceType)
+    end, priority)
 end
 
-function RegisterScoreHook(f)
-    RegisterConditionHook(function(a1, Player, Number, a2, Comparison, condtype, ScoreType, a4)
-        if condtype == 21 then
-            return f(Player, ScoreType, Comparison, Number)
-        end
-    end, 21)
+function RegisterScoreHook(f, priority)
+    RegisterConditionHook(21, function(conds)
+        a1, Player, Number, a2, Comparison, condtype, ScoreType, a4 = conds[1]
+        return f(Player, ScoreType, Comparison, Number)
+    end, priority)
 end
 
-function RegisterAlwaysHook(f)
-    RegisterConditionHook(function(a1, a2, a3, a4, a5, condtype, a7, a8)
-        if condtype == 22 then
-            return f()
-        end
-    end, 22)
+function RegisterAlwaysHook(f, priority)
+    RegisterConditionHook(22, function(conds)
+        return f()
+    end, priority)
 end
 
-function RegisterNeverHook(f)
-    RegisterConditionHook(function(a1, a2, a3, a4, a5, condtype, a7, a8)
-        if condtype == 23 then
-            return f()
-        end
-    end, 23)
+function RegisterNeverHook(f, priority)
+    RegisterConditionHook(23, function(conds)
+        return f()
+    end, priority)
 end

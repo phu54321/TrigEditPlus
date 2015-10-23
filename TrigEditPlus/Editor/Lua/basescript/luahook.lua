@@ -20,109 +20,128 @@
 -- THE SOFTWARE.
 ---------------------------------------------------------------------------------
 
--- Lock access to undefined variable.
-
--- Code snippet from http://stackoverflow.com/questions/9102931/can-lua-support-case-insensitive-method-calls
-
 local conditionhooks = {}
 local actionhooks = {}
-local erroredf = {}
 
-function RegisterConditionHook(f, condtypes)
-    if condtypes == nil then
-        condtypes = {0}
-    else
-        condtypes = FlattenList(condtypes)
-    end
+-- Array -> Table key converter.
 
-    for i = 1, #condtypes do
-        local condtype = condtypes[i]
-        if conditionhooks[condtype] == nil then
-            conditionhooks[condtype] = {}
-        end
-        table.insert(conditionhooks[condtype], f)
-    end
+local function CreateArrayKey(typelist)
+    return table.concat(typelist, '\0')
 end
 
-function RegisterActionHook(f, acttypes)
-    if acttypes == nil then
-        acttypes = {0}
-    else
-        acttypes = FlattenList(acttypes)
+function RegisterConditionHook(condtypelist, f, priority)
+    condtypelist = FlattenList(condtypelist)
+    local condkey = condtypelist[1]
+    if conditionhooks[condkey] == nil then
+        conditionhooks[condkey] = {}
     end
-
-    for i = 1, #acttypes do
-        local acttype = acttypes[i]
-        if actionhooks[acttype] == nil then
-            actionhooks[acttype] = {}
-        end
-        table.insert(actionhooks[acttype], f)
-    end
+    table.insert(conditionhooks[condkey], {condtypelist, f, priority})
 end
+
+function RegisterActionHook(acttypelist, f, priority)
+    acttypelist = FlattenList(acttypelist)
+    local actkey = acttypelist[1]
+    if actionhooks[actkey] == nil then
+        actionhooks[actkey] = {}
+    end
+    table.insert(actionhooks[actkey], {acttypelist, f, priority})
+end
+
 
 ---- Hook processors
 
-function ProcessHooks_Sub(beststr, bestpriority, hooklist, hookcaller, errhandler)
-    for i = 1, #hooklist do
-        local hookf = hooklist[i]
-        if not erroredf[hookf] and not pcall(function()
-            local retstr, retpriority = hookcaller(hookf)
-            if retstr and retpriority > bestpriority then
-                beststr, bestpriority = retstr, retpriority
+function SortHooks()
+    -- Sort hooks by priority / length
+    --  Longer typelist -> Has more priority
+    --  Same typelist length -> Sort by priority
+    local function HookSorter(lhs, rhs)
+        return #(lhs[1]) > #(rhs[1]) or (#(lhs[1]) == #(rhs[1]) and lhs[3] < rhs[3])
+    end
+
+    for k, v in pairs(conditionhooks) do
+        table.sort(v, HookSorter)
+    end
+
+    for k, v in pairs(actionhooks) do
+        table.sort(v, HookSorter)
+    end
+end
+
+
+function DecodeConditions(condlist)
+    local condtypelist = {}
+    for i = 1, #condlist do
+        condtypelist[i] = condlist[i][6]
+    end
+    return ProcessHooks(conditionhooks, condlist, condtypelist)
+end
+
+
+function DecodeActions(actlist)
+    local acttypelist = {}
+    for i = 1, #actlist do
+        acttypelist[i] = actlist[i][8]
+    end
+    return ProcessHooks(actionhooks, actlist, acttypelist)
+end
+
+
+local function ProcessHooks(hooklist, entrylist, typelist)
+    local i, typelistlen = 1, #typelist
+    local retlist = {}
+
+    while i <= typelistlen
+        local keytype = typelist[i]
+        local appliable_hooks = hooklist[keytype]
+        local hook_applied = false
+        if appliable_hooks ~= nil then
+            for j = 1, #appliable_hooks do
+                local hook_typelist, hook_f = appliable_hooks[j]
+                local hook_typelistlen = hook_typelistlen
+
+                -- Optimize for 1-length typelisted hook
+                if hook_typelistlen == 1 then
+                    local retstr = hook_f({entrylist[i]})
+                    if retstr then
+                        retlist[i] = retstr[1]
+                        i = i + 1
+                        hook_applied = true
+                        break
+                    end
+
+                -- Hook is short enough to be appliable
+                else if hook_typelistlen + i < typelistlen then
+                    -- Check types
+                    local accepted = true
+                    for k = 2, hook_typelistlen do
+                        if typelist[i + k - 1] ~= hook_typelist[k] then
+                            accepted = false
+                            break
+                        end
+                    end
+
+                    if accepted then
+                        local subentrylist = {}
+                        for k = 1, hook_typelistlen do
+                            subentrylist[k] = entrylist[i + k - 1]
+                        end
+
+                        local retstr = hook_f(subentrylist)
+                        if retstr then
+                            for k = 1, hook_typelistlen do
+                                retlist[i + k - 1] = retstr[k]
+                            end
+                            i = i + hook_typelistlen
+                            hook_applied = true
+                            break
+                        end
+                    end
+                end
             end
-        end, errhandler) then
-            erroredf[hookf] = true
+        end
+        if not hook_applied then
+            i = i + 1
         end
     end
-    return beststr, bestpriority
 end
 
-function ProcessConditionHook(errhandler, a1, a2, a3, a4, a5, a6, a7, a8)
-    local beststr, bestpriority = nil, -10000000
-    
-    local function hookcaller(hookfunc)
-        return hookfunc(a1, a2, a3, a4, a5, a6, a7, a8)
-    end
-
-    local condtype = a6
-    
-    -- Process condtype-specific functions
-    local ctype_hooks = conditionhooks[condtype]
-    if ctype_hooks ~= nil then
-        beststr, bestpriority = ProcessHooks_Sub(beststr, bestpriority, ctype_hooks, hookcaller, errhandler)
-    end
-
-    -- Process non condtype-specific functions
-    local general_hooks = conditionhooks[0]
-    if general_hooks ~= nil then
-        beststr, bestpriority = ProcessHooks_Sub(beststr, bestpriority, general_hooks, hookcaller, errhandler)
-    end
-    
-    return beststr  -- Nil if hook is not found, Else appropriate string
-end
-
-
-function ProcessActionHook(errhandler, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-    local beststr, bestpriority = nil, -10000000
-    
-    local function hookcaller(hookfunc)
-        return hookfunc(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-    end
-
-    local acttype = a8
-    
-    -- Process acttype-specific functions
-    local atype_hooks = actionhooks[acttype]
-    if atype_hooks ~= nil then
-        beststr, bestpriority = ProcessHooks_Sub(beststr, bestpriority, atype_hooks, hookcaller)
-    end
-
-    -- Process non acttype-specific functions
-    local general_hooks = actionhooks[0]
-    if general_hooks ~= nil then
-        beststr, bestpriority = ProcessHooks_Sub(beststr, bestpriority, general_hooks, hookcaller)
-    end
-    
-    return beststr  -- Nil if hook is not found, Else appropriate string
-end
- 
