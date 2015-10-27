@@ -29,15 +29,6 @@
     <ClCompile Include="Editor\TriggerEncDecData.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\Decoder\AIScriptDecode.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Decoder\ConstDecoder.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Decoder\SpecialCommentDec.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
     <ClCompile Include="Editor\Decoder\StringDecoder.cpp">
       <Filter>Editor\Decoder</Filter>
     </ClCompile>
@@ -203,9 +194,6 @@
     <ClCompile Include="Editor\Scintilla\PlatWin.cxx">
       <Filter>Editor\Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\Decoder\crc32.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
     <ClCompile Include="Editor\hangulUnpacker.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
@@ -316,12 +304,6 @@
     </ClCompile>
     <ClCompile Include="Editor\Lua\LuaKeywords.cpp">
       <Filter>Editor\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Decoder\ProcCondActHook.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Decoder\LuaDecodeStringAndProp.cpp">
-      <Filter>Editor\Decoder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -660,6 +642,18 @@
     </None>
     <None Include="Editor\Lua\basescript\constparser.lua">
       <Filter>Editor\Lua\basescript</Filter>
+    </None>
+    <None Include="Editor\Decoder\decodeActions.lua">
+      <Filter>Editor\Decoder</Filter>
+    </None>
+    <None Include="Editor\Decoder\decodeConditions.lua">
+      <Filter>Editor\Decoder</Filter>
+    </None>
+    <None Include="Editor\Decoder\decodeTrigger.lua">
+      <Filter>Editor\Decoder</Filter>
+    </None>
+    <None Include="Editor\Decoder\decoderMain.lua">
+      <Filter>Editor\Decoder</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

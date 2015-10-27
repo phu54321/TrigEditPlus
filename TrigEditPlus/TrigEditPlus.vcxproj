@@ -91,12 +91,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Editor\Decoder\AIScriptDecode.cpp" />
-    <ClCompile Include="Editor\Decoder\ConstDecoder.cpp" />
-    <ClCompile Include="Editor\Decoder\crc32.cpp" />
-    <ClCompile Include="Editor\Decoder\LuaDecodeStringAndProp.cpp" />
-    <ClCompile Include="Editor\Decoder\ProcCondActHook.cpp" />
-    <ClCompile Include="Editor\Decoder\SpecialCommentDec.cpp" />
     <ClCompile Include="Editor\Decoder\StringDecoder.cpp" />
     <ClCompile Include="Editor\Decoder\TriggerDecodeAction.cpp" />
     <ClCompile Include="Editor\Decoder\TriggerDecodeCondition.cpp" />
@@ -296,6 +290,10 @@
     <ResourceCompile Include="TrigEditPlus.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Editor\Decoder\decodeActions.lua" />
+    <None Include="Editor\Decoder\decodeConditions.lua" />
+    <None Include="Editor\Decoder\decoderMain.lua" />
+    <None Include="Editor\Decoder\decodeTrigger.lua" />
     <None Include="Editor\Lua\basescript\basescript.lua" />
     <None Include="Editor\Lua\basescript\constdecoder.lua" />
     <None Include="Editor\Lua\basescript\constparser.lua" />
