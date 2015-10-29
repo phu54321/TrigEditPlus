@@ -29,22 +29,18 @@ local function CreateArrayKey(typelist)
     return table.concat(typelist, '\0')
 end
 
-function RegisterConditionHook(condtypelist, f, priority)
-    condtypelist = FlattenList(condtypelist)
-    local condkey = condtypelist[1]
-    if conditionhooks[condkey] == nil then
-        conditionhooks[condkey] = {}
+function RegisterConditionHook(condtype, f, priority)
+    if conditionhooks[condtype] == nil then
+        conditionhooks[condtype] = {}
     end
-    table.insert(conditionhooks[condkey], {condtypelist, f, priority})
+    table.insert(conditionhooks[condtype], {f, priority})
 end
 
-function RegisterActionHook(acttypelist, f, priority)
-    acttypelist = FlattenList(acttypelist)
-    local actkey = acttypelist[1]
-    if actionhooks[actkey] == nil then
-        actionhooks[actkey] = {}
+function RegisterActionHook(acttype, f, priority)
+    if actionhooks[acttype] == nil then
+        actionhooks[acttype] = {}
     end
-    table.insert(actionhooks[actkey], {acttypelist, f, priority})
+    table.insert(actionhooks[acttype], {f, priority})
 end
 
 
@@ -68,80 +64,44 @@ function SortHooks()
 end
 
 
-function DecodeConditions(condlist)
-    local condtypelist = {}
-    for i = 1, #condlist do
-        condtypelist[i] = condlist[i][6]
+local function CondActVerity(orig, ret)
+    -- We only need to check whether members in orig are the same in members in ret
+    for k, v in pairs(orig) do
+        if ret[k] ~= v then
+            return false
+        end
     end
-    return ProcessHooks(conditionhooks, condlist, condtypelist)
+    return true
 end
 
 
-function DecodeActions(actlist)
-    local acttypelist = {}
-    for i = 1, #actlist do
-        acttypelist[i] = actlist[i][8]
-    end
-    return ProcessHooks(actionhooks, actlist, acttypelist)
+function ProcessConditionHooks(condition)
+    return ProcessHook(conditionhooks, condition, condition[6])
 end
 
 
-local function ProcessHooks(hooklist, entrylist, typelist)
-    local i, typelistlen = 1, #typelist
-    local retlist = {}
+function ProcessActionHooks(action)
+    return ProcessHooks(actionhooks, action, action[8])
+end
 
-    while i <= typelistlen
-        local keytype = typelist[i]
-        local appliable_hooks = hooklist[keytype]
-        local hook_applied = false
-        if appliable_hooks ~= nil then
-            for j = 1, #appliable_hooks do
-                local hook_typelist, hook_f = appliable_hooks[j]
-                local hook_typelistlen = hook_typelistlen
 
-                -- Optimize for 1-length typelisted hook
-                if hook_typelistlen == 1 then
-                    local retstr = hook_f({entrylist[i]})
-                    if retstr then
-                        retlist[i] = retstr[1]
-                        i = i + 1
-                        hook_applied = true
-                        break
-                    end
-
-                -- Hook is short enough to be appliable
-                else if hook_typelistlen + i < typelistlen then
-                    -- Check types
-                    local accepted = true
-                    for k = 2, hook_typelistlen do
-                        if typelist[i + k - 1] ~= hook_typelist[k] then
-                            accepted = false
-                            break
-                        end
-                    end
-
-                    if accepted then
-                        local subentrylist = {}
-                        for k = 1, hook_typelistlen do
-                            subentrylist[k] = entrylist[i + k - 1]
-                        end
-
-                        local retstr = hook_f(subentrylist)
-                        if retstr then
-                            for k = 1, hook_typelistlen do
-                                retlist[i + k - 1] = retstr[k]
-                            end
-                            i = i + hook_typelistlen
-                            hook_applied = true
-                            break
-                        end
-                    end
+local function ProcessHooks(hooklist, entry, entrytype)
+    local appliable_hooks = hooklist[entrytype]
+    for j = 1, #appliable_hooks do
+        local hookentry = appliable_hooks[j]
+        local hook_f = hookentry[1]
+        if hookentry[3] == nil then
+            local retstr = hook_f(entry)
+            if retstr then
+                local ret_eval = load("return " .. retstr)()
+                if not CondActVerity(entry, ret_eval) then
+                    hookentry[3] = true;  -- Invalidate hook
+                    error('Invalid Hook!')
                 end
+                return retstr
             end
         end
-        if not hook_applied then
-            i = i + 1
-        end
     end
+    return nil
 end
 
