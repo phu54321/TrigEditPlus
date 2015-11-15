@@ -23,6 +23,7 @@
 #include "../Lua/lib/lua.hpp"
 #include "../TriggerEditor.h"
 #include <sstream>
+#include <algorithm>
 
 TriggerEditor* LuaGetEditor(lua_State* L);
 
@@ -124,6 +125,8 @@ bool CallActionHook(lua_State* L, const TrigAct& act, std::string& ret)
 	else if(lua_isstring(L, -1))
 	{
 		ret = lua_tostring(L, -1);
+		ret.erase(std::remove(ret.begin(), ret.end(), '\n'), ret.end());
+		ret.erase(std::remove(ret.begin(), ret.end(), '\r'), ret.end());
 		lua_pop(L, 1);
 		return true;
 	}

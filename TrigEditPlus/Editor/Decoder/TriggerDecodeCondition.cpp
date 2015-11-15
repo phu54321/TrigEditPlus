@@ -30,14 +30,7 @@ bool CallConditionHook(lua_State* L, const TrigCond& cond, std::string& ret);
 
 void TriggerEditor::DecodeCondition(lua_State* L, StringBuffer& buf, const TrigCond& content) const
 {
-	static std::string ret;
 	buf << "\t\t";
-
-	if(CallConditionHook(L, content, ret))
-	{
-		buf << ret << "\r\n";
-		return;
-	}
 
 	if(content.prop & 0x2) {
 		buf << "Disabled(";
@@ -128,10 +121,20 @@ cnddec_overridden:;
 	}
 
 	if(content.prop & 0x2) {
-		buf << ");\r\n";
+		buf << ");";
 	}
 
 	else {
-		buf << ";\r\n";
+		buf << ";";
+	}
+
+	static std::string ret;
+	if (CallConditionHook(L, content, ret))
+	{
+		buf << "  -- " << ret << "\r\n";
+	}
+	else
+	{
+		buf << "\r\n";
 	}
 }

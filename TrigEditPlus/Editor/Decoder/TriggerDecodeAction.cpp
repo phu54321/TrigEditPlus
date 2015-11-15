@@ -32,15 +32,9 @@ bool CallActionHook(lua_State* L, const TrigAct& cond, std::string& ret);
 
 void TriggerEditor::DecodeAction(lua_State* L, StringBuffer& buf, const TrigAct& content) const
 {
-	static std::string ret;
 	buf << "\t\t";
 
-	if(CallActionHook(L, content, ret))
-	{
-		buf << ret << "\r\n";
-		return;
-	}
-
+	
 	if(content.prop & 0x2) {
 		buf << "Disabled(";
 	}
@@ -99,7 +93,6 @@ void TriggerEditor::DecodeAction(lua_State* L, StringBuffer& buf, const TrigAct&
 			case ACTFIELD_ACTTYPE: value = content.acttype; break;
 			case ACTFIELD_NUM: value = content.num; break;
 			case ACTFIELD_PROP: value = content.prop; break;
-			default: throw std::bad_exception("TT");
 			}
 
 			// Decode value according to field type.
@@ -131,8 +124,6 @@ void TriggerEditor::DecodeAction(lua_State* L, StringBuffer& buf, const TrigAct&
 					}
 				}
 				break;
-
-			default: throw std::bad_exception("TT");
 			}
 
 			if(firstfield) firstfield = false;
@@ -145,10 +136,24 @@ actdec_overridden:;
 	}
 
 	if(content.prop & 0x2) {
-		buf << ");\r\n";
+		buf << ");";
 	}
 
 	else {
-		buf << ";\r\n";
+		buf << ";";
 	}
+
+
+	static std::string ret;
+	if (CallActionHook(L, content, ret))
+	{
+		buf << "  -- " << ret << "\r\n";
+		return;
+	}
+
+	else
+	{
+		buf << "\r\n";
+	}
+
 }
