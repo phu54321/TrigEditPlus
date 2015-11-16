@@ -28,7 +28,6 @@
 #define MARGIN_SCRIPT_FOLD_INDEX 2
 
 void ApplyMinimapStyle(TriggerEditor* te) {
-
 	te->SendSciMessage(SCI_SETDOCPOINTER, 0, te->SendSciMessage(SCI_GETDOCPOINTER, 0, 0, SCI_TARGET_MAIN), SCI_TARGET_MINI);
 	te->SendSciMessage(SCI_SETMARGINWIDTHN, 0, 0, SCI_TARGET_MINI);
 	te->SendSciMessage(SCI_SETMARGINWIDTHN, 1, 0, SCI_TARGET_MINI);
@@ -40,4 +39,6 @@ void ApplyMinimapStyle(TriggerEditor* te) {
 	te->SendSciMessage(SCI_STYLECLEARALL, 0, 0, SCI_TARGET_MINI);
 	te->SendSciMessage(SCI_SETVSCROLLBAR, 0, 0, SCI_TARGET_MINI);
 	te->SendSciMessage(SCI_SETHSCROLLBAR, 0, 0, SCI_TARGET_MINI);
+
+	//te->SendSciMessage(SCI_SETREADONLY, 1, 0, SCI_TARGET_MINI);
 }

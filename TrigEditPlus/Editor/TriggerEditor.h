@@ -171,6 +171,9 @@ public:
 	std::string GetEditorText() const;
 	void SetEditorText(const std::string& str);
 
+	// Minimap update
+	void UpdateMinimap();
+
 	// Lua part
 	lua_State* _nsLua;
 

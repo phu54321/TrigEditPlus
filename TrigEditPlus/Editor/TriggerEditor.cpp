@@ -128,7 +128,7 @@ int TriggerEditor::RunEditor(HWND hMain, TriggerEditor_Arg& arg) {
 
 
 void TriggerEditor::SetEditorText(const std::string& str) {
-	SendMessage(hScintilla, SCI_SETTEXT, 0, (LPARAM)str.c_str());
+	SendSciMessage(SCI_SETTEXT, 0, (LPARAM)str.c_str(), SCI_TARGET_MAIN);
 }
 
 std::string TriggerEditor::GetEditorText() const {
@@ -515,59 +515,11 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 
 			case SCN_CHARADDED:
 				Editor_CharAdded(ne, te);
+				te->UpdateMinimap();
+				return 0;
 
-				// Minimap update
-				int mainPos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0, SCI_TARGET_MAIN);
-				int miniPos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0, SCI_TARGET_MINI);
-				if(mainPos != miniPos)
-				{
-					int mainLine = te->SendSciMessage(SCI_LINEFROMPOSITION, mainPos, 0, SCI_TARGET_MAIN);
-					int firstVisibleLine = te->SendSciMessage(SCI_GETFIRSTVISIBLELINE, 0, 0, SCI_TARGET_MAIN);
-					int linesOnScreen = te->SendSciMessage(SCI_LINESONSCREEN, 0, 0, SCI_TARGET_MAIN);
-					if(mainLine < firstVisibleLine + linesOnScreen)
-					{
-						int gotoPos = te->SendSciMessage(SCI_POSITIONFROMLINE, firstVisibleLine + linesOnScreen, 0, SCI_TARGET_MAIN) - 1;
-						int miniNewPos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0, SCI_TARGET_MINI);
-						te->SendSciMessage(SCI_GOTOPOS, gotoPos, 0, SCI_TARGET_MINI);
-						te->SendSciMessage(
-							SCI_SETSELECTION,
-							te->SendSciMessage(SCI_POSITIONFROMLINE, miniNewPos, 0, SCI_TARGET_MINI),
-							te->SendSciMessage(SCI_GETLINEENDPOSITION, miniNewPos - linesOnScreen, 0, SCI_TARGET_MINI)
-							, SCI_TARGET_MINI
-						);
-					}
-				}
-
-				/*
-				If ScintillaSendMessage(1, #SCI_GETCURRENTPOS) <> ScintillaSendMessage(0, #SCI_GETCURRENTPOS)
-				  ; TO DO !!! need to distinguish if the current line moves down or up....
-				  ; main editor's position moves the vscroll selection 
-				  ; if editor's current line is inside the visible area the vscroll selection doesn't move
-				  ; seems to work...
-				  If (
-					ScintillaSendMessage(0, #SCI_LINEFROMPOSITION, ScintillaSendMessage(0, #SCI_GETCURRENTPOS)) <
-					ScintillaSendMessage(0, #SCI_GETFIRSTVISIBLELINE) + ScintillaSendMessage(0, #SCI_LINESONSCREEN)
-				  )
-        
-					ScintillaSendMessage(1, #SCI_GOTOPOS, 
-						ScintillaSendMessage(0, #SCI_POSITIONFROMLINE, 
-							ScintillaSendMessage(0, #SCI_GETFIRSTVISIBLELINE) + 
-							ScintillaSendMessage(0, #SCI_LINESONSCREEN)
-						) - 1
-					)
-					ScintillaSendMessage(1, #SCI_SETSELECTION,
-						ScintillaSendMessage(1, #SCI_POSITIONFROMLINE,
-							ScintillaSendMessage(1, #SCI_LINEFROMPOSITION, ScintillaSendMessage(1, #SCI_GETCURRENTPOS))
-						),
-						ScintillaSendMessage(1, #SCI_GETLINEENDPOSITION,
-							ScintillaSendMessage(1, #SCI_LINEFROMPOSITION, ScintillaSendMessage(1, #SCI_GETCURRENTPOS))
-							- ScintillaSendMessage(0, #SCI_LINESONSCREEN)
-						)
-					)
-				  EndIf
-    
-				EndIf
-				*/
+			case SCN_UPDATEUI:
+				te->UpdateMinimap();
 				return 0;
 			}
 		}
@@ -895,4 +847,26 @@ void TriggerEditor::UpdateTriggerList(const std::vector<TrigBufferEntry>& trigbu
 			}
 		}
 	}
+}
+
+
+// Minimap
+
+void TriggerEditor::UpdateMinimap()
+{
+	int currentPos = SendSciMessage(SCI_GETCURRENTPOS, 0, 0, SCI_TARGET_MAIN);
+	int currentAnchor = SendSciMessage(SCI_GETANCHOR, 0, 0, SCI_TARGET_MAIN);
+	//SendSciMessage(SCI_SETCURRENTPOS, currentPos, 0, SCI_TARGET_MINI);
+	//SendSciMessage(SCI_SETANCHOR, currentAnchor, 0, SCI_TARGET_MINI);
+
+	// Synchronize current pos
+	int firstVisibleLine = SendSciMessage(SCI_GETFIRSTVISIBLELINE, 0, 0, SCI_TARGET_MAIN);
+	int linesOnScreen = SendSciMessage(SCI_LINESONSCREEN, 0, 0, SCI_TARGET_MAIN);
+	int endVisibleLine = firstVisibleLine + linesOnScreen - 1;
+
+	SendSciMessage(SCI_SCROLLRANGE, firstVisibleLine, endVisibleLine, SCI_TARGET_MINI);
+
+	// Select current view
+	int selStart = SendSciMessage(SCI_POSITIONFROMLINE, firstVisibleLine, 0, 0);
+	int selEnd = SendSciMessage(SCI_GETLINEENDPOSITION, endVisibleLine, 0, SCI_TARGET_MAIN);
 }
