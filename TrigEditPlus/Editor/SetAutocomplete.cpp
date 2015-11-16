@@ -127,7 +127,7 @@ static std::wstring s2ws(const std::string& s)
 {
 	size_t buflen = MultiByteToWideChar(CP_OEMCP, 0, s.c_str(), -1, 0, 0);
 	std::wstring ws(buflen, 0);
-	MultiByteToWideChar(CP_OEMCP, 0, s.data(), s.size(), (wchar_t*)ws.data(), ws.size());
+	MultiByteToWideChar(CP_OEMCP, 0, s.data(), s.size(), const_cast<wchar_t*>(ws.data()), ws.size());
 	ws.resize(ws.size() - 1);  // Kill '\0';
 	return ws;
 }
@@ -145,8 +145,8 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 	// trim inputtext
 	int slen = strlen(inputtext);
 	int trimstart = -1, trimend = slen;
-	while(trimstart < slen && isspace((unsigned char)inputtext[++trimstart]));
-	while(trimend >= 0 && isspace((unsigned char)inputtext[--trimend]));
+	while(trimstart < slen && isspace(static_cast<char>(inputtext[++trimstart])));
+	while(trimend >= 0 && isspace(static_cast<unsigned char>(inputtext[--trimend])));
 	trimend++;
 
 	std::string _keyword; // default initialized to empty string
@@ -226,7 +226,7 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 		{
 			autocomplete_list.push_back(std::make_pair(
 				rank,
-				std::shared_ptr<std::string>(new std::string(s))
+				std::make_shared<std::string>(s)
 			));
 		}
 	}

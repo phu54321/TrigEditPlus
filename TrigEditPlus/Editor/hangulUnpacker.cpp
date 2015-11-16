@@ -1,5 +1,4 @@
 #include <map>
-#include <string>
 #include <vector>
 
 const std::map<wchar_t, const wchar_t*> jamo_table = {

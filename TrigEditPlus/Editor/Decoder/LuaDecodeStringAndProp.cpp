@@ -21,7 +21,6 @@
 */
 
 #include "../TriggerEditor.h"
-#include "../Lua/lib/lua.hpp"
 #include "../UnitProp.h"
 
 TriggerEditor* LuaGetEditor(lua_State* L);

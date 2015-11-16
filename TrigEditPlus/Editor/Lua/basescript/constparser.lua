@@ -46,7 +46,6 @@ Total = {__trg_magic="trgconst"}
 Units = {__trg_magic="trgconst"}
 Buildings = {__trg_magic="trgconst"}
 UnitsAndBuildings = {__trg_magic="trgconst"}
-Kills = {__trg_magic="trgconst"}
 Razings = {__trg_magic="trgconst"}
 KillsAndRazings = {__trg_magic="trgconst"}
 Custom = {__trg_magic="trgconst"}
@@ -54,6 +53,10 @@ Set = {__trg_magic="trgconst"}
 Clear = {__trg_magic="trgconst"}
 Random = {__trg_magic="trgconst"}
 Cleared = {__trg_magic="trgconst"}
+
+-- Kills = {__trg_magic="trgconst"}
+-- Kills can be used both as constant and condition.
+-- We reuse condition Kills for this.
 
 
 local AllyStatusDict = {
