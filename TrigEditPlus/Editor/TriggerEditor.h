@@ -103,6 +103,15 @@ struct TrigBufferEntry
 class MapNamespace;
 LRESULT CALLBACK TrigEditDlgProc(HWND, UINT, WPARAM, LPARAM);
 
+
+// SendSciMessage target
+enum
+{
+	SCI_TARGET_MAIN = 1,
+	SCI_TARGET_MINI = 2,
+	SCI_TARGET_BOTH = 3,
+};
+
 // Trigger editor def
 class TriggerEditor {
 	friend LRESULT CALLBACK TrigEditDlgProc(HWND, UINT, WPARAM, LPARAM);
@@ -157,7 +166,7 @@ public:
 	
 	void ClearErrors();
 	void PrintErrorMessage(const std::string& str);
-	int SendSciMessage(int msg, WPARAM, LPARAM);
+	int SendSciMessage(int msg, WPARAM, LPARAM, int target = SCI_TARGET_BOTH);
 
 	std::string GetEditorText() const;
 	void SetEditorText(const std::string& str);
@@ -169,6 +178,7 @@ public:
 	HWND hTrigDlg;
 	HWND hTriggerList;
 	HWND hScintilla;
+	HWND hMinimap;
 	HWND hFindDlg;
 	FINDREPLACE fr;
 	FieldType currentft;
@@ -176,6 +186,9 @@ public:
 
 	SciFnDirect _pSciMsg;
 	sptr_t _pSciWndData;
+
+	SciFnDirect _pMinimapMsg;
+	sptr_t _pMinimapWndData;
 
 	StringBuffer _errlist;
 

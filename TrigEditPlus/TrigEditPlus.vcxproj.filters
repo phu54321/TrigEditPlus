@@ -323,6 +323,9 @@
     <ClCompile Include="Editor\Decoder\LuaDecodeStringAndProp.cpp">
       <Filter>Editor\Decoder</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\MinimapStyle.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />

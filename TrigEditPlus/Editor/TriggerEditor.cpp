@@ -33,8 +33,8 @@
 
 const int TreeViewID = 1000;
 const int ScintillaID = 1001;
-const int TabID = 1002;
-const int StatusBarID = 1004;
+const int MinimapID = 1002;
+const int StatusBarID = 1003;
 
 ///////
 
@@ -152,8 +152,19 @@ void TriggerEditor::PrintErrorMessage(const std::string& msg) {
 }
 
 
-int TriggerEditor::SendSciMessage(int msg, WPARAM wParam, LPARAM lParam) {
-	return _pSciMsg(_pSciWndData, msg, wParam, lParam);
+int TriggerEditor::SendSciMessage(int msg, WPARAM wParam, LPARAM lParam, int target) {
+	int ret = 0;
+	
+	if(target & SCI_TARGET_MAIN)
+	{
+		ret = _pSciMsg(_pSciWndData, msg, wParam, lParam);
+		if (target & SCI_TARGET_MINI)
+			_pMinimapMsg(_pMinimapWndData, msg, wParam, lParam);
+	}
+	else {
+		ret = _pMinimapMsg(_pMinimapWndData, msg, wParam, lParam);
+	}
+	return ret;		
 }
 
 
@@ -165,6 +176,7 @@ static FINDREPLACE fr;
 
 void Editor_CharAdded(SCNotification* ne, TriggerEditor* te);
 void ApplyEditorStyle(TriggerEditor* te);
+void ApplyMinimapStyle(TriggerEditor* te);
 
 LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	TriggerEditor* te = reinterpret_cast<TriggerEditor*>(GetWindowLong(hWnd, GWL_USERDATA));
@@ -215,10 +227,33 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 
 		te->_pSciMsg = (SciFnDirect)SendMessage(te->hScintilla, SCI_GETDIRECTFUNCTION, 0, 0);
 		te->_pSciWndData = (sptr_t)SendMessage(te->hScintilla, SCI_GETDIRECTPOINTER, 0, 0);
+
+
+		// Init minimap window
+		te->hMinimap = CreateWindow(
+			"Scintilla",
+			"",
+			WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN,
+			600,
+			0,
+			200,
+			600,
+			hWnd,
+			(HMENU)MinimapID,
+			hInstance,
+			NULL
+			);
+
+		te->_pMinimapMsg = (SciFnDirect)SendMessage(te->hMinimap, SCI_GETDIRECTFUNCTION, 0, 0);
+		te->_pMinimapWndData = (sptr_t)SendMessage(te->hMinimap, SCI_GETDIRECTPOINTER, 0, 0);
+
+		// Set syntax highlighting things
+		ApplyEditorStyle(te);
+		ApplyMinimapStyle(te);
+
+		// Create status bar
 		CreateStatusWindow(SBARS_SIZEGRIP | WS_CHILD | WS_VISIBLE,
 			"Loading triggers...", hWnd, StatusBarID);
-
-		ApplyEditorStyle(te);
 	}
 	return 0;
 
@@ -238,8 +273,9 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 		int scrH = rt.bottom - rt.top - statusbar_height;
 
 		HDWP hdwp = BeginDeferWindowPos(2);
-		DeferWindowPos(hdwp, te->hTriggerList, NULL, 0, 0, 200, scrH - 3, SWP_NOZORDER);
-		DeferWindowPos(hdwp, te->hScintilla, NULL, 205, 0, scrW - 205, scrH - 3, SWP_NOZORDER);
+		DeferWindowPos(hdwp, te->hTriggerList, nullptr, 0, 0, 200, scrH - 3, SWP_NOZORDER);
+		DeferWindowPos(hdwp, te->hScintilla, nullptr, 202, 0, scrW - 604, scrH - 3, SWP_NOZORDER);
+		DeferWindowPos(hdwp, te->hMinimap, nullptr, scrW - 400, 0, 400, scrH - 3, SWP_NOZORDER);
 		EndDeferWindowPos(hdwp);
 	}
 	return 0;
@@ -479,6 +515,59 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 
 			case SCN_CHARADDED:
 				Editor_CharAdded(ne, te);
+
+				// Minimap update
+				int mainPos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0, SCI_TARGET_MAIN);
+				int miniPos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0, SCI_TARGET_MINI);
+				if(mainPos != miniPos)
+				{
+					int mainLine = te->SendSciMessage(SCI_LINEFROMPOSITION, mainPos, 0, SCI_TARGET_MAIN);
+					int firstVisibleLine = te->SendSciMessage(SCI_GETFIRSTVISIBLELINE, 0, 0, SCI_TARGET_MAIN);
+					int linesOnScreen = te->SendSciMessage(SCI_LINESONSCREEN, 0, 0, SCI_TARGET_MAIN);
+					if(mainLine < firstVisibleLine + linesOnScreen)
+					{
+						int gotoPos = te->SendSciMessage(SCI_POSITIONFROMLINE, firstVisibleLine + linesOnScreen, 0, SCI_TARGET_MAIN) - 1;
+						int miniNewPos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0, SCI_TARGET_MINI);
+						te->SendSciMessage(SCI_GOTOPOS, gotoPos, 0, SCI_TARGET_MINI);
+						te->SendSciMessage(
+							SCI_SETSELECTION,
+							te->SendSciMessage(SCI_POSITIONFROMLINE, miniNewPos, 0, SCI_TARGET_MINI),
+							te->SendSciMessage(SCI_GETLINEENDPOSITION, miniNewPos - linesOnScreen, 0, SCI_TARGET_MINI)
+							, SCI_TARGET_MINI
+						);
+					}
+				}
+
+				/*
+				If ScintillaSendMessage(1, #SCI_GETCURRENTPOS) <> ScintillaSendMessage(0, #SCI_GETCURRENTPOS)
+				  ; TO DO !!! need to distinguish if the current line moves down or up....
+				  ; main editor's position moves the vscroll selection 
+				  ; if editor's current line is inside the visible area the vscroll selection doesn't move
+				  ; seems to work...
+				  If (
+					ScintillaSendMessage(0, #SCI_LINEFROMPOSITION, ScintillaSendMessage(0, #SCI_GETCURRENTPOS)) <
+					ScintillaSendMessage(0, #SCI_GETFIRSTVISIBLELINE) + ScintillaSendMessage(0, #SCI_LINESONSCREEN)
+				  )
+        
+					ScintillaSendMessage(1, #SCI_GOTOPOS, 
+						ScintillaSendMessage(0, #SCI_POSITIONFROMLINE, 
+							ScintillaSendMessage(0, #SCI_GETFIRSTVISIBLELINE) + 
+							ScintillaSendMessage(0, #SCI_LINESONSCREEN)
+						) - 1
+					)
+					ScintillaSendMessage(1, #SCI_SETSELECTION,
+						ScintillaSendMessage(1, #SCI_POSITIONFROMLINE,
+							ScintillaSendMessage(1, #SCI_LINEFROMPOSITION, ScintillaSendMessage(1, #SCI_GETCURRENTPOS))
+						),
+						ScintillaSendMessage(1, #SCI_GETLINEENDPOSITION,
+							ScintillaSendMessage(1, #SCI_LINEFROMPOSITION, ScintillaSendMessage(1, #SCI_GETCURRENTPOS))
+							- ScintillaSendMessage(0, #SCI_LINESONSCREEN)
+						)
+					)
+				  EndIf
+    
+				EndIf
+				*/
 				return 0;
 			}
 		}

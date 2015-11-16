@@ -78,6 +78,12 @@ void ApplyEditorStyle(TriggerEditor* te) {
 	te->SendSciMessage(SCI_STYLESETEOLFILLED, 12, TRUE);
 	te->SendSciMessage(SCI_STYLESETEOLFILLED,  1, TRUE);
 
+	// Caret line
+	te->SendSciMessage(SCI_SETCARETLINEVISIBLE, 1, 0);
+	te->SendSciMessage(SCI_SETCARETLINEVISIBLEALWAYS, 1, 0);
+	te->SendSciMessage(SCI_SETCARETLINEBACKALPHA, 50, 0);
+	te->SendSciMessage(SCI_SETCARETLINEBACK, RGB(161, 161, 161), 0);
+
 	// Margins 
 	te->SendSciMessage(SCI_SETMARGINWIDTHN, 0, 50);  // Line number
 	te->SendSciMessage(SCI_SETMARGINWIDTHN, 1, 0);

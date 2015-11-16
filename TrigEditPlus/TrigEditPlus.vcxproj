@@ -148,6 +148,7 @@
     <ClCompile Include="Editor\Lua\LuaKeywords.cpp" />
     <ClCompile Include="Editor\MapNamespace.cpp" />
     <ClCompile Include="Editor\MapStrings.cpp" />
+    <ClCompile Include="Editor\MinimapStyle.cpp" />
     <ClCompile Include="Editor\Scintilla\Accessor.cxx" />
     <ClCompile Include="Editor\Scintilla\AutoComplete.cxx" />
     <ClCompile Include="Editor\Scintilla\CallTip.cxx" />
