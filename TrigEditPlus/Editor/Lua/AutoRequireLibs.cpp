@@ -163,7 +163,6 @@ void LuaAutoRequireLibs(lua_State* L)
 	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKACT), "stockact");
 	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKCONDHOOK), "stockcondhook");
 	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKACTHOOK), "stockacthook");
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_MEMSMEM), "memsmem");
 	LuaRunResource(L, MAKEINTRESOURCE(IDR_CONSTPARSER), "constparser");
 	LuaRunResource(L, MAKEINTRESOURCE(IDR_CONSTDECODER), "constdecoder");
 
