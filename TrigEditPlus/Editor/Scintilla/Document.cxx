@@ -814,7 +814,9 @@ int SCI_METHOD Document::GetCharacterAndWidth(int position, int *pWidth) const {
 				}
 			}
 		} else {
-			if (IsDBCSLeadByte(leadByte)) {
+			//if (IsDBCSLeadByte(leadByte)) {
+			// TEP uses 949 codepage
+			if (leadByte >= 0x81 && leadByte <= 0xFE) {
 				bytesInCharacter = 2;
 				character = (leadByte << 8) | static_cast<unsigned char>(cb.CharAt(position+1));
 			} else {

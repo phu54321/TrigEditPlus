@@ -137,6 +137,8 @@ void LoadUserLuaLibs(lua_State* L)
 
 // --------------------
 
+int LuaLog(lua_State* L);
+
 int LuaParseUnit(lua_State* L);
 int LuaParseLocation(lua_State* L);
 int LuaParseSwitchName(lua_State* L);
@@ -158,6 +160,8 @@ void LuaAutoRequireLibs(lua_State* L)
 	// before any variable is declared
 
 	// Load basic functions.
+	
+	lua_register(L, "Log", LuaLog);
 	lua_register(L, "ParseUnit", LuaParseUnit);
 	lua_register(L, "ParseLocation", LuaParseLocation);
 	lua_register(L, "ParseSwitchName", LuaParseSwitchName);
@@ -184,4 +188,8 @@ void LuaAutoRequireLibs(lua_State* L)
 	// NOTE : USER LIBRARY SHOULDN'T ADD ANY TRIGGERS OR SOMETHING. TO ENFORCE IT, WE LOAD
 	// USER LIBRARY BEFORE DECLARING VARIOUS __internal__AddTrigger function.
 	LoadUserLuaLibs(L);
+
+	// Sort hooks
+	lua_getglobal(L, "SortHooks");
+	lua_call(L, 0, 0);
 }

@@ -28,7 +28,7 @@ local conditionhooks = {}
 local actionhooks = {}
 local erroredf = {}
 
-function RegisterConditionHook(f, condtypes)
+function RegisterConditionHook(f, condtypes, priority)
     if condtypes == nil then
         condtypes = {0}
     else
@@ -40,11 +40,11 @@ function RegisterConditionHook(f, condtypes)
         if conditionhooks[condtype] == nil then
             conditionhooks[condtype] = {}
         end
-        table.insert(conditionhooks[condtype], f)
+        table.insert(conditionhooks[condtype], {f, priority})
     end
 end
 
-function RegisterActionHook(f, acttypes)
+function RegisterActionHook(f, acttypes, priority)
     if acttypes == nil then
         acttypes = {0}
     else
@@ -56,29 +56,52 @@ function RegisterActionHook(f, acttypes)
         if actionhooks[acttype] == nil then
             actionhooks[acttype] = {}
         end
-        table.insert(actionhooks[acttype], f)
+        table.insert(actionhooks[acttype], {f, priority})
     end
 end
 
+
+function prioritySorter(a, b)
+    -- Sort by higher priority
+    return a[2] > b[2]
+end
+
+function SortHooks()
+	for k, v in pairs(conditionhooks) do
+		table.sort(v, prioritySorter)
+	end
+
+	for k, v in pairs(actionhooks) do
+		table.sort(v, prioritySorter)
+	end
+end
+
+
 ---- Hook processors
 
-function ProcessHooks_Sub(beststr, bestpriority, hooklist, hookcaller, errhandler)
+function ProcessHooks_Sub(hooklist, hookcaller, errhandler)
+	local retstr = nil
     for i = 1, #hooklist do
-        local hookf = hooklist[i]
+        local hookf, hookpriority = hooklist[i][1], hooklist[i][2]
         if not erroredf[hookf] and not pcall(function()
-            local retstr, retpriority = hookcaller(hookf)
-            if retstr and retpriority > bestpriority then
-                beststr, bestpriority = retstr, retpriority
+            local retstr_local = hookcaller(hookf)
+            if retstr_local then
+				retstr = retstr_local
             end
         end, errhandler) then
             erroredf[hookf] = true
         end
+		if retstr then
+			return retstr, hookpriority
+		end
     end
-    return beststr, bestpriority
+    return nil, nil
 end
 
+
 function ProcessConditionHook(errhandler, a1, a2, a3, a4, a5, a6, a7, a8)
-    local beststr, bestpriority = nil, -10000000
+    local beststr, bestpriority = nil, nil
+    local beststr2, bestpriority2
     
     local function hookcaller(hookfunc)
         return hookfunc(a1, a2, a3, a4, a5, a6, a7, a8)
@@ -89,13 +112,18 @@ function ProcessConditionHook(errhandler, a1, a2, a3, a4, a5, a6, a7, a8)
     -- Process condtype-specific functions
     local ctype_hooks = conditionhooks[condtype]
     if ctype_hooks ~= nil then
-        beststr, bestpriority = ProcessHooks_Sub(beststr, bestpriority, ctype_hooks, hookcaller, errhandler)
+        beststr, bestpriority = ProcessHooks_Sub(ctype_hooks, hookcaller, errhandler)
     end
 
     -- Process non condtype-specific functions
     local general_hooks = conditionhooks[0]
     if general_hooks ~= nil then
-        beststr, bestpriority = ProcessHooks_Sub(beststr, bestpriority, general_hooks, hookcaller, errhandler)
+        beststr2, bestpriority2 = ProcessHooks_Sub(general_hooks, hookcaller, errhandler)
+        if not beststr then
+            beststr = beststr2
+        elseif bestpriority2 > bestpriority then
+            beststr = beststr2
+        end
     end
     
     return beststr  -- Nil if hook is not found, Else appropriate string
@@ -103,26 +131,37 @@ end
 
 
 function ProcessActionHook(errhandler, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-    local beststr, bestpriority = nil, -10000000
+    local beststr, bestpriority = nil, nil
+    local beststr2, bestpriority2
     
     local function hookcaller(hookfunc)
         return hookfunc(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
     end
 
     local acttype = a8
+
+	Log(" [pac] acttype = " .. acttype)
     
     -- Process acttype-specific functions
     local atype_hooks = actionhooks[acttype]
     if atype_hooks ~= nil then
-        beststr, bestpriority = ProcessHooks_Sub(beststr, bestpriority, atype_hooks, hookcaller)
+		Log("atype_hooks")
+        beststr, bestpriority = ProcessHooks_Sub(atype_hooks, hookcaller, errhandler)
+		Log(" - beststr : \"" .. beststr .. "\", bestpriority = " .. bestpriority)
     end
 
     -- Process non acttype-specific functions
     local general_hooks = actionhooks[0]
     if general_hooks ~= nil then
-        beststr, bestpriority = ProcessHooks_Sub(beststr, bestpriority, general_hooks, hookcaller)
+		Log("general_hooks")
+        beststr, bestpriority = ProcessHooks_Sub(general_hooks, hookcaller, errhandler)
+        if not beststr then
+            beststr, bestpriority = beststr2, bestpriority2
+        elseif bestpriority2 > bestpriority then
+            beststr, bestpriority = beststr2, bestpriority2
+        end
+		Log(" - beststr : \"" .. beststr .. "\", bestpriority = " .. bestpriority)
     end
     
     return beststr  -- Nil if hook is not found, Else appropriate string
 end
- 

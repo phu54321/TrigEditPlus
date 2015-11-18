@@ -2,6 +2,6 @@
 
 std::string Int2String(int value) {
 	char str[512];
-	sprintf(str, "%d", value);
+	_itoa(value, str, 10);
 	return str;
 }
