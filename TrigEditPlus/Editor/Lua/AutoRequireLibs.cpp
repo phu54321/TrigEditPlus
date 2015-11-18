@@ -157,15 +157,6 @@ void LuaAutoRequireLibs(lua_State* L)
 	// basescript.lua contains case-insensitive patch, so this should be called
 	// before any variable is declared
 
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT), "basescript");
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_LUAHOOK), "luahook");
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKCOND), "stockcond");
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKACT), "stockact");
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKCONDHOOK), "stockcondhook");
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKACTHOOK), "stockacthook");
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_CONSTPARSER), "constparser");
-	LuaRunResource(L, MAKEINTRESOURCE(IDR_CONSTDECODER), "constdecoder");
-
 	// Load basic functions.
 	lua_register(L, "ParseUnit", LuaParseUnit);
 	lua_register(L, "ParseLocation", LuaParseLocation);
@@ -178,6 +169,16 @@ void LuaAutoRequireLibs(lua_State* L)
 	lua_register(L, "DecodeSwitchName", LuaDecodeSwitchName);
 	lua_register(L, "DecodeString", LuaDecodeString);
 	lua_register(L, "DecodeUPRP", LuaDecodeUPRP);
+
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_BASESCRIPT), "basescript");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_LUAHOOK), "luahook");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKCOND), "stockcond");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKACT), "stockact");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKCONDHOOK), "stockcondhook");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_STOCKACTHOOK), "stockacthook");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_CONSTPARSER), "constparser");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_CONSTDECODER), "constdecoder");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_MEMSMEM), "memsmem");
 
 	// Load user-specific scripts.
 	// NOTE : USER LIBRARY SHOULDN'T ADD ANY TRIGGERS OR SOMETHING. TO ENFORCE IT, WE LOAD

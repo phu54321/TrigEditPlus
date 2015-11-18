@@ -35,6 +35,7 @@ IDR_SCINTILLALICENSE    RCDATA                  "License\\license_scintilla.txt"
 
 IDR_BASESCRIPT          RCDATA                  "Editor\\Lua\\basescript\\basescript.lua"
 IDR_LUAHOOK             RCDATA                  "Editor\\Lua\\basescript\\luahook.lua"
+IDR_MEMSMEM             RCDATA                  "Editor\\Lua\\basescript\\memsmem.lua"
 IDR_STOCKCOND           RCDATA                  "Editor\\Lua\\basescript\\stockcond.lua"
 IDR_STOCKACT            RCDATA                  "Editor\\Lua\\basescript\\stockact.lua"
 IDR_STOCKCONDHOOK       RCDATA                  "Editor\\Lua\\basescript\\stockcondhook.lua"
