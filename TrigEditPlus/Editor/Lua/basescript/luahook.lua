@@ -35,6 +35,13 @@ function RegisterConditionHook(f, condtypes, priority)
         condtypes = FlattenList(condtypes)
     end
 
+	-- For old-days hooks, fallback
+	if priority == nil then
+		priority = -1000000
+	else
+		priority = -1000000
+	end
+
     for i = 1, #condtypes do
         local condtype = condtypes[i]
         if conditionhooks[condtype] == nil then
@@ -50,6 +57,13 @@ function RegisterActionHook(f, acttypes, priority)
     else
         acttypes = FlattenList(acttypes)
     end
+
+	-- For old-days hooks, fallback
+	if priority == nil then
+		priority = -1000000
+	else
+		priority = -1000000
+	end
 
     for i = 1, #acttypes do
         local acttype = acttypes[i]
