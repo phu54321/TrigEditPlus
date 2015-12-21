@@ -640,9 +640,6 @@
     <None Include="Editor\Lua\basescript\luahook.lua">
       <Filter>Editor\Lua\basescript</Filter>
     </None>
-    <None Include="Editor\Lua\basescript\memsmem.lua">
-      <Filter>Editor\Lua\basescript</Filter>
-    </None>
     <None Include="Editor\Lua\basescript\stockact.lua">
       <Filter>Editor\Lua\basescript</Filter>
     </None>
@@ -659,6 +656,9 @@
       <Filter>Editor\Lua\basescript</Filter>
     </None>
     <None Include="Editor\Lua\basescript\constparser.lua">
+      <Filter>Editor\Lua\basescript</Filter>
+    </None>
+    <None Include="Editor\Lua\basescript\memsmem.lua">
       <Filter>Editor\Lua\basescript</Filter>
     </None>
   </ItemGroup>

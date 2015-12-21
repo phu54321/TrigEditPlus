@@ -30,17 +30,3 @@ function SetMemory(offset, modtype, number)
 end
 
 ----------------------------------------------------------
-
-RegisterDeathsHook(function(Player, Comparison, Number, Unit)
-    if Player >= 28 or (Player < 12 and Unit >= 233) then
-        Offset = 0x58A364 + (Player + Unit * 12)
-        return "SetMemory(0x" .. string.format("%06X", Offset) .. ", " .. DecodeComparison(Comparison) .. ", " .. Number .. ");", -65536
-    end
-end)
-
-RegisterSetDeathsHook(function(Player, ModType, Number, Unit)
-    if Player >= 28 or (Player < 12 and Unit >= 233) then
-        Offset = 0x58A364 + (Player + Unit * 12)
-        return "SetMemory(0x" .. string.format("%06X", Offset) .. ", " .. DecodeModifier(ModType) .. ", " .. Number .. ");", -65536
-    end
-end)

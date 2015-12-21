@@ -19,7 +19,7 @@ static char XDigitToChar(int hexdigit) {
 // Raw string -> C-style escaped string
 std::string Raw2CString(const std::string& str) {
 	const size_t slen = str.size();
-	char *output = (char*)alloca(slen * 4 + 3);
+	char *output = static_cast<char*>(alloca(slen * 4 + 3));
 	char *p = output;
 
 	*p++ = '\"';

@@ -30,6 +30,13 @@
 #include "lib/lua.hpp"
 
 
+int LuaLog(lua_State* L)
+{
+	fprintf(stderr, "[LuaLog] %s\n", lua_tostring(L, -1));
+	return 0;
+}
+
+
 int LuaErrorf(lua_State* L, const char* format, ...)
 {
 	char errmsg[512];

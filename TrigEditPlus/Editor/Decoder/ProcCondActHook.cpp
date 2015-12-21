@@ -23,6 +23,7 @@
 #include "../Lua/lib/lua.hpp"
 #include "../TriggerEditor.h"
 #include <sstream>
+#include <algorithm>
 
 TriggerEditor* LuaGetEditor(lua_State* L);
 
@@ -30,7 +31,7 @@ TriggerEditor* LuaGetEditor(lua_State* L);
 #define HOOK_ACTION 1
 
 int _currentHookType;
-void* _currentObject;
+const void* _currentObject;
 
 
 int stderr_errorreporter(lua_State* L)
@@ -55,7 +56,7 @@ int stderr_errorreporter(lua_State* L)
 
 	// Create traceback
 	lua_State *L1 = luaL_newstate();
-	luaL_traceback(L1, L, NULL, 1);
+	luaL_traceback(L1, L, nullptr, 1);
 	ss << "error : " << lua_tostring(L, -1) << "\n" << lua_tostring(L1, -1);
 	lua_close(L1);
 
@@ -69,7 +70,7 @@ int stderr_errorreporter(lua_State* L)
 bool CallConditionHook(lua_State* L, const TrigCond& cond, std::string& ret)
 {
 	_currentHookType = HOOK_CONDITION;
-	_currentObject = (void*)&cond;
+	_currentObject = reinterpret_cast<const void*>(&cond);
 
 	lua_getglobal(L, "ProcessConditionHook");
 	lua_pushcfunction(L, stderr_errorreporter);
@@ -100,7 +101,7 @@ bool CallConditionHook(lua_State* L, const TrigCond& cond, std::string& ret)
 bool CallActionHook(lua_State* L, const TrigAct& act, std::string& ret)
 {
 	_currentHookType = HOOK_ACTION;
-	_currentObject = (void*)&act;
+	_currentObject = reinterpret_cast<const void*>(&act);
 
 	lua_getglobal(L, "ProcessActionHook");
 	lua_pushcfunction(L, stderr_errorreporter);
@@ -124,6 +125,8 @@ bool CallActionHook(lua_State* L, const TrigAct& act, std::string& ret)
 	else if(lua_isstring(L, -1))
 	{
 		ret = lua_tostring(L, -1);
+		ret.erase(std::remove(ret.begin(), ret.end(), '\n'), ret.end());
+		ret.erase(std::remove(ret.begin(), ret.end(), '\r'), ret.end());
 		lua_pop(L, 1);
 		return true;
 	}

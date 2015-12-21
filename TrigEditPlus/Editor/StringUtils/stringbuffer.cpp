@@ -13,7 +13,7 @@ StringBuffer::~StringBuffer() {
 }
 
 void StringBuffer::AddBlock(const void* data, int length){
-	const char* sdata = (const char*)data;
+	const char* sdata = static_cast<const char*>(data);
 
 	// Update current line
 	const char* sdend = sdata + length;

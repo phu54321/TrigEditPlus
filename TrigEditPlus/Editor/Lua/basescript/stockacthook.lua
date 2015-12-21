@@ -1,455 +1,341 @@
-function RegisterVictoryHook(f)
+function RegisterVictoryHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, a9, a10)
-        if acttype == 1 then
             return f()
-        end
-    end, 1)
+    end, 1, priority)
 end
 
-function RegisterDefeatHook(f)
+function RegisterDefeatHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, a9, a10)
-        if acttype == 2 then
             return f()
-        end
-    end, 2)
+    end, 2, priority)
 end
 
-function RegisterPreserveTriggerHook(f)
+function RegisterPreserveTriggerHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, a9, a10)
-        if acttype == 3 then
             return f()
-        end
-    end, 3)
+    end, 3, priority)
 end
 
-function RegisterWaitHook(f)
+function RegisterWaitHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, Time, a4, a5, a6, acttype, a8, a9)
-        if acttype == 4 then
             return f(Time)
-        end
-    end, 4)
+    end, 4, priority)
 end
 
-function RegisterPauseGameHook(f)
+function RegisterPauseGameHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, a9, a10)
-        if acttype == 5 then
             return f()
-        end
-    end, 5)
+    end, 5, priority)
 end
 
-function RegisterUnpauseGameHook(f)
+function RegisterUnpauseGameHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, a9, a10)
-        if acttype == 6 then
             return f()
-        end
-    end, 6)
+    end, 6, priority)
 end
 
-function RegisterTransmissionHook(f)
+function RegisterTransmissionHook(f, priority)
     RegisterActionHook(function(Where, Text, WAVName, a1, a2, Time, Unit, acttype, TimeModifier, AlwaysDisplay)
-        if acttype == 7 then
             return f(Unit, Where, WAVName, TimeModifier, Time, Text, AlwaysDisplay)
-        end
-    end, 7)
+    end, 7, priority)
 end
 
-function RegisterPlayWAVHook(f)
+function RegisterPlayWAVHook(f, priority)
     RegisterActionHook(function(a1, a2, WAVName, a3, a4, a5, a6, acttype, a8, a9)
-        if acttype == 8 then
             return f(WAVName)
-        end
-    end, 8)
+    end, 8, priority)
 end
 
-function RegisterDisplayTextHook(f)
+function RegisterDisplayTextHook(f, priority)
     RegisterActionHook(function(a1, Text, a2, a3, a4, a5, a6, acttype, a8, AlwaysDisplay)
-        if acttype == 9 then
             return f(Text, AlwaysDisplay)
-        end
-    end, 9)
+    end, 9, priority)
 end
 
-function RegisterCenterViewHook(f)
+function RegisterCenterViewHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, a4, a5, a6, acttype, a8, a9)
-        if acttype == 10 then
             return f(Where)
-        end
-    end, 10)
+    end, 10, priority)
 end
 
-function RegisterCreateUnitWithPropertiesHook(f)
+function RegisterCreateUnitWithPropertiesHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, Player, Properties, Unit, acttype, Count, a5)
-        if acttype == 11 then
             return f(Count, Unit, Where, Player, Properties)
-        end
-    end, 11)
+    end, 11, priority)
 end
 
-function RegisterSetMissionObjectivesHook(f)
+function RegisterSetMissionObjectivesHook(f, priority)
     RegisterActionHook(function(a1, Text, a2, a3, a4, a5, a6, acttype, a8, a9)
-        if acttype == 12 then
             return f(Text)
-        end
-    end, 12)
+    end, 12, priority)
 end
 
-function RegisterSetSwitchHook(f)
+function RegisterSetSwitchHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, Switch, a6, acttype, State, a8)
-        if acttype == 13 then
             return f(Switch, State)
-        end
-    end, 13)
+    end, 13, priority)
 end
 
-function RegisterSetCountdownTimerHook(f)
+function RegisterSetCountdownTimerHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, Time, a4, a5, a6, acttype, TimeModifier, a8)
-        if acttype == 14 then
             return f(TimeModifier, Time)
-        end
-    end, 14)
+    end, 14, priority)
 end
 
-function RegisterRunAIScriptHook(f)
+function RegisterRunAIScriptHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, Script, a6, acttype, a8, a9)
-        if acttype == 15 then
             return f(Script)
-        end
-    end, 15)
+    end, 15, priority)
 end
 
-function RegisterRunAIScriptAtHook(f)
+function RegisterRunAIScriptAtHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, a4, Script, a5, acttype, a7, a8)
-        if acttype == 16 then
             return f(Script, Where)
-        end
-    end, 16)
+    end, 16, priority)
 end
 
-function RegisterLeaderBoardControlHook(f)
+function RegisterLeaderBoardControlHook(f, priority)
     RegisterActionHook(function(a1, Label, a2, a3, a4, a5, Unit, acttype, a7, a8)
-        if acttype == 17 then
             return f(Unit, Label)
-        end
-    end, 17)
+    end, 17, priority)
 end
 
-function RegisterLeaderBoardControlAtHook(f)
+function RegisterLeaderBoardControlAtHook(f, priority)
     RegisterActionHook(function(Location, Label, a1, a2, a3, a4, Unit, acttype, a6, a7)
-        if acttype == 18 then
             return f(Unit, Location, Label)
-        end
-    end, 18)
+    end, 18, priority)
 end
 
-function RegisterLeaderBoardResourcesHook(f)
+function RegisterLeaderBoardResourcesHook(f, priority)
     RegisterActionHook(function(a1, Label, a2, a3, a4, a5, ResourceType, acttype, a7, a8)
-        if acttype == 19 then
             return f(ResourceType, Label)
-        end
-    end, 19)
+    end, 19, priority)
 end
 
-function RegisterLeaderBoardKillsHook(f)
+function RegisterLeaderBoardKillsHook(f, priority)
     RegisterActionHook(function(a1, Label, a2, a3, a4, a5, Unit, acttype, a7, a8)
-        if acttype == 20 then
             return f(Unit, Label)
-        end
-    end, 20)
+    end, 20, priority)
 end
 
-function RegisterLeaderBoardScoreHook(f)
+function RegisterLeaderBoardScoreHook(f, priority)
     RegisterActionHook(function(a1, Label, a2, a3, a4, a5, ScoreType, acttype, a7, a8)
-        if acttype == 21 then
             return f(ScoreType, Label)
-        end
-    end, 21)
+    end, 21, priority)
 end
 
-function RegisterKillUnitHook(f)
+function RegisterKillUnitHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, Player, a5, Unit, acttype, a7, a8)
-        if acttype == 22 then
             return f(Unit, Player)
-        end
-    end, 22)
+    end, 22, priority)
 end
 
-function RegisterKillUnitAtHook(f)
+function RegisterKillUnitAtHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, ForPlayer, a4, Unit, acttype, Count, a6)
-        if acttype == 23 then
             return f(Count, Unit, Where, ForPlayer)
-        end
-    end, 23)
+    end, 23, priority)
 end
 
-function RegisterRemoveUnitHook(f)
+function RegisterRemoveUnitHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, Player, a5, Unit, acttype, a7, a8)
-        if acttype == 24 then
             return f(Unit, Player)
-        end
-    end, 24)
+    end, 24, priority)
 end
 
-function RegisterRemoveUnitAtHook(f)
+function RegisterRemoveUnitAtHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, ForPlayer, a4, Unit, acttype, Count, a6)
-        if acttype == 25 then
             return f(Count, Unit, Where, ForPlayer)
-        end
-    end, 25)
+    end, 25, priority)
 end
 
-function RegisterSetResourcesHook(f)
+function RegisterSetResourcesHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, Player, Amount, ResourceType, acttype, Modifier, a6)
-        if acttype == 26 then
             return f(Player, Modifier, Amount, ResourceType)
-        end
-    end, 26)
+    end, 26, priority)
 end
 
-function RegisterSetScoreHook(f)
+function RegisterSetScoreHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, Player, Amount, ScoreType, acttype, Modifier, a6)
-        if acttype == 27 then
             return f(Player, Modifier, Amount, ScoreType)
-        end
-    end, 27)
+    end, 27, priority)
 end
 
-function RegisterMinimapPingHook(f)
+function RegisterMinimapPingHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, a4, a5, a6, acttype, a8, a9)
-        if acttype == 28 then
             return f(Where)
-        end
-    end, 28)
+    end, 28, priority)
 end
 
-function RegisterTalkingPortraitHook(f)
+function RegisterTalkingPortraitHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, Time, a4, a5, Unit, acttype, a7, a8)
-        if acttype == 29 then
             return f(Unit, Time)
-        end
-    end, 29)
+    end, 29, priority)
 end
 
-function RegisterMuteUnitSpeechHook(f)
+function RegisterMuteUnitSpeechHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, a9, a10)
-        if acttype == 30 then
             return f()
-        end
-    end, 30)
+    end, 30, priority)
 end
 
-function RegisterUnMuteUnitSpeechHook(f)
+function RegisterUnMuteUnitSpeechHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, a9, a10)
-        if acttype == 31 then
             return f()
-        end
-    end, 31)
+    end, 31, priority)
 end
 
-function RegisterLeaderBoardComputerPlayersHook(f)
+function RegisterLeaderBoardComputerPlayersHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, State, a9)
-        if acttype == 32 then
             return f(State)
-        end
-    end, 32)
+    end, 32, priority)
 end
 
-function RegisterLeaderBoardGoalControlHook(f)
+function RegisterLeaderBoardGoalControlHook(f, priority)
     RegisterActionHook(function(a1, Label, a2, a3, a4, Goal, Unit, acttype, a6, a7)
-        if acttype == 33 then
             return f(Goal, Unit, Label)
-        end
-    end, 33)
+    end, 33, priority)
 end
 
-function RegisterLeaderBoardGoalControlAtHook(f)
+function RegisterLeaderBoardGoalControlAtHook(f, priority)
     RegisterActionHook(function(Location, Label, a1, a2, a3, Goal, Unit, acttype, a5, a6)
-        if acttype == 34 then
             return f(Goal, Unit, Location, Label)
-        end
-    end, 34)
+    end, 34, priority)
 end
 
-function RegisterLeaderBoardGoalResourcesHook(f)
+function RegisterLeaderBoardGoalResourcesHook(f, priority)
     RegisterActionHook(function(a1, Label, a2, a3, a4, Goal, ResourceType, acttype, a6, a7)
-        if acttype == 35 then
             return f(Goal, ResourceType, Label)
-        end
-    end, 35)
+    end, 35, priority)
 end
 
-function RegisterLeaderBoardGoalKillsHook(f)
+function RegisterLeaderBoardGoalKillsHook(f, priority)
     RegisterActionHook(function(a1, Label, a2, a3, a4, Goal, Unit, acttype, a6, a7)
-        if acttype == 36 then
             return f(Goal, Unit, Label)
-        end
-    end, 36)
+    end, 36, priority)
 end
 
-function RegisterLeaderBoardGoalScoreHook(f)
+function RegisterLeaderBoardGoalScoreHook(f, priority)
     RegisterActionHook(function(a1, Label, a2, a3, a4, Goal, ScoreType, acttype, a6, a7)
-        if acttype == 37 then
             return f(Goal, ScoreType, Label)
-        end
-    end, 37)
+    end, 37, priority)
 end
 
-function RegisterMoveLocationHook(f)
+function RegisterMoveLocationHook(f, priority)
     RegisterActionHook(function(DestLocation, a1, a2, a3, Owner, Location, OnUnit, acttype, a5, a6)
-        if acttype == 38 then
             return f(Location, OnUnit, Owner, DestLocation)
-        end
-    end, 38)
+    end, 38, priority)
 end
 
-function RegisterMoveUnitHook(f)
+function RegisterMoveUnitHook(f, priority)
     RegisterActionHook(function(StartLocation, a1, a2, a3, Owner, DestLocation, UnitType, acttype, Count, a4)
-        if acttype == 39 then
             return f(Count, UnitType, Owner, StartLocation, DestLocation)
-        end
-    end, 39)
+    end, 39, priority)
 end
 
-function RegisterLeaderBoardGreedHook(f)
+function RegisterLeaderBoardGreedHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, Goal, a6, acttype, a8, a9)
-        if acttype == 40 then
             return f(Goal)
-        end
-    end, 40)
+    end, 40, priority)
 end
 
-function RegisterSetNextScenarioHook(f)
+function RegisterSetNextScenarioHook(f, priority)
     RegisterActionHook(function(a1, ScenarioName, a2, a3, a4, a5, a6, acttype, a8, a9)
-        if acttype == 41 then
             return f(ScenarioName)
-        end
-    end, 41)
+    end, 41, priority)
 end
 
-function RegisterSetDoodadStateHook(f)
+function RegisterSetDoodadStateHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, Owner, a4, Unit, acttype, State, a6)
-        if acttype == 42 then
             return f(State, Unit, Owner, Where)
-        end
-    end, 42)
+    end, 42, priority)
 end
 
-function RegisterSetInvincibilityHook(f)
+function RegisterSetInvincibilityHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, Owner, a4, Unit, acttype, State, a6)
-        if acttype == 43 then
             return f(State, Unit, Owner, Where)
-        end
-    end, 43)
+    end, 43, priority)
 end
 
-function RegisterCreateUnitHook(f)
+function RegisterCreateUnitHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, ForPlayer, a4, Unit, acttype, Number, a6)
-        if acttype == 44 then
             return f(Number, Unit, Where, ForPlayer)
-        end
-    end, 44)
+    end, 44, priority)
 end
 
-function RegisterSetDeathsHook(f)
+function RegisterSetDeathsHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, Player, Number, Unit, acttype, Modifier, a6)
-        if acttype == 45 then
             return f(Player, Modifier, Number, Unit)
-        end
-    end, 45)
+    end, 45, priority)
 end
 
-function RegisterOrderHook(f)
+function RegisterOrderHook(f, priority)
     RegisterActionHook(function(StartLocation, a1, a2, a3, Owner, DestLocation, Unit, acttype, OrderType, a4)
-        if acttype == 46 then
             return f(Unit, Owner, StartLocation, OrderType, DestLocation)
-        end
-    end, 46)
+    end, 46, priority)
 end
 
-function RegisterCommentHook(f)
+function RegisterCommentHook(f, priority)
     RegisterActionHook(function(a1, Text, a2, a3, a4, a5, a6, acttype, a8, a9)
-        if acttype == 47 then
             return f(Text)
-        end
-    end, 47)
+    end, 47, priority)
 end
 
-function RegisterGiveUnitsHook(f)
+function RegisterGiveUnitsHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, Owner, NewOwner, Unit, acttype, Count, a5)
-        if acttype == 48 then
             return f(Count, Unit, Owner, Where, NewOwner)
-        end
-    end, 48)
+    end, 48, priority)
 end
 
-function RegisterModifyUnitHitPointsHook(f)
+function RegisterModifyUnitHitPointsHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, Owner, Percent, Unit, acttype, Count, a5)
-        if acttype == 49 then
             return f(Count, Unit, Owner, Where, Percent)
-        end
-    end, 49)
+    end, 49, priority)
 end
 
-function RegisterModifyUnitEnergyHook(f)
+function RegisterModifyUnitEnergyHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, Owner, Percent, Unit, acttype, Count, a5)
-        if acttype == 50 then
             return f(Count, Unit, Owner, Where, Percent)
-        end
-    end, 50)
+    end, 50, priority)
 end
 
-function RegisterModifyUnitShieldsHook(f)
+function RegisterModifyUnitShieldsHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, Owner, Percent, Unit, acttype, Count, a5)
-        if acttype == 51 then
             return f(Count, Unit, Owner, Where, Percent)
-        end
-    end, 51)
+    end, 51, priority)
 end
 
-function RegisterModifyUnitResourceAmountHook(f)
+function RegisterModifyUnitResourceAmountHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, Owner, NewValue, a4, acttype, Count, a6)
-        if acttype == 52 then
             return f(Count, Owner, Where, NewValue)
-        end
-    end, 52)
+    end, 52, priority)
 end
 
-function RegisterModifyUnitHangarCountHook(f)
+function RegisterModifyUnitHangarCountHook(f, priority)
     RegisterActionHook(function(Where, a1, a2, a3, Owner, Add, Unit, acttype, Count, a5)
-        if acttype == 53 then
             return f(Add, Count, Unit, Owner, Where)
-        end
-    end, 53)
+    end, 53, priority)
 end
 
-function RegisterPauseTimerHook(f)
+function RegisterPauseTimerHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, a9, a10)
-        if acttype == 54 then
             return f()
-        end
-    end, 54)
+    end, 54, priority)
 end
 
-function RegisterUnpauseTimerHook(f)
+function RegisterUnpauseTimerHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, a9, a10)
-        if acttype == 55 then
             return f()
-        end
-    end, 55)
+    end, 55, priority)
 end
 
-function RegisterDrawHook(f)
+function RegisterDrawHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, a5, a6, a7, acttype, a9, a10)
-        if acttype == 56 then
             return f()
-        end
-    end, 56)
+    end, 56, priority)
 end
 
-function RegisterSetAllianceStatusHook(f)
+function RegisterSetAllianceStatusHook(f, priority)
     RegisterActionHook(function(a1, a2, a3, a4, Player, a5, Status, acttype, a7, a8)
-        if acttype == 57 then
             return f(Player, Status)
-        end
-    end, 57)
+    end, 57, priority)
 end
