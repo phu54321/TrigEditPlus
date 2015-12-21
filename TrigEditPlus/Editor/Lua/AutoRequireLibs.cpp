@@ -126,11 +126,12 @@ void LoadUserLuaLibs(lua_State* L)
 	if(!lastslash) lastslash = path;
 	else lastslash++;
 	strcpy(lastslash, "lua");
-	SetCurrentDirectory(path);
-
-	// Require all
-	LoadUserLuaLibs_Sub(L);
-	SetCurrentDirectory(currentPath);
+	
+	// If 'lua' directory exists -> require all
+	if (SetCurrentDirectory(path)) {
+		LoadUserLuaLibs_Sub(L);
+		SetCurrentDirectory(currentPath);
+	}
 }
 
 

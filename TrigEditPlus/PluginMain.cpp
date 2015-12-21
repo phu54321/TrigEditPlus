@@ -65,7 +65,7 @@ void DisableVisualStyle() {
 // Activator end
 
 void Initialize() {
-	freopen("stderr.txt", "w", stderr);
+	freopen("trigeditplus_stderr.txt", "w", stderr);
 	setvbuf(stderr, NULL, _IONBF, 0);
 
 	// Initialize common controls.

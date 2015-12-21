@@ -154,28 +154,22 @@ function ProcessActionHook(errhandler, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
 
     local acttype = a8
 
-	Log(" [pac] acttype = " .. acttype)
-    
     -- Process acttype-specific functions
     local atype_hooks = actionhooks[acttype]
     if atype_hooks ~= nil then
-		Log("atype_hooks")
-        beststr, bestpriority = ProcessHooks_Sub(atype_hooks, hookcaller, errhandler)
-		Log(" - beststr : \"" .. beststr .. "\", bestpriority = " .. bestpriority)
-    end
+	    beststr, bestpriority = ProcessHooks_Sub(atype_hooks, hookcaller, errhandler)
+	end
 
     -- Process non acttype-specific functions
     local general_hooks = actionhooks[0]
     if general_hooks ~= nil then
-		Log("general_hooks")
-        beststr, bestpriority = ProcessHooks_Sub(general_hooks, hookcaller, errhandler)
+	    beststr, bestpriority = ProcessHooks_Sub(general_hooks, hookcaller, errhandler)
         if not beststr then
             beststr, bestpriority = beststr2, bestpriority2
         elseif bestpriority2 > bestpriority then
             beststr, bestpriority = beststr2, bestpriority2
         end
-		Log(" - beststr : \"" .. beststr .. "\", bestpriority = " .. bestpriority)
-    end
+	end
     
     return beststr  -- Nil if hook is not found, Else appropriate string
 end
