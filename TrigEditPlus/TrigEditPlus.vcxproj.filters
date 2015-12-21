@@ -658,6 +658,9 @@
     <None Include="Editor\Lua\basescript\constparser.lua">
       <Filter>Editor\Lua\basescript</Filter>
     </None>
+    <None Include="Editor\Lua\basescript\memsmem.lua">
+      <Filter>Editor\Lua\basescript</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="styles.manifest" />

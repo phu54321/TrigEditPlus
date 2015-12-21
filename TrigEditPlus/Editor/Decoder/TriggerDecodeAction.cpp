@@ -63,8 +63,10 @@ void TriggerEditor::DecodeAction(lua_State* L, StringBuffer& buf, const TrigAct&
 		{
 			uint32_t player = content.player;
 			uint32_t unitid = content.setting;
-			if(player >= 28 || unitid >= 228)  // EUD/EPD action
-			{
+			if(
+				(player >= 28 && unitid < 228) ||  // EPD Action
+				(player < 12 && unitid >= 228)  // EUD Action
+			) {
 				uint32_t number = content.target;
 				uint32_t offset = 0x58A364 + 4 * player + 48 * unitid;
 				uint32_t modtype = content.num;
