@@ -32,6 +32,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VeryOptimized|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -128,6 +129,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnablePREfast>false</EnablePREfast>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,14 +147,15 @@
     <ClCompile Include="Editor\Decoder\crc32.cpp" />
     <ClCompile Include="Editor\Decoder\LuaDecodeStringAndProp.cpp" />
     <ClCompile Include="Editor\Decoder\ProcCondActHook.cpp" />
-    <ClCompile Include="Editor\Decoder\SpecialCommentDec.cpp" />
+    <ClCompile Include="Editor\Decoder\SpecialDataDec.cpp" />
     <ClCompile Include="Editor\Decoder\StringDecoder.cpp" />
     <ClCompile Include="Editor\Decoder\TriggerDecodeAction.cpp" />
     <ClCompile Include="Editor\Decoder\TriggerDecodeCondition.cpp" />
     <ClCompile Include="Editor\Decoder\TriggerDecode.cpp" />
     <ClCompile Include="Editor\Decoder\UnitPropDecode.cpp" />
     <ClCompile Include="Editor\EditorCharAdded.cpp" />
-    <ClCompile Include="Editor\Encoder\LuaParseString.cpp" />
+    <ClCompile Include="Editor\Encoder\LuaEncodeSpeicalData.cpp" />
+    <ClCompile Include="Editor\Encoder\LuaEncodeString.cpp" />
     <ClCompile Include="Editor\Encoder\StringDeref.cpp" />
     <ClCompile Include="Editor\Encoder\StringEncoder.cpp" />
     <ClCompile Include="Editor\Encoder\TriggerEncode.cpp" />
@@ -350,6 +353,7 @@
     <None Include="Editor\Lua\basescript\constparser.lua" />
     <None Include="Editor\Lua\basescript\luahook.lua" />
     <None Include="Editor\Lua\basescript\memsmem.lua" />
+    <None Include="Editor\Lua\basescript\specialdata.lua" />
     <None Include="Editor\Lua\basescript\stockact.lua" />
     <None Include="Editor\Lua\basescript\stockacthook.lua" />
     <None Include="Editor\Lua\basescript\stockcond.lua" />

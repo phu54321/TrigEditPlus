@@ -140,11 +140,11 @@ void LoadUserLuaLibs(lua_State* L)
 
 int LuaLog(lua_State* L);
 
-int LuaParseUnit(lua_State* L);
-int LuaParseLocation(lua_State* L);
-int LuaParseSwitchName(lua_State* L);
-int LuaParseString(lua_State* L);
-int LuaParseUPRP(lua_State* L);
+int LuaEncodeUnit(lua_State* L);
+int LuaEncodeLocation(lua_State* L);
+int LuaEncodeSwitchName(lua_State* L);
+int LuaEncodeString(lua_State* L);
+int LuaEncodeUPRP(lua_State* L);
 
 int LuaDecodeUnit(lua_State* L);
 int LuaDecodeLocation(lua_State* L);
@@ -163,12 +163,22 @@ void LuaAutoRequireLibs(lua_State* L)
 	// Load basic functions.
 	
 	lua_register(L, "Log", LuaLog);
-	lua_register(L, "ParseUnit", LuaParseUnit);
-	lua_register(L, "ParseLocation", LuaParseLocation);
-	lua_register(L, "ParseSwitchName", LuaParseSwitchName);
-	lua_register(L, "ParseString", LuaParseString);
-	lua_register(L, "ParseUPRP", LuaParseUPRP);
 
+	// Parse~ keeped for back-compatibility
+	lua_register(L, "ParseUnit", LuaEncodeUnit);
+	lua_register(L, "ParseLocation", LuaEncodeLocation);
+	lua_register(L, "ParseSwitchName", LuaEncodeSwitchName);
+	lua_register(L, "ParseString", LuaEncodeString);
+	lua_register(L, "ParseUPRP", LuaEncodeUPRP);
+
+	// Encoder
+	lua_register(L, "EncodeUnit", LuaEncodeUnit);
+	lua_register(L, "EncodeLocation", LuaEncodeLocation);
+	lua_register(L, "EncodeSwitchName", LuaEncodeSwitchName);
+	lua_register(L, "EncodeString", LuaEncodeString);
+	lua_register(L, "EncodeUPRP", LuaEncodeUPRP);
+
+	// Decoder
 	lua_register(L, "DecodeUnit", LuaDecodeUnit);
 	lua_register(L, "DecodeLocation", LuaDecodeLocation);
 	lua_register(L, "DecodeSwitchName", LuaDecodeSwitchName);
@@ -184,6 +194,7 @@ void LuaAutoRequireLibs(lua_State* L)
 	LuaRunResource(L, MAKEINTRESOURCE(IDR_CONSTPARSER), "constparser");
 	LuaRunResource(L, MAKEINTRESOURCE(IDR_CONSTDECODER), "constdecoder");
 	LuaRunResource(L, MAKEINTRESOURCE(IDR_MEMSMEM), "memsmem");
+	LuaRunResource(L, MAKEINTRESOURCE(IDR_SPECIALDATA), "specialdata");
 
 	// Load user-specific scripts.
 	// NOTE : USER LIBRARY SHOULDN'T ADD ANY TRIGGERS OR SOMETHING. TO ENFORCE IT, WE LOAD

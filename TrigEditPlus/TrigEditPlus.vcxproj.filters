@@ -35,9 +35,6 @@
     <ClCompile Include="Editor\Decoder\ConstDecoder.cpp">
       <Filter>Editor\Decoder</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\Decoder\SpecialCommentDec.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
     <ClCompile Include="Editor\Decoder\StringDecoder.cpp">
       <Filter>Editor\Decoder</Filter>
     </ClCompile>
@@ -46,9 +43,6 @@
     </ClCompile>
     <ClCompile Include="Editor\Decoder\UnitPropDecode.cpp">
       <Filter>Editor\Decoder</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\LuaParseString.cpp">
-      <Filter>Editor\Encoder</Filter>
     </ClCompile>
     <ClCompile Include="Editor\Encoder\StringDeref.cpp">
       <Filter>Editor\Encoder</Filter>
@@ -322,6 +316,15 @@
     </ClCompile>
     <ClCompile Include="Editor\Decoder\LuaDecodeStringAndProp.cpp">
       <Filter>Editor\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Decoder\SpecialDataDec.cpp">
+      <Filter>Editor\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Encoder\LuaEncodeString.cpp">
+      <Filter>Editor\Encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Encoder\LuaEncodeSpeicalData.cpp">
+      <Filter>Editor\Encoder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -659,6 +662,9 @@
       <Filter>Editor\Lua\basescript</Filter>
     </None>
     <None Include="Editor\Lua\basescript\memsmem.lua">
+      <Filter>Editor\Lua\basescript</Filter>
+    </None>
+    <None Include="Editor\Lua\basescript\specialdata.lua">
       <Filter>Editor\Lua\basescript</Filter>
     </None>
   </ItemGroup>

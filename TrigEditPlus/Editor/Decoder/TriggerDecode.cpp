@@ -26,6 +26,7 @@
 
 DWORD crc32(const void *buf2, size_t len);
 void LuaAutoRequireLibs(lua_State* L);
+bool DecodeSpecialData(StringBuffer& buf, const Trig& trg);
 
 // Decode part
 
@@ -52,14 +53,17 @@ std::string TriggerEditor::DecodeTriggers(CChunkData* Triggers) const {
 	{
 		size_t trign = Triggers->ChunkSize / 2400;
 		Trig* trigdata = (Trig*)Triggers->ChunkData;
-		for(size_t i = 0 ; i < trign ; i++) {
+		Trig* trigdataend = trigdata + trign;
+		for (; trigdata < trigdataend; trigdata++) {
+			// If special data -> decode
+			if (DecodeSpecialData(decode_out, *trigdata)) continue;
+
+			// Else -> normal decode
 			TrigBufferEntry tbe;
 			tbe.trigData = *trigdata;
 			tbe.callerLine = decode_out.GetCurrentLine();
 			tbev.push_back(tbe);
-
-			DecodeTrigger(L, decode_out, *trigdata++);
-
+			DecodeTrigger(L, decode_out, *trigdata);
 			decode_out << "\r\n";
 		}
 	}

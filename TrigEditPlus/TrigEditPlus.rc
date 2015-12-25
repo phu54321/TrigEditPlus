@@ -42,6 +42,7 @@ IDR_STOCKCONDHOOK       RCDATA                  "Editor\\Lua\\basescript\\stockc
 IDR_STOCKACTHOOK        RCDATA                  "Editor\\Lua\\basescript\\stockacthook.lua"
 IDR_CONSTPARSER         RCDATA                  "Editor\\Lua\\basescript\\constparser.lua"
 IDR_CONSTDECODER        RCDATA                  "Editor\\Lua\\basescript\\constdecoder.lua"
+IDR_SPECIALDATA         RCDATA                  "Editor\\Lua\\basescript\\specialdata.lua"
 
 /////////////////////////////////////////////////////////////////////////////
 //

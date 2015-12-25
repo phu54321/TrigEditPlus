@@ -21,18 +21,34 @@
  */
 
 #include "../TriggerEditor.h"
+#include "../Lua/lib/lua.hpp"
+#include "../Lua/LuaCommon.h"
 
-void DecodeSpecialComment(const Trig& trg, char output[2320], int& outputlength) {
-	// trg.effplayer & trg.current_action should be filled with 0.
-	for(int i = 0 ; i < 28 ; i++) {
-		if(*(trg.effplayer + i) != 0) throw -1;
-	}
+TriggerEditor* LuaGetEditor(lua_State* L);
 
-	// Get data
-	memcpy(output + 20, &trg.cond[1], 300); // 15 conditions
-	memcpy(output + 340, &trg.act[1], 2020); // 63 actions + flag)
+int LuaEncodeSpecialData(lua_State* L)
+{
+	// Get arguments
+	int callerLine = luaL_checkint(L, -3);
+	uint32_t code = luaL_checkinteger(L, -2);
+	const char* data = luaL_checkstring(L, -1);
+	int datalen = lua_rawlen(L, -1);
 
-	for(int i = 0 ; i < 2320 ; i++) {
+	// Pack to trigger
+	int condlen = min(datalen, 296);
+	int actlen = min(datalen - condlen, 32 * 63);
+	
+	Trig outputTrigger;
+	memset(&outputTrigger, 0, 2400);
+	memcpy(&outputTrigger.cond[1], &code, 4);
+	memcpy(reinterpret_cast<char*>(&outputTrigger.cond[1]) + 4, data, condlen);
+	memcpy(&outputTrigger.act[1], data + condlen, actlen);
 
-	}
+	// Add to trigger list
+	TriggerEditor* e = LuaGetEditor(L);
+	TrigBufferEntry tbe = { outputTrigger, callerLine };
+	e->_trigbuffer.push_back(tbe);
+
+	return 0;
+
 }
