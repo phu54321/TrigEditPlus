@@ -22,6 +22,7 @@
 
 #include "../TriggerEditor.h"
 #include "../StringUtils/StringCast.h"
+#include <algorithm>
 
 bool ProcessSpecialData(StringBuffer& buf, char data[2320]);
 
