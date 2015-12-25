@@ -145,8 +145,8 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 	// trim inputtext
 	int slen = strlen(inputtext);
 	int trimstart = -1, trimend = slen;
-	while(trimstart < slen && isspace(static_cast<char>(inputtext[++trimstart])));
-	while(trimend >= 0 && isspace(static_cast<unsigned char>(inputtext[--trimend])));
+	while(trimstart < slen && isspace(static_cast<unsigned char>(inputtext[++trimstart])));
+	while (trimend >= 0 && isspace(static_cast<unsigned char>(inputtext[--trimend])));
 	trimend++;
 
 	std::string _keyword; // default initialized to empty string

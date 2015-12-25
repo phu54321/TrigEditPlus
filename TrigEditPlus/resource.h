@@ -15,6 +15,7 @@
 #define IDR_STOCKACTHOOK                  4010
 #define IDR_CONSTPARSER                   4011
 #define IDR_CONSTDECODER                  4012
+#define IDR_SPECIALDATA                   4013
 
 #define IDM_EDIT_FINDREPLACE              6000
 #define IDM_EDIT_FIND                     6001

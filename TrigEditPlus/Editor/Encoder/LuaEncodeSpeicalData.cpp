@@ -22,35 +22,33 @@
 
 #include "../TriggerEditor.h"
 #include "../Lua/lib/lua.hpp"
+#include "../Lua/LuaCommon.h"
 
 TriggerEditor* LuaGetEditor(lua_State* L);
 
-#define LUA_MAKENSPARSER(target, targetstr) \
-int LuaParse ## target (lua_State* L) {\
-    TriggerEditor* e = LuaGetEditor(L);\
-\
-    /* number -> return as-is */ \
-    /* if(lua_isnumber(L, -1)) { <-- Don't use this. Argument may be "00" thing */ \
-	if(lua_type(L, -1) == LUA_TNUMBER) { \
-        return 1; /* return arg1 as ret1. */ \
-    }\
-\
-    /* string -> parse */ \
-    const char* unitname = luaL_checkstring(L, -1);\
-	int unitid = e->Encode ## target(unitname);\
-    if(unitid == -1) {\
-        char errmsg[512];\
-        sprintf(errmsg, "Cannot parse string \"%.30s\" as " targetstr, unitname);\
-        lua_pushstring(L, errmsg);\
-        return lua_error(L);\
-    }\
-\
-    lua_pushnumber(L, unitid);\
-    return 1;\
-}\
+int LuaEncodeSpecialData(lua_State* L)
+{
+	// Get arguments
+	int callerLine = luaL_checkint(L, -3);
+	uint32_t code = luaL_checkinteger(L, -2);
+	const char* data = luaL_checkstring(L, -1);
+	int datalen = lua_rawlen(L, -1);
 
-LUA_MAKENSPARSER(Unit, "unit name");
-LUA_MAKENSPARSER(Location, "location");
-LUA_MAKENSPARSER(SwitchName, "switch");
-LUA_MAKENSPARSER(String, "string"); // This won't make any error.
+	// Pack to trigger
+	int condlen = min(datalen, 296);
+	int actlen = min(datalen - condlen, 32 * 63);
+	
+	Trig outputTrigger;
+	memset(&outputTrigger, 0, 2400);
+	memcpy(&outputTrigger.cond[1], &code, 4);
+	memcpy(reinterpret_cast<char*>(&outputTrigger.cond[1]) + 4, data, condlen);
+	memcpy(&outputTrigger.act[1], data + condlen, actlen);
 
+	// Add to trigger list
+	TriggerEditor* e = LuaGetEditor(L);
+	TrigBufferEntry tbe = { outputTrigger, callerLine };
+	e->_trigbuffer.push_back(tbe);
+
+	return 0;
+
+}
