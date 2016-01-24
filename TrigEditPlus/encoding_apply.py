@@ -1,3 +1,6 @@
+import os
+
+begining_str = """\
 /*
  * Copyright (c) 2014 trgk(phu54321@naver.com)
  * 
@@ -20,10 +23,29 @@
  * THE SOFTWARE.
  */
 
-#include "StringCast.h"
+"""
 
-std::string Int2String(int value) {
-	char str[512];
-	_itoa(value, str, 10);
-	return str;
-}
+print('Auto "license inserter')
+
+for root, dirs, files in os.walk('.'):
+    for f in files:
+        if f[-4:] == '.cpp' or f[-2:] == '.h':
+            finalpath = os.path.join(root, f)
+            if (
+                "Editor\\Lua\\lib\\" in finalpath or
+                "Editor\\Scintilla\\" in finalpath
+            ):
+                continue
+
+            try:
+                code = open(finalpath, 'r').read()
+
+                if not code.startswith(begining_str):
+                    print('%s' % finalpath)
+                    code = begining_str + code
+                    open(finalpath, 'w').write(code)
+
+            except UnicodeDecodeError:
+                pass
+
+print('end')
