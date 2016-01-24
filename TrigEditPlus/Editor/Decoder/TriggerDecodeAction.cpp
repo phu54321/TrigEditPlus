@@ -72,7 +72,8 @@ void TriggerEditor::DecodeAction(lua_State* L, StringBuffer& buf, const TrigAct&
 				uint32_t modtype = content.num;
 				
 				char offsetstr[11]; sprintf(offsetstr, "0x%06X", offset);
-				buf << "SetMemory(" << offsetstr << ", " << DecodeModifier(modtype) << ", " << number << ")";
+				char numberstr[11]; sprintf(numberstr, "0x%08X", number);
+				buf << "SetMemory(" << offsetstr << ", " << DecodeModifier(modtype) << ", " << numberstr << ")";
 				goto actdec_overridden;
 			}
 		}
