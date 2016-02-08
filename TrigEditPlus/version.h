@@ -22,5 +22,5 @@
 
 #pragma once
 
-#define VERSION "0.083.2"
-// #define VERSION_BETA
+#define VERSION "0.084.-1EUDPLIB"
+#define VERSION_BETA

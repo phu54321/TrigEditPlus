@@ -30,7 +30,7 @@
 #include "version.h"
 
 
-const char* PluginMenuName = "TrigEdit++";
+const char* PluginMenuName = "TrigEdit++\tCtrl + T";
 
 static HMODULE hScintillaDLL;
 

@@ -22,6 +22,7 @@
 
 #include "../TriggerEditor.h"
 #include "../StringUtils/StringCast.h"
+#include "../StringUtils/stringbuffer.h"
 #include <algorithm>
 
 bool ProcessSpecialData(StringBuffer& buf, char data[2320]);
@@ -42,18 +43,60 @@ bool DecodeSpecialData(StringBuffer& buf, const Trig& trg) {
 
 	// Get data
 	memcpy(data, &trg.cond[1], 300); // 15 conditions
-	memcpy(data + 300, &trg.act[1], 2020); // 63 actions + flag)
+	memcpy(data + 300, &trg.act[1], 2020); // 63 actions + flag
 	return ProcessSpecialData(buf, data);
+}
+
+
+// Used for player parsing in inline_eudplib
+static const char* DecodePlayer(int value)
+{
+	static const char* names[] = {
+		"P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8",
+		"P9", "P10", "P11", "P12", "12", "CurrentPlayer", "Foes", "Allies", "NeutralPlayers",
+		"AllPlayers", "Force1", "Force2", "Force3", "Force4", "22", "23", "24",
+		"25", "NonAlliedVictoryPlayers"
+	};
+	return names[value];
 }
 
 
 bool ProcessSpecialData(StringBuffer& buf, char data[2320])
 {
-	if(memcmp(data, "\xd8\x58\x0a\x9b", 4) == 0)  // Special comment
+	if (memcmp(data, "\xd8\x58\x0a\x9b", 4) == 0)  // Special comment
 	{
 		data[2319] = '\0';
-		buf << "TEPComment(" << Raw2CString(data + 4) << ")\r\n";
+		if (strchr(data, '\n') == NULL) {  // Single line -> just encode
+			buf << "TEPComment(" << Raw2CString(data + 4) << ")\r\n";
+		}
+		else {  // Print as multiline string
+			buf << "TEPComment([====[\r\n" << (data + 4) << "]====])\r\n";
+		}
 		return true;
 	}
+
+
+	if (memcmp(data, "\x4a\x8d\x97\x10", 4) == 0)  // inline eudplib code
+	{
+		data[2319] = '\0';
+
+		buf << "inline_eudplib( {";
+
+		// Write player fields
+		uint32_t pcode = *reinterpret_cast<uint32_t*>(data + 4);
+		bool firstplayer = true;
+		for (int i = 0; i < 27; i++) {
+			if (pcode & (1 << i)) {
+				if (!firstplayer) buf << ", ";
+				else firstplayer = false;
+				buf << DecodePlayer(i);
+			}
+		}
+
+		// Always print code as multiline string
+		buf << "}, [====[\r\n" << (data + 8) << "]====])\r\n";
+		return true;
+	}
+
 	return false;
 }

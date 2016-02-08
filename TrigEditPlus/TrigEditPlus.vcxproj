@@ -248,6 +248,7 @@
     <ClCompile Include="Editor\StringUtils\StringIntCast.cpp" />
     <ClCompile Include="Editor\TriggerEditor.cpp" />
     <ClCompile Include="Editor\TriggerEncDecData.cpp" />
+    <ClCompile Include="HotkeyRegister\GetMenuID.cpp" />
     <ClCompile Include="PluginBase\DllMain.cpp" />
     <ClCompile Include="PluginBase\SICStringList.cpp" />
     <ClCompile Include="PluginMain.cpp" />

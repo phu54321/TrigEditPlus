@@ -326,6 +326,9 @@
     <ClCompile Include="Editor\Encoder\LuaEncodeSpeicalData.cpp">
       <Filter>Editor\Encoder</Filter>
     </ClCompile>
+    <ClCompile Include="HotkeyRegister\GetMenuID.cpp">
+      <Filter>HotkeyRegister</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -625,6 +628,9 @@
     </Filter>
     <Filter Include="Editor\Lua\basescript">
       <UniqueIdentifier>{8f070e5f-81dc-4215-8ea3-b6765f4f376c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HotkeyRegister">
+      <UniqueIdentifier>{a2dfce7f-b267-407e-a569-6deb99a59912}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
