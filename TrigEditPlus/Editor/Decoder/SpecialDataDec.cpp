@@ -94,7 +94,7 @@ bool ProcessSpecialData(StringBuffer& buf, char data[2320])
 		}
 
 		// Always print code as multiline string
-		buf << "}, [====[\r\n" << (data + 8) << "]====])\r\n";
+		buf << "}, [====[\r\n" << (data + 8) << "]====])\r\n\r\n";
 		return true;
 	}
 
