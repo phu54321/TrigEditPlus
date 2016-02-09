@@ -80,7 +80,7 @@ bool ProcessSpecialData(StringBuffer& buf, char data[2320])
 	{
 		data[2319] = '\0';
 
-		buf << "inline_eudplib( {";
+		buf << "inline_eudplib({";
 
 		// Write player fields
 		uint32_t pcode = *reinterpret_cast<uint32_t*>(data + 4);
