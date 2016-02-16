@@ -32,7 +32,16 @@
 
 int LuaLog(lua_State* L)
 {
-	fprintf(stderr, "[LuaLog] %s\n", lua_tostring(L, -1));
+	static FILE* fp = (FILE*)~0;
+	if (fp == (FILE*)~0) {
+		fp = fopen("lualog.txt", "w");
+		if (fp) {
+			setvbuf(fp, nullptr, _IONBF, 0);
+		}
+	}
+	if (!fp) return -1;
+
+	fprintf(fp, "[LuaLog] %s\n", lua_tostring(L, -1));
 	return 0;
 }
 
