@@ -65,9 +65,6 @@ void DisableVisualStyle() {
 // Activator end
 
 void Initialize() {
-	freopen("trigeditplus_stderr.txt", "w", stderr);
-	setvbuf(stderr, NULL, _IONBF, 0);
-
 	// Initialize common controls.
 	Scintilla_RegisterClasses(hInstance);
 	Scintilla_LinkLexers();
@@ -91,12 +88,7 @@ void Initialize() {
 
 #ifdef VERSION_BETA		
 	MessageBox(NULL, TEXT(
-		"  이 버젼은 베타 버젼입니다. 버그가 있을 수 있어요.\r\n"
-		"버그를 잡기 위해서 내놓은 버젼이기도 하고요. 그러니까\r\n"
-		"이 버젼의 TrigEditPlus를 쓰시다가 맵이 날라갈수도 있습니다.\r\n"
-		"순순히 정식 버젼의 TrigEditPlus만 사용하신다면 유혈사태는 일어나지\r\n"
-		"않을 것입니다.\r\n\r\n"
-		"그런데 여러분이 그러실리가 없잖아요? 뭐 좋아요. 여러분 맵은 이제 제껍니다."
+		"[베타] 버그가 많이 있을겁니다.\r\n"
 	), "TrigEditPlus " VERSION, MB_OK);
 #endif
 }
