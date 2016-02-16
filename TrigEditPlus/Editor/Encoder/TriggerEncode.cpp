@@ -76,11 +76,11 @@ int LuaEncodeTrigger(lua_State* L) {
 		int playern = lua_rawlen(L, -1);
 		for (int i = 1; i <= playern; i++) {
 			lua_getglobal(L, "ParsePlayer");
-			lua_pushnumber(L, i);
+			lua_pushinteger(L, i);
 			lua_gettable(L, -3); // < t.players[i]
 			lua_call(L, 1, 1);
 
-			int playerID = luaL_checkint(L, -1);
+			int playerID = luaL_checkinteger(L, -1);
 			lua_pop(L, 1); // > t.players[i]
 
 			if (playerID < 0 || playerID > 27) {
@@ -109,7 +109,7 @@ int LuaEncodeTrigger(lua_State* L) {
 		}
 
 		for (int i = 1; i <= condn; i++) {
-			lua_pushnumber(L, i);
+			lua_pushinteger(L, i);
 			lua_gettable(L, -2); // < t.conditions[i]
 			if (!lua_istable(L, -1)) {
 				return LuaErrorf(L, "condition #%d is invalid. (not a table)", i);
@@ -121,18 +121,18 @@ int LuaEncodeTrigger(lua_State* L) {
 
 			// pop all elements
 			for (int j = 1; j <= 8; j++) {
-				lua_pushnumber(L, j);
+				lua_pushinteger(L, j);
 				lua_gettable(L, -1 - j); // < t.conditions[i][j]
 			}
 
-			t.cond[i - 1].locid = luaL_checkint(L, -8);
-			t.cond[i - 1].player = luaL_checkint(L, -7);
-			t.cond[i - 1].res = luaL_checkint(L, -6);
-			t.cond[i - 1].uid = luaL_checkint(L, -5);
-			t.cond[i - 1].setting = luaL_checkint(L, -4);
-			t.cond[i - 1].condtype = luaL_checkint(L, -3);
-			t.cond[i - 1].res_setting = luaL_checkint(L, -2);
-			t.cond[i - 1].prop = luaL_checkint(L, -1);
+			t.cond[i - 1].locid = luaL_checkinteger(L, -8);
+			t.cond[i - 1].player = luaL_checkinteger(L, -7);
+			t.cond[i - 1].res = luaL_checkinteger(L, -6);
+			t.cond[i - 1].uid = luaL_checkinteger(L, -5);
+			t.cond[i - 1].setting = luaL_checkinteger(L, -4);
+			t.cond[i - 1].condtype = luaL_checkinteger(L, -3);
+			t.cond[i - 1].res_setting = luaL_checkinteger(L, -2);
+			t.cond[i - 1].prop = luaL_checkinteger(L, -1);
 
 			lua_pop(L, 8); // > t.conditions[i][1~8]
 
@@ -160,7 +160,7 @@ int LuaEncodeTrigger(lua_State* L) {
 		}
 
 		for (int i = 1; i <= actn; i++) {
-			lua_pushnumber(L, i);
+			lua_pushinteger(L, i);
 			lua_gettable(L, -2); // < t.actions[i]
 			if (!lua_istable(L, -1)) {
 				return LuaErrorf(L, "action #%d is invalid. (not a table)", i);
@@ -172,20 +172,20 @@ int LuaEncodeTrigger(lua_State* L) {
 
 			// pop all elements
 			for (int j = 1; j <= 10; j++) {
-				lua_pushnumber(L, j);
+				lua_pushinteger(L, j);
 				lua_gettable(L, -1 - j); // < t.actions[i][j]
 			}
 
-			t.act[i - 1].locid = luaL_checkint(L, -10);
-			t.act[i - 1].strid = luaL_checkint(L, -9);
-			t.act[i - 1].wavid = luaL_checkint(L, -8);
-			t.act[i - 1].time = luaL_checkint(L, -7);
-			t.act[i - 1].player = luaL_checkint(L, -6);
-			t.act[i - 1].target = luaL_checkint(L, -5);
-			t.act[i - 1].setting = luaL_checkint(L, -4);
-			t.act[i - 1].acttype = luaL_checkint(L, -3);
-			t.act[i - 1].num = luaL_checkint(L, -2);
-			t.act[i - 1].prop = luaL_checkint(L, -1);
+			t.act[i - 1].locid = luaL_checkinteger(L, -10);
+			t.act[i - 1].strid = luaL_checkinteger(L, -9);
+			t.act[i - 1].wavid = luaL_checkinteger(L, -8);
+			t.act[i - 1].time = luaL_checkinteger(L, -7);
+			t.act[i - 1].player = luaL_checkinteger(L, -6);
+			t.act[i - 1].target = luaL_checkinteger(L, -5);
+			t.act[i - 1].setting = luaL_checkinteger(L, -4);
+			t.act[i - 1].acttype = luaL_checkinteger(L, -3);
+			t.act[i - 1].num = luaL_checkinteger(L, -2);
+			t.act[i - 1].prop = luaL_checkinteger(L, -1);
 
 			lua_pop(L, 10); // > t.actions[i][1~8]
 
@@ -215,7 +215,7 @@ int LuaEncodeTrigger(lua_State* L) {
 		lua_getglobal(L, "disabled");   // 0x8
 
 		for (int i = 1; i <= flagn; i++) {
-			lua_pushnumber(L, i);
+			lua_pushinteger(L, i);
 			lua_gettable(L, -5); // < t.flag[i]
 
 			/**/ if (lua_compare(L, -1, -4, LUA_OPEQ)) flag |= 0x1; //actexec
@@ -240,15 +240,15 @@ int LuaEncodeTrigger(lua_State* L) {
 	lua_pushstring(L, "starting_action");
 	lua_gettable(L, -2); // < t.starting_action
 	if (lua_isnumber(L, -1)) {
-		t.current_action = luaL_checkint(L, -1);
+		t.current_action = luaL_checkinteger(L, -1);
 	}
 	lua_pop(L, 1);
 
 	// callee line number
 	lua_pushstring(L, "callerLine");
 	lua_gettable(L, -2);
-	luaL_checkint(L, -1);
-	int callerLine = luaL_checkint(L, -1);
+	luaL_checkinteger(L, -1);
+	int callerLine = luaL_checkinteger(L, -1);
 	lua_pop(L, 1);
 
 	// Done.

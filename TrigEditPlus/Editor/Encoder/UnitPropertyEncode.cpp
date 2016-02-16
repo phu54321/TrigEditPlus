@@ -115,7 +115,7 @@ int LuaEncodeUPRP(lua_State* L) {
 	// Check for duplicates
 	auto it = _uprpmap.find(uprpd);
 	if(it != _uprpmap.end()) {
-		lua_pushnumber(L, it->second);
+		lua_pushinteger(L, it->second);
 		return 1;
 	}
 
@@ -129,7 +129,7 @@ int LuaEncodeUPRP(lua_State* L) {
 	int prpindex = _uprpmap.size() + 1;
 	_uprpmap.insert(std::make_pair(uprpd, prpindex));
 	_uprpvec.push_back(uprpd);
-	lua_pushnumber(L, prpindex);
+	lua_pushinteger(L, prpindex);
 	return 1;
 }
 

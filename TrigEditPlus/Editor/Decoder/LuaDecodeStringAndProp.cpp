@@ -36,7 +36,7 @@ int LuaDecode ## target (lua_State* L) {\
 	}\
 \
     /* string -> parse */ \
-    int id = luaL_checkint(L, -1);\
+    int id = luaL_checkinteger(L, -1);\
 	lua_pushstring(L, e->Decode ## target(id).c_str()); \
     return 1;\
 }\
@@ -57,7 +57,7 @@ int LuaDecodeUPRP(lua_State* L)
 	{
 		return 1; /* return arg1 as ret1. */
 	}
-	int id = luaL_checkint(L, -1);
+	int id = luaL_checkinteger(L, -1);
 	UPRPData* uprp = &((UPRPData*)e->_editordata->UnitProperties->ChunkData)[id - 1];
 	lua_pushstring(L, DecodeUPRPData(uprp).c_str());
 	return 1;

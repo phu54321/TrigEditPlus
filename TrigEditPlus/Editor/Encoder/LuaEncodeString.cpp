@@ -45,7 +45,7 @@ int LuaEncode ## target (lua_State* L) {\
         return lua_error(L);\
     }\
 \
-    lua_pushnumber(L, unitid);\
+    lua_pushinteger(L, unitid);\
     return 1;\
 }\
 

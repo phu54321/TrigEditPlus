@@ -203,6 +203,33 @@
     <ClCompile Include="Editor\hangulUnpacker.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\Lua\AutoRequireLibs.cpp">
+      <Filter>Editor\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Lua\LuaCommon.cpp">
+      <Filter>Editor\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Lua\LuaKeywords.cpp">
+      <Filter>Editor\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Decoder\ProcCondActHook.cpp">
+      <Filter>Editor\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Decoder\LuaDecodeStringAndProp.cpp">
+      <Filter>Editor\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Decoder\SpecialDataDec.cpp">
+      <Filter>Editor\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Encoder\LuaEncodeString.cpp">
+      <Filter>Editor\Encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Encoder\LuaEncodeSpeicalData.cpp">
+      <Filter>Editor\Encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="HotkeyRegister\GetMenuID.cpp">
+      <Filter>HotkeyRegister</Filter>
+    </ClCompile>
     <ClCompile Include="Editor\Lua\lib\lapi.c">
       <Filter>Editor\Lua\lib</Filter>
     </ClCompile>
@@ -290,10 +317,10 @@
     <ClCompile Include="Editor\Lua\lib\ltm.c">
       <Filter>Editor\Lua\lib</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\Lua\lib\luac.c">
+    <ClCompile Include="Editor\Lua\lib\lundump.c">
       <Filter>Editor\Lua\lib</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\Lua\lib\lundump.c">
+    <ClCompile Include="Editor\Lua\lib\lutf8lib.c">
       <Filter>Editor\Lua\lib</Filter>
     </ClCompile>
     <ClCompile Include="Editor\Lua\lib\lvm.c">
@@ -301,33 +328,6 @@
     </ClCompile>
     <ClCompile Include="Editor\Lua\lib\lzio.c">
       <Filter>Editor\Lua\lib</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Lua\AutoRequireLibs.cpp">
-      <Filter>Editor\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Lua\LuaCommon.cpp">
-      <Filter>Editor\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Lua\LuaKeywords.cpp">
-      <Filter>Editor\Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Decoder\ProcCondActHook.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Decoder\LuaDecodeStringAndProp.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Decoder\SpecialDataDec.cpp">
-      <Filter>Editor\Decoder</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\LuaEncodeString.cpp">
-      <Filter>Editor\Encoder</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Encoder\LuaEncodeSpeicalData.cpp">
-      <Filter>Editor\Encoder</Filter>
-    </ClCompile>
-    <ClCompile Include="HotkeyRegister\GetMenuID.cpp">
-      <Filter>HotkeyRegister</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -516,6 +516,12 @@
     <ClInclude Include="Editor\Scintilla\PlatWin.h">
       <Filter>Editor\Scintilla</Filter>
     </ClInclude>
+    <ClInclude Include="Editor\Lua\LuaCommon.h">
+      <Filter>Editor\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Lua\LuaKeywords.h">
+      <Filter>Editor\Lua</Filter>
+    </ClInclude>
     <ClInclude Include="Editor\Lua\lib\lapi.h">
       <Filter>Editor\Lua\lib</Filter>
     </ClInclude>
@@ -558,6 +564,9 @@
     <ClInclude Include="Editor\Lua\lib\lparser.h">
       <Filter>Editor\Lua\lib</Filter>
     </ClInclude>
+    <ClInclude Include="Editor\Lua\lib\lprefix.h">
+      <Filter>Editor\Lua\lib</Filter>
+    </ClInclude>
     <ClInclude Include="Editor\Lua\lib\lstate.h">
       <Filter>Editor\Lua\lib</Filter>
     </ClInclude>
@@ -590,12 +599,6 @@
     </ClInclude>
     <ClInclude Include="Editor\Lua\lib\lzio.h">
       <Filter>Editor\Lua\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Lua\LuaCommon.h">
-      <Filter>Editor\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor\Lua\LuaKeywords.h">
-      <Filter>Editor\Lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
