@@ -66,11 +66,13 @@ bool ProcessSpecialData(StringBuffer& buf, char data[2320])
 	if (memcmp(data, "\xd8\x58\x0a\x9b", 4) == 0)  // Special comment
 	{
 		data[2319] = '\0';
-		if (strchr(data, '\n') == NULL) {  // Single line -> just encode
-			buf << "TEPComment(" << Raw2CString(data + 4) << ")\r\n";
+		const char* string = data + 4;
+
+		if (strchr(string, '\n') == NULL) {  // Single line -> just encode
+			buf << "TEPComment(" << Raw2CString(string) << ")\r\n";
 		}
 		else {  // Print as multiline string
-			buf << "TEPComment([====[\r\n" << (data + 4) << "]====])\r\n";
+			buf << "TEPComment([====[\r\n" << string << "]====])\r\n";
 		}
 		return true;
 	}
@@ -93,8 +95,13 @@ bool ProcessSpecialData(StringBuffer& buf, char data[2320])
 			}
 		}
 
-		// Always print code as multiline string
-		buf << "}, [====[\r\n" << (data + 8) << "]====])\r\n\r\n";
+		const char* string = data + 8;
+		if (strchr(string, '\n') == NULL) {  // Single line -> just encode
+			buf << "}, " << Raw2CString(string) << ")\r\n";
+		}
+		else {  // Print as multiline string
+			buf << "}, [====[\r\n" << (string) << "]====])\r\n";
+		}
 		return true;
 	}
 
