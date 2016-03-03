@@ -64,8 +64,7 @@ std::string TriggerEditor::DecodeTriggers(CChunkData* Triggers) const {
 			tbe.callerLine = decode_out.GetCurrentLine();
 			tbev.push_back(tbe);
 			DecodeTrigger(L, decode_out, *trigdata);
-
-			decode_out << "\r\n--------------------------------------------------------------------------------\r\n\r\n";
+			decode_out << "\r\n";
 		}
 	}
 
