@@ -32,7 +32,6 @@ LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
 
 IDR_LUALICENSE          RCDATA                  "License\\license_lua.txt"
 IDR_SCINTILLALICENSE    RCDATA                  "License\\license_scintilla.txt"
-
 IDR_BASESCRIPT          RCDATA                  "Editor\\Lua\\basescript\\basescript.lua"
 IDR_LUAHOOK             RCDATA                  "Editor\\Lua\\basescript\\luahook.lua"
 IDR_MEMSMEM             RCDATA                  "Editor\\Lua\\basescript\\memsmem.lua"
@@ -63,11 +62,6 @@ BEGIN
         MENUITEM "Replace\tCtrl+H",             IDM_EDIT_REPLACE
         MENUITEM SEPARATOR
         MENUITEM "New trigger\tCtrl+T",         IDM_EDIT_NEWTRIGGER
-    END
-    POPUP "View"
-    BEGIN
-        MENUITEM "Fold All\tCtrl+Shift+F",      IDM_VIEW_FOLDALL
-        MENUITEM "Unfold All\tCtrl+Shift+D",    IDM_VIEW_UNFOLDALL
     END
     POPUP "Help"
     BEGIN
