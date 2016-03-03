@@ -443,7 +443,7 @@ local AIScriptDict = {
 
 
 
-local function ParseConst(d, s)
+local function EncodeConst(d, s)
     local val = d[s]
     if val == nil then
         return s
@@ -453,65 +453,82 @@ local function ParseConst(d, s)
 end
 
 
-function ParseAllyStatus(s)
-    return ParseConst(AllyStatusDict, s)
+function EncodeAllyStatus(s)
+    return EncodeConst(AllyStatusDict, s)
 end
 
 
-function ParseComparison(s)
-    return ParseConst(ComparisonDict, s)
+function EncodeComparison(s)
+    return EncodeConst(ComparisonDict, s)
 end
 
 
-function ParseModifier(s)
-    return ParseConst(ModifierDict, s)
+function EncodeModifier(s)
+    return EncodeConst(ModifierDict, s)
 end
 
 
-function ParseOrder(s)
-    return ParseConst(OrderDict, s)
+function EncodeOrder(s)
+    return EncodeConst(OrderDict, s)
 end
 
 
-function ParsePlayer(s)
-    return ParseConst(PlayerDict, s)
+function EncodePlayer(s)
+    return EncodeConst(PlayerDict, s)
 end
 
 
-function ParsePropState(s)
-    return ParseConst(PropStateDict, s)
+function EncodePropState(s)
+    return EncodeConst(PropStateDict, s)
 end
 
 
-function ParseResource(s)
-    return ParseConst(ResourceDict, s)
+function EncodeResource(s)
+    return EncodeConst(ResourceDict, s)
 end
 
 
-function ParseScore(s)
-    return ParseConst(ScoreDict, s)
+function EncodeScore(s)
+    return EncodeConst(ScoreDict, s)
 end
 
 
-function ParseSwitchAction(s)
-    return ParseConst(SwitchActionDict, s)
+function EncodeSwitchAction(s)
+    return EncodeConst(SwitchActionDict, s)
 end
 
 
-function ParseSwitchState(s)
-    return ParseConst(SwitchStateDict, s)
+function EncodeSwitchState(s)
+    return EncodeConst(SwitchStateDict, s)
 end
 
 
-function ParseAIScript(s)
-    return ParseConst(AIScriptDict, s)
+function EncodeAIScript(s)
+    return EncodeConst(AIScriptDict, s)
 end
 
 
-function ParseCount(s)
+function EncodeCount(s)
     if s == All then
         return 0
     else
         return s
     end
 end
+
+
+--- Aliases
+
+ParseConst = EncodeConst
+ParseAllyStatus = EncodeAllyStatus
+ParseComparison = EncodeComparison
+ParseModifier = EncodeModifier
+ParseOrder = EncodeOrder
+ParsePlayer = EncodePlayer
+ParsePropState = EncodePropState
+ParseResource = EncodeResource
+ParseScore = EncodeScore
+ParseSwitchAction = EncodeSwitchAction
+ParseSwitchState = EncodeSwitchState
+ParseAIScript = EncodeAIScript
+ParseCount = EncodeCount

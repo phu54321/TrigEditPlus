@@ -66,7 +66,8 @@ void TriggerEditor::DecodeCondition(lua_State* L, StringBuffer& buf, const TrigC
 				uint32_t cmptype = content.setting;
 
 				char offsetstr[11]; sprintf(offsetstr, "0x%06X", offset);
-				buf << "Memory(" << offsetstr << ", " << DecodeComparison(cmptype) << ", " << number << ")";
+				char numberstr[11]; sprintf(numberstr, "0x%08X", number);
+				buf << "Memory(" << offsetstr << ", " << DecodeComparison(cmptype) << ", " << numberstr << ")";
 				goto cnddec_overridden;
 			}
 		}

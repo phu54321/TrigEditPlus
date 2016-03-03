@@ -113,6 +113,16 @@ void LoadUserLuaLibs_Sub(lua_State* L)
 }
 
 
+
+BOOL DirectoryExists(LPCTSTR szPath)
+{
+	DWORD dwAttrib = GetFileAttributes(szPath);
+
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+}
+
+
 void LoadUserLuaLibs(lua_State* L)
 {
 	// Backup current directory
@@ -129,6 +139,11 @@ void LoadUserLuaLibs(lua_State* L)
 	
 	// If 'lua' directory exists -> require all
 	if (SetCurrentDirectory(path)) {
+		// Check if #basescript folder exists. If they do, then bug can occur.
+		if(DirectoryExists(TEXT("#basescript")))
+		{
+			MessageBox(NULL, "[Warning] Remove \"lua\\#basescript\" directory.", "Potential bug", MB_OK);
+		}
 		LoadUserLuaLibs_Sub(L);
 		SetCurrentDirectory(currentPath);
 	}

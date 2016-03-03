@@ -494,7 +494,24 @@ LRESULT CALLBACK TrigEditDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 					int triggerLine = pnmtv->itemNew.lParam - 1;
 					int linePos = te->SendSciMessage(SCI_POSITIONFROMLINE, triggerLine, 0);
 					int lineEnd = te->SendSciMessage(SCI_GETLINEENDPOSITION, triggerLine, 0);
-					te->SendSciMessage(SCI_SETSEL, linePos, lineEnd);
+
+					// Shift - Select from current anchor to here
+					if(GetAsyncKeyState(VK_SHIFT) & 0x8000)
+					{
+						int prevAnchor = te->SendSciMessage(SCI_GETANCHOR, 0, 0);
+						if (prevAnchor <= lineEnd) {
+							te->SendSciMessage(SCI_SETSEL, prevAnchor, lineEnd);
+						}
+						else
+						{
+							te->SendSciMessage(SCI_SETSEL, prevAnchor, linePos);
+						}
+					}
+
+					// Or just move cursor
+					else {
+						te->SendSciMessage(SCI_SETSEL, linePos, lineEnd);
+					}
 					SetFocus(te->hScintilla);
 				}
 			}
@@ -716,6 +733,9 @@ char PlayerName[28][12] = {
 	"",
 };
 
+
+DWORD crc32(const void *buf2, size_t len);
+
 // TODO : Erase this
 void TriggerEditor::UpdateTriggerList(const std::vector<TrigBufferEntry>& trigbuffer)
 {
@@ -753,7 +773,8 @@ void TriggerEditor::UpdateTriggerList(const std::vector<TrigBufferEntry>& trigbu
 	for(const auto& entry : trigbuffer)
 	{
 		const Trig& trg = entry.trigData;
-		std::string trigCaption = "No comment";
+		std::string trigCaption;
+		bool hasComment = false;
 
 		// Get trigger comment
 		for(int i = 0; i < 64; i++)
@@ -761,6 +782,8 @@ void TriggerEditor::UpdateTriggerList(const std::vector<TrigBufferEntry>& trigbu
 			if(trg.act[i].acttype == 0) break;
 			else if(trg.act[i].acttype == COMMENT)
 			{
+				hasComment = true;
+
 				int strid = trg.act[i].strid;
 				if(strid < 0 || strid > totstrn) break;
 				const char* rawcomment0 = StringTable_GetString(strtb, strid);
@@ -784,7 +807,16 @@ void TriggerEditor::UpdateTriggerList(const std::vector<TrigBufferEntry>& trigbu
 
 				*p = '\0';
 				trigCaption.assign(comment);
+				break;
 			}
+		}
+
+		// No comment -> create custom comment
+		if(!hasComment)
+		{
+			char thisComment[100];
+			sprintf(thisComment, "No comment (%08X)", crc32(&trg, 2400));
+			trigCaption = thisComment;
 		}
 
 		for(int i = 0; i < 27; i++)

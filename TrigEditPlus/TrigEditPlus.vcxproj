@@ -192,8 +192,8 @@
     <ClCompile Include="Editor\Lua\lib\ltable.c" />
     <ClCompile Include="Editor\Lua\lib\ltablib.c" />
     <ClCompile Include="Editor\Lua\lib\ltm.c" />
-    <ClCompile Include="Editor\Lua\lib\luac.c" />
     <ClCompile Include="Editor\Lua\lib\lundump.c" />
+    <ClCompile Include="Editor\Lua\lib\lutf8lib.c" />
     <ClCompile Include="Editor\Lua\lib\lvm.c" />
     <ClCompile Include="Editor\Lua\lib\lzio.c" />
     <ClCompile Include="Editor\Lua\LuaCommon.cpp" />
@@ -248,6 +248,7 @@
     <ClCompile Include="Editor\StringUtils\StringIntCast.cpp" />
     <ClCompile Include="Editor\TriggerEditor.cpp" />
     <ClCompile Include="Editor\TriggerEncDecData.cpp" />
+    <ClCompile Include="HotkeyRegister\GetMenuID.cpp" />
     <ClCompile Include="PluginBase\DllMain.cpp" />
     <ClCompile Include="PluginBase\SICStringList.cpp" />
     <ClCompile Include="PluginMain.cpp" />
@@ -267,6 +268,7 @@
     <ClInclude Include="Editor\Lua\lib\lobject.h" />
     <ClInclude Include="Editor\Lua\lib\lopcodes.h" />
     <ClInclude Include="Editor\Lua\lib\lparser.h" />
+    <ClInclude Include="Editor\Lua\lib\lprefix.h" />
     <ClInclude Include="Editor\Lua\lib\lstate.h" />
     <ClInclude Include="Editor\Lua\lib\lstring.h" />
     <ClInclude Include="Editor\Lua\lib\ltable.h" />

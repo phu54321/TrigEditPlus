@@ -29,7 +29,7 @@ TriggerEditor* LuaGetEditor(lua_State* L);
 int LuaEncodeSpecialData(lua_State* L)
 {
 	// Get arguments
-	int callerLine = luaL_checkint(L, -3);
+	int callerLine = luaL_checkinteger(L, -3);
 	uint32_t code = luaL_checkinteger(L, -2);
 	const char* data = luaL_checkstring(L, -1);
 	int datalen = lua_rawlen(L, -1);
