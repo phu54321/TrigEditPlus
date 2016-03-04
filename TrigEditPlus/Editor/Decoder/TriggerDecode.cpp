@@ -162,7 +162,7 @@ void TriggerEditor::DecodeTrigger(lua_State* L, StringBuffer& buf, const Trig& c
 			buf << DecodePlayer(i);
 		}
 	}
-	buf << "},\n";
+	buf << "},\r\n";
 
 	// 2. Write conditions.
 	if(content.cond[0].condtype != 0) { // There is at least one condition.
