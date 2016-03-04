@@ -1,5 +1,5 @@
 function EPD(offset)
-    return (offset - 0x58A364) / 4
+    return (offset - 0x58A364) // 4
 end
 
 function Memory(offset, comparison, number)
@@ -7,8 +7,8 @@ function Memory(offset, comparison, number)
 
     if 0x58A364 <= offset and offset <= 0x58A364 + 48 * 65536 then
         local eud_player, eud_unit
-        eud_player = (offset - 0x58A364) / 4 % 12
-        eud_unit = ((offset - 0x58A364) / 4 - eud_player) / 12
+        eud_player = (offset - 0x58A364) // 4 % 12
+        eud_unit = ((offset - 0x58A364) // 48
         return Deaths(eud_player, comparison, number, eud_unit)
     end
     
@@ -21,8 +21,8 @@ function SetMemory(offset, modtype, number)
     -- If offset is in normal deaths / eud range, use it.
     if 0x58A364 <= offset and offset <= 0x58A364 + 48 * 65536 then
         local eud_player, eud_unit
-        eud_player = (offset - 0x58A364) / 4 % 12
-        eud_unit = ((offset - 0x58A364) / 4 - eud_player) / 12
+        eud_player = (offset - 0x58A364) // 4 % 12
+        eud_unit = (offset - 0x58A364) // 48
         return SetDeaths(eud_player, modtype, number, eud_unit)
     else  -- Use EPD
 	return SetDeaths(EPD(offset), modtype, number, 0)
