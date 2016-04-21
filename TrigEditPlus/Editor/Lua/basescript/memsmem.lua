@@ -8,7 +8,7 @@ function Memory(offset, comparison, number)
     if 0x58A364 <= offset and offset <= 0x58A364 + 48 * 65536 then
         local eud_player, eud_unit
         eud_player = (offset - 0x58A364) // 4 % 12
-        eud_unit = ((offset - 0x58A364) // 48
+        eud_unit = (offset - 0x58A364) // 48
         return Deaths(eud_player, comparison, number, eud_unit)
     end
     
