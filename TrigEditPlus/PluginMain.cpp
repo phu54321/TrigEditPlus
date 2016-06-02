@@ -30,7 +30,7 @@
 #include "version.h"
 
 
-const char* PluginMenuName = "TrigEdit++";
+const char* PluginMenuName = "TrigEdit++\tCtrl + T";
 
 static HMODULE hScintillaDLL;
 
@@ -86,8 +86,10 @@ void Initialize() {
 
 	RegisterWindowMessage(FINDMSGSTRING);
 
-#ifdef VERSION_BETA
-	MessageBox(NULL, TEXT("UNSTABLE VERSION (IN DEVELOPMENT)"), "TrigEditPlus " VERSION, MB_OK);
+#ifdef VERSION_BETA		
+	MessageBox(NULL, TEXT(
+		"[베타] 버그가 많이 있을겁니다.\r\n"
+	), "TrigEditPlus " VERSION, MB_OK);
 #endif
 }
 

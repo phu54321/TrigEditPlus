@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2014 trgk(phu54321@naver.com)
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,6 +22,7 @@
 
 #include "TriggerEditor.h"
 #include "TriggerEncDec.h"
+#include "Lua/LuaKeywords.h"
 #include <windowsx.h>
 #include <algorithm>
 
@@ -51,7 +52,7 @@ struct AIScriptEntry
 extern AIScriptEntry AIScriptList[];
 
 // DBCS-safe version. maybe.
-inline char dbcs_tolower(char ch)
+inline wchar_t dbcs_tolower(wchar_t ch)
 {
 	if('A' <= ch && ch <= 'Z') return ch + ('a' - 'A');
 	else return ch;
@@ -59,8 +60,10 @@ inline char dbcs_tolower(char ch)
 
 // Simple similarity ranker. Inspired from Sublime Text Fuzzy String Matching algorithm.
 // Independently developed, though.
-int CalculateStringAcceptance(const std::string& keyword, const std::string& matched_text)
+
+int CalculateStringAcceptance(const std::wstring& keyword, const std::wstring& matched_text)
 {
+
 	const int max_prioritized_char_dist = 3;
 	const int max_prioritized_wordstart_dist = 4;
 
@@ -68,7 +71,7 @@ int CalculateStringAcceptance(const std::string& keyword, const std::string& mat
 	int rank = 0;
 	const int match_maxidx = matched_text.size();
 
-	for(char ch : keyword)
+	for(wchar_t ch : keyword)
 	{
 		int previndex = index;
 
@@ -88,14 +91,14 @@ int CalculateStringAcceptance(const std::string& keyword, const std::string& mat
 		int wsindex = index;  // Word start position
 		while(wsindex >= 0)
 		{
-			char wsi_ch = matched_text[wsindex];
+			wchar_t wsi_ch = matched_text[wsindex];
 			// Space can be seperator
 			if(wsi_ch == ' ')
 			{
 				wsindex++;
 				break;
 			}
-			else if('A' <= wsi_ch && wsi_ch <= 'Z') break;  // Capical character can be word start
+			else if(!('a' <= wsi_ch && wsi_ch <= 'z')) break;  // Capical character can be word start
 			wsindex--;
 		}
 		int wsdist = index - wsindex, wsd_mul;
@@ -116,37 +119,59 @@ int CalculateStringAcceptance(const std::string& keyword, const std::string& mat
 }
 
 
+
+// -----------------------------------
+
+
+static std::wstring s2ws(const std::string& s)
+{
+	size_t buflen = MultiByteToWideChar(CP_OEMCP, 0, s.c_str(), -1, 0, 0);
+	std::wstring ws(buflen, 0);
+	MultiByteToWideChar(CP_OEMCP, 0, s.data(), s.size(), const_cast<wchar_t*>(ws.data()), ws.size());
+	ws.resize(ws.size() - 1);  // Kill '\0';
+	return ws;
+}
+
+std::wstring unpack_hangeul(const std::wstring& in);
+
+
+bool isAutocompletionSet(TriggerEditor* te)
+{
+	return !!te->SendSciMessage(SCI_AUTOCACTIVE, 0, 0);
+}
+
 void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 {
-	HWND hElmnTable = te->hElmnTable;
+	// trim inputtext
+	int slen = strlen(inputtext);
+	int trimstart = -1, trimend = slen;
+	while(trimstart < slen && isspace(static_cast<unsigned char>(inputtext[++trimstart])));
+	while (trimend >= 0 && isspace(static_cast<unsigned char>(inputtext[--trimend])));
+	trimend++;
 
-	if(ft == FIELDTYPE_NONE) // End of fields
+	std::string _keyword; // default initialized to empty string
+	if(trimstart == slen); // empty string
+	else _keyword.assign(inputtext + trimstart, inputtext + trimend);
+	std::wstring keyword = s2ws(_keyword);
+
+	// Nothing inputted yet -> no autocomplete
+	if(keyword.size() == 0)
 	{
-		if(te->currentft == ft);
-		else
+		if(isAutocompletionSet(te))
 		{
-			te->currentft = ft;
-			ListBox_ResetContent(hElmnTable);
+			te->SendSciMessage(SCI_AUTOCCANCEL, 0, 0);
 		}
 		return;
 	}
 
-	int slen = strlen(inputtext);
-
-	// trim inputtext
-	int trimstart = 0, trimend = slen;
-	while(trimstart < slen && isspace((unsigned char)inputtext[++trimstart]));
-	while(trimend >= 0 && isspace((unsigned char)inputtext[--trimend]));
-
-	std::string keyword; // default initialized to empty string
-	if(trimstart == slen); // empty string
-	else keyword.assign(inputtext + trimstart, inputtext + trimend + 1);
-
-
 	// Get list of available arguments for field type
 	std::vector<std::string> stringlist;
 
-	if(ft == FIELDTYPE_NONE || ft == FIELDTYPE_NUMBER);
+	if(ft == FIELDTYPE_NONE)
+	{
+		stringlist = GetLuaKeywords();
+	}
+	else if(ft == FIELDTYPE_NUMBER);
 	else if(ft < FIELDTYPE_SWITCHSTATE)
 	{
 		const char** autocompletionlist = const_autocomplete_list[ft];
@@ -174,7 +199,7 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 
 	else if(ft == FIELDTYPE_LOCATION)
 	{
-		for(int i = 0; i < 255; i++)
+		for(int i = 1; i <= 255; i++)
 		{
 			stringlist.push_back(te->DecodeLocation(i).c_str());
 		}
@@ -193,109 +218,70 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 		int, 
 		std::shared_ptr<std::string>>
 	> autocomplete_list;
+	std::wstring unpacked_keyword = unpack_hangeul(keyword);
 	for(const std::string& s : stringlist)
 	{
-		int rank = CalculateStringAcceptance(keyword, s);
+		int rank = CalculateStringAcceptance(unpacked_keyword, unpack_hangeul(s2ws(s)));
 		if(rank > 0)
 		{
 			autocomplete_list.push_back(std::make_pair(
 				rank,
-				std::shared_ptr<std::string>(new std::string(s))
+				std::make_shared<std::string>(s)
 			));
 		}
 	}
-	std::stable_sort(autocomplete_list.begin(), autocomplete_list.end());
-
-	// Update listbox
-	ListBox_ResetContent(hElmnTable);
-	for(auto rspair : autocomplete_list)
+	
+	// Some trick
+	// _isAutocompleteWorking was true -> it becomes false
+	// _isAutocompleteWorking wav false -> it becomes true
+	// if autocomplete happens, it is set to true
+	// -- goto (*)
+	bool shouldAutocompletePersist = !isAutocompletionSet(te);
+	if(!autocomplete_list.empty() && autocomplete_list.size() < 300)
 	{
-		ListBox_AddString(hElmnTable, rspair.second->c_str());
+		// Update listbox
+		std::stable_sort(autocomplete_list.begin(), autocomplete_list.end());
+		std::reverse(autocomplete_list.begin(), autocomplete_list.end());
+		
+		// Create string for scintilla autocompletion.
+		int scsize = 0;
+		for(const auto& it : autocomplete_list)
+		{
+			scsize += 1 + it.second->size();
+		}
+		if(scsize <= 65536)  // Too long
+		{
+			// Join function names to string.
+			char *aclists = new char[scsize], *p = aclists;
+			for(const auto& it : autocomplete_list)
+			{
+				strcpy(p, it.second->c_str());
+				p += it.second->size();
+				*p++ = -1;
+			}
+			*(--p) = '\0';
+			te->SendSciMessage(SCI_AUTOCSHOW, _keyword.size(), (LPARAM)aclists);
+			te->SendSciMessage(SCI_AUTOCSELECT_NUMERIC, 0, 0);  // Force select first element
+			delete[] aclists;
+			shouldAutocompletePersist = true;
+		}
 	}
-	ListBox_SetCurSel(hElmnTable, 0);
+
+	// (*) So, if shouldAutocompletePersist happens to be false here, it means that
+	//   - isAutocompletionSet(te) was true
+	//   - Autocompletion list failed to build
+	// So, autocomplete list shoud disappear!
+	if(!shouldAutocompletePersist)
+	{
+		te->SendSciMessage(SCI_AUTOCCANCEL, 0, 0);
+	}
+
+	//
+	te->currentft = ft;
 }
 
 
 void ApplyAutocomplete(TriggerEditor* te)
 {
-	HWND hElmnTable = te->hElmnTable;
-	int current_item = ListBox_GetCurSel(hElmnTable);
-	if(current_item == LB_ERR) return; // No selected item.
-
-	// Get autocompletion text.
-	char sLen = ListBox_GetTextLen(hElmnTable, current_item);
-	char *replace_text = new char[sLen + 1];
-	ListBox_GetText(hElmnTable, current_item, replace_text);
-
-	// Select range to replace.
-	int current_pos = te->SendSciMessage(SCI_GETCURRENTPOS, 0, 0);
-	int doclen = te->SendSciMessage(SCI_GETLENGTH, 0, 0);
-	const char* doc_text = (const char*)te->SendSciMessage(SCI_GETCHARACTERPOINTER, 0, 0);
-
-
-	// Select current argument.
-	int p_depth;
-
-	// find the last comma before current position.
-	int last_comma = current_pos - 1;
-	bool isfirstarg = false;
-	p_depth = 0;
-	while(last_comma >= 0)
-	{
-		if(doc_text[last_comma] == '(')
-		{
-			p_depth--;
-			if(p_depth == -1)
-			{
-				isfirstarg = true;
-				break;
-			}
-		}
-		else if(doc_text[last_comma] == ')')
-		{
-			p_depth++;
-		}
-
-		else if(doc_text[last_comma] == ',')
-		{
-			if(p_depth == 0)
-			{
-				isfirstarg = false;
-				break;
-			}
-		}
-		last_comma--;
-	}
-	if(p_depth > 0) return; // Invalid;
-	last_comma++;
-
-	// find the fist comma/newline after current position.
-	int first_comma = current_pos;
-	p_depth = 0;
-	while(first_comma < doclen)
-	{
-		if(doc_text[first_comma] == ')')
-		{
-			p_depth--;
-			if(p_depth == -1) break;
-		}
-		else if(doc_text[first_comma] == '(')
-		{
-			p_depth++;
-		}
-
-		else if(doc_text[first_comma] == ',' || doc_text[first_comma] == '\n')
-		{
-			if(p_depth == 0) break;
-		}
-		first_comma++;
-	}
-	if(p_depth > 0) return; // Invalid;
-
-	te->SendSciMessage(SCI_SETSELECTION, last_comma, first_comma);
-
-	if(!isfirstarg) te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)" ");
-	te->SendSciMessage(SCI_REPLACESEL, 0, (LPARAM)replace_text);
-
-	delete[] replace_text;
+	te->SendSciMessage(SCI_AUTOCCOMPLETE, 0, 0);
 }

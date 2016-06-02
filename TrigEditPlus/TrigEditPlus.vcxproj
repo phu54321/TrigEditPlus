@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -9,23 +9,35 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="VeryOptimized|Win32">
+      <Configuration>VeryOptimized</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AF8D668B-A5FE-4BDA-BC50-B17D485C9BA6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TrigEditPlus</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VeryOptimized|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -38,6 +50,9 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='VeryOptimized|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -46,6 +61,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.sdp</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VeryOptimized|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.sdp</TargetExt>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>C:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -69,16 +90,16 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MinSpace</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TRIGEDITPLUS_EXPORTS;_CRT_SECURE_NO_WARNINGS;STATIC_BUILD;SCI_LEXER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
-      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <ControlFlowGuard>Guard</ControlFlowGuard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -90,56 +111,93 @@
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VeryOptimized|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TRIGEDITPLUS_EXPORTS;_CRT_SECURE_NO_WARNINGS;STATIC_BUILD;SCI_LEXER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnablePREfast>false</EnablePREfast>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>comctl32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>PluginBase\DllMain.def</ModuleDefinitionFile>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Editor\Decoder\AIScriptDecode.cpp" />
     <ClCompile Include="Editor\Decoder\ConstDecoder.cpp" />
-    <ClCompile Include="Editor\Decoder\SpecialCommentDec.cpp" />
+    <ClCompile Include="Editor\Decoder\crc32.cpp" />
+    <ClCompile Include="Editor\Decoder\LuaDecodeStringAndProp.cpp" />
+    <ClCompile Include="Editor\Decoder\ProcCondActHook.cpp" />
+    <ClCompile Include="Editor\Decoder\SpecialDataDec.cpp" />
     <ClCompile Include="Editor\Decoder\StringDecoder.cpp" />
     <ClCompile Include="Editor\Decoder\TriggerDecodeAction.cpp" />
     <ClCompile Include="Editor\Decoder\TriggerDecodeCondition.cpp" />
     <ClCompile Include="Editor\Decoder\TriggerDecode.cpp" />
     <ClCompile Include="Editor\Decoder\UnitPropDecode.cpp" />
     <ClCompile Include="Editor\EditorCharAdded.cpp" />
-    <ClCompile Include="Editor\Encoder\LuaCommon.cpp" />
-    <ClCompile Include="Editor\Encoder\LuaParseString.cpp" />
-    <ClCompile Include="Editor\Encoder\Lua\lapi.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lauxlib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lbaselib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lbitlib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lcode.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lcorolib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lctype.c" />
-    <ClCompile Include="Editor\Encoder\Lua\ldblib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\ldebug.c" />
-    <ClCompile Include="Editor\Encoder\Lua\ldo.c" />
-    <ClCompile Include="Editor\Encoder\Lua\ldump.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lfunc.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lgc.c" />
-    <ClCompile Include="Editor\Encoder\Lua\linit.c" />
-    <ClCompile Include="Editor\Encoder\Lua\liolib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\llex.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lmathlib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lmem.c" />
-    <ClCompile Include="Editor\Encoder\Lua\loadlib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lobject.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lopcodes.c" />
-    <ClCompile Include="Editor\Encoder\Lua\loslib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lparser.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lstate.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lstring.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lstrlib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\ltable.c" />
-    <ClCompile Include="Editor\Encoder\Lua\ltablib.c" />
-    <ClCompile Include="Editor\Encoder\Lua\ltm.c" />
-    <ClCompile Include="Editor\Encoder\Lua\luac.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lundump.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lvm.c" />
-    <ClCompile Include="Editor\Encoder\Lua\lzio.c" />
+    <ClCompile Include="Editor\Encoder\LuaEncodeSpeicalData.cpp" />
+    <ClCompile Include="Editor\Encoder\LuaEncodeString.cpp" />
     <ClCompile Include="Editor\Encoder\StringDeref.cpp" />
     <ClCompile Include="Editor\Encoder\StringEncoder.cpp" />
     <ClCompile Include="Editor\Encoder\TriggerEncode.cpp" />
     <ClCompile Include="Editor\Encoder\UnitPropertyEncode.cpp" />
+    <ClCompile Include="Editor\hangulUnpacker.cpp" />
     <ClCompile Include="Editor\LuaStyle.cpp" />
+    <ClCompile Include="Editor\Lua\AutoRequireLibs.cpp" />
+    <ClCompile Include="Editor\Lua\lib\lapi.c" />
+    <ClCompile Include="Editor\Lua\lib\lauxlib.c" />
+    <ClCompile Include="Editor\Lua\lib\lbaselib.c" />
+    <ClCompile Include="Editor\Lua\lib\lbitlib.c" />
+    <ClCompile Include="Editor\Lua\lib\lcode.c" />
+    <ClCompile Include="Editor\Lua\lib\lcorolib.c" />
+    <ClCompile Include="Editor\Lua\lib\lctype.c" />
+    <ClCompile Include="Editor\Lua\lib\ldblib.c" />
+    <ClCompile Include="Editor\Lua\lib\ldebug.c" />
+    <ClCompile Include="Editor\Lua\lib\ldo.c" />
+    <ClCompile Include="Editor\Lua\lib\ldump.c" />
+    <ClCompile Include="Editor\Lua\lib\lfunc.c" />
+    <ClCompile Include="Editor\Lua\lib\lgc.c" />
+    <ClCompile Include="Editor\Lua\lib\linit.c" />
+    <ClCompile Include="Editor\Lua\lib\liolib.c" />
+    <ClCompile Include="Editor\Lua\lib\llex.c" />
+    <ClCompile Include="Editor\Lua\lib\lmathlib.c" />
+    <ClCompile Include="Editor\Lua\lib\lmem.c" />
+    <ClCompile Include="Editor\Lua\lib\loadlib.c" />
+    <ClCompile Include="Editor\Lua\lib\lobject.c" />
+    <ClCompile Include="Editor\Lua\lib\lopcodes.c" />
+    <ClCompile Include="Editor\Lua\lib\loslib.c" />
+    <ClCompile Include="Editor\Lua\lib\lparser.c" />
+    <ClCompile Include="Editor\Lua\lib\lstate.c" />
+    <ClCompile Include="Editor\Lua\lib\lstring.c" />
+    <ClCompile Include="Editor\Lua\lib\lstrlib.c" />
+    <ClCompile Include="Editor\Lua\lib\ltable.c" />
+    <ClCompile Include="Editor\Lua\lib\ltablib.c" />
+    <ClCompile Include="Editor\Lua\lib\ltm.c" />
+    <ClCompile Include="Editor\Lua\lib\lundump.c" />
+    <ClCompile Include="Editor\Lua\lib\lutf8lib.c" />
+    <ClCompile Include="Editor\Lua\lib\lvm.c" />
+    <ClCompile Include="Editor\Lua\lib\lzio.c" />
+    <ClCompile Include="Editor\Lua\LuaCommon.cpp" />
+    <ClCompile Include="Editor\Lua\LuaKeywords.cpp" />
     <ClCompile Include="Editor\MapNamespace.cpp" />
     <ClCompile Include="Editor\MapStrings.cpp" />
     <ClCompile Include="Editor\Scintilla\Accessor.cxx" />
@@ -190,37 +248,40 @@
     <ClCompile Include="Editor\StringUtils\StringIntCast.cpp" />
     <ClCompile Include="Editor\TriggerEditor.cpp" />
     <ClCompile Include="Editor\TriggerEncDecData.cpp" />
+    <ClCompile Include="HotkeyRegister\GetMenuID.cpp" />
     <ClCompile Include="PluginBase\DllMain.cpp" />
     <ClCompile Include="PluginBase\SICStringList.cpp" />
     <ClCompile Include="PluginMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Editor\Encoder\LuaCommon.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lapi.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lauxlib.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lcode.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lctype.h" />
-    <ClInclude Include="Editor\Encoder\Lua\ldebug.h" />
-    <ClInclude Include="Editor\Encoder\Lua\ldo.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lfunc.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lgc.h" />
-    <ClInclude Include="Editor\Encoder\Lua\llex.h" />
-    <ClInclude Include="Editor\Encoder\Lua\llimits.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lmem.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lobject.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lopcodes.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lparser.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lstate.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lstring.h" />
-    <ClInclude Include="Editor\Encoder\Lua\ltable.h" />
-    <ClInclude Include="Editor\Encoder\Lua\ltm.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lua.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lua.hpp" />
-    <ClInclude Include="Editor\Encoder\Lua\luaconf.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lualib.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lundump.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lvm.h" />
-    <ClInclude Include="Editor\Encoder\Lua\lzio.h" />
+    <ClInclude Include="Editor\Lua\lib\lapi.h" />
+    <ClInclude Include="Editor\Lua\lib\lauxlib.h" />
+    <ClInclude Include="Editor\Lua\lib\lcode.h" />
+    <ClInclude Include="Editor\Lua\lib\lctype.h" />
+    <ClInclude Include="Editor\Lua\lib\ldebug.h" />
+    <ClInclude Include="Editor\Lua\lib\ldo.h" />
+    <ClInclude Include="Editor\Lua\lib\lfunc.h" />
+    <ClInclude Include="Editor\Lua\lib\lgc.h" />
+    <ClInclude Include="Editor\Lua\lib\llex.h" />
+    <ClInclude Include="Editor\Lua\lib\llimits.h" />
+    <ClInclude Include="Editor\Lua\lib\lmem.h" />
+    <ClInclude Include="Editor\Lua\lib\lobject.h" />
+    <ClInclude Include="Editor\Lua\lib\lopcodes.h" />
+    <ClInclude Include="Editor\Lua\lib\lparser.h" />
+    <ClInclude Include="Editor\Lua\lib\lprefix.h" />
+    <ClInclude Include="Editor\Lua\lib\lstate.h" />
+    <ClInclude Include="Editor\Lua\lib\lstring.h" />
+    <ClInclude Include="Editor\Lua\lib\ltable.h" />
+    <ClInclude Include="Editor\Lua\lib\ltm.h" />
+    <ClInclude Include="Editor\Lua\lib\lua.h" />
+    <ClInclude Include="Editor\Lua\lib\lua.hpp" />
+    <ClInclude Include="Editor\Lua\lib\luaconf.h" />
+    <ClInclude Include="Editor\Lua\lib\lualib.h" />
+    <ClInclude Include="Editor\Lua\lib\lundump.h" />
+    <ClInclude Include="Editor\Lua\lib\lvm.h" />
+    <ClInclude Include="Editor\Lua\lib\lzio.h" />
+    <ClInclude Include="Editor\Lua\LuaCommon.h" />
+    <ClInclude Include="Editor\Lua\LuaKeywords.h" />
     <ClInclude Include="Editor\MapNamespace.h" />
     <ClInclude Include="Editor\Scintilla\Accessor.h" />
     <ClInclude Include="Editor\Scintilla\AutoComplete.h" />
@@ -289,7 +350,16 @@
     <ResourceCompile Include="TrigEditPlus.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Editor\Encoder\basescript.lua" />
+    <None Include="Editor\Lua\basescript\basescript.lua" />
+    <None Include="Editor\Lua\basescript\constdecoder.lua" />
+    <None Include="Editor\Lua\basescript\constparser.lua" />
+    <None Include="Editor\Lua\basescript\luahook.lua" />
+    <None Include="Editor\Lua\basescript\memsmem.lua" />
+    <None Include="Editor\Lua\basescript\specialdata.lua" />
+    <None Include="Editor\Lua\basescript\stockact.lua" />
+    <None Include="Editor\Lua\basescript\stockacthook.lua" />
+    <None Include="Editor\Lua\basescript\stockcond.lua" />
+    <None Include="Editor\Lua\basescript\stockcondhook.lua" />
     <None Include="Editor\Scintilla\Scintilla.iface" />
     <None Include="Editor\Scintilla\SciTE.properties" />
     <None Include="PluginBase\DllMain.def" />

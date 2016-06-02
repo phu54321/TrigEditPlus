@@ -24,13 +24,17 @@
 #include "../TriggerEncDec.h"
 #include "../UnitProp.h"
 
-extern TriggerStatementDecl ActionFields[57];
-
 std::string DecodeUPRPData(const UPRPData* data);
 
-void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) const {
+extern TriggerStatementDecl ActionFields[57];
+
+bool CallActionHook(lua_State* L, const TrigAct& cond, std::string& ret);
+
+void TriggerEditor::DecodeAction(lua_State* L, StringBuffer& buf, const TrigAct& content) const
+{
 	buf << "\t\t";
 
+	
 	if(content.prop & 0x2) {
 		buf << "Disabled(";
 	}
@@ -59,14 +63,17 @@ void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) cons
 		{
 			uint32_t player = content.player;
 			uint32_t unitid = content.setting;
-			if(player >= 28 || unitid >= 228)  // EUD/EPD action
-			{
+			if(
+				(player >= 28 && unitid < 228) ||  // EPD Action
+				(player < 12 && unitid >= 228)  // EUD Action
+			) {
 				uint32_t number = content.target;
 				uint32_t offset = 0x58A364 + 4 * player + 48 * unitid;
 				uint32_t modtype = content.num;
 				
 				char offsetstr[11]; sprintf(offsetstr, "0x%06X", offset);
-				buf << "SetMemory(" << offsetstr << ", " << DecodeModifier(modtype) << ", " << number << ")";
+				char numberstr[11]; sprintf(numberstr, "0x%08X", number);
+				buf << "SetMemory(" << offsetstr << ", " << DecodeModifier(modtype) << ", " << numberstr << ")";
 				goto actdec_overridden;
 			}
 		}
@@ -89,7 +96,6 @@ void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) cons
 			case ACTFIELD_ACTTYPE: value = content.acttype; break;
 			case ACTFIELD_NUM: value = content.num; break;
 			case ACTFIELD_PROP: value = content.prop; break;
-			default: throw std::bad_exception("TT");
 			}
 
 			// Decode value according to field type.
@@ -121,8 +127,6 @@ void TriggerEditor::DecodeAction(StringBuffer& buf, const TrigAct& content) cons
 					}
 				}
 				break;
-
-			default: throw std::bad_exception("TT");
 			}
 
 			if(firstfield) firstfield = false;
@@ -135,10 +139,24 @@ actdec_overridden:;
 	}
 
 	if(content.prop & 0x2) {
-		buf << ");\r\n";
+		buf << ");";
 	}
 
 	else {
-		buf << ";\r\n";
+		buf << ";";
 	}
+
+
+	static std::string ret;
+	if (CallActionHook(L, content, ret))
+	{
+		buf << "  -- " << ret << "\r\n";
+		return;
+	}
+
+	else
+	{
+		buf << "\r\n";
+	}
+
 }

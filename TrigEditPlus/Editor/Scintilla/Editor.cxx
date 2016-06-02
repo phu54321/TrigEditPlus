@@ -180,6 +180,8 @@ Editor::Editor() {
 
 	convertPastes = true;
 
+	nowFolding = true;
+
 	SetRepresentations();
 }
 
@@ -466,6 +468,7 @@ void Editor::DiscardOverdraw() {
 }
 
 void Editor::Redraw() {
+	if (nowFolding) return;
 	//Platform::DebugPrintf("Redraw all\n");
 	PRectangle rcClient = GetClientRectangle();
 	wMain.InvalidateRectangle(rcClient);
@@ -4994,6 +4997,8 @@ void Editor::EnsureLineVisible(int lineDoc, bool enforcePolicy) {
 }
 
 void Editor::FoldAll(int action) {
+	nowFolding = true;
+
 	pdoc->EnsureStyledTo(pdoc->Length());
 	int maxLine = pdoc->LinesTotal();
 	bool expanding = action == SC_FOLDACTION_EXPAND;
@@ -5028,6 +5033,8 @@ void Editor::FoldAll(int action) {
 		}
 	}
 	SetScrollBars();
+
+	nowFolding = false;
 	Redraw();
 }
 

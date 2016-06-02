@@ -23,9 +23,13 @@
 #include "../TriggerEditor.h"
 #include "../TriggerEncDec.h"
 
+
 extern TriggerStatementDecl ConditionFields[23];
 
-void TriggerEditor::DecodeCondition(StringBuffer& buf, const TrigCond& content) const {
+bool CallConditionHook(lua_State* L, const TrigCond& cond, std::string& ret);
+
+void TriggerEditor::DecodeCondition(lua_State* L, StringBuffer& buf, const TrigCond& content) const
+{
 	buf << "\t\t";
 
 	if(content.prop & 0x2) {
@@ -53,14 +57,17 @@ void TriggerEditor::DecodeCondition(StringBuffer& buf, const TrigCond& content) 
 		{
 			uint32_t player = content.player;
 			uint32_t unitid = content.uid;
-			if(player >= 28 || unitid >= 228)  // EUD/EPD action
-			{
+			if (
+				(player >= 28 && unitid < 228) ||  // EPD Action
+				(player < 12 && unitid >= 228)  // EUD Action
+			) {
 				uint32_t number = content.res;
 				uint32_t offset = 0x58A364 + 4 * player + 48 * unitid;
 				uint32_t cmptype = content.setting;
 
 				char offsetstr[11]; sprintf(offsetstr, "0x%06X", offset);
-				buf << "Memory(" << offsetstr << ", " << DecodeComparison(cmptype) << ", " << number << ")";
+				char numberstr[11]; sprintf(numberstr, "0x%08X", number);
+				buf << "Memory(" << offsetstr << ", " << DecodeComparison(cmptype) << ", " << numberstr << ")";
 				goto cnddec_overridden;
 			}
 		}
@@ -117,10 +124,20 @@ cnddec_overridden:;
 	}
 
 	if(content.prop & 0x2) {
-		buf << ");\r\n";
+		buf << ");";
 	}
 
 	else {
-		buf << ";\r\n";
+		buf << ";";
+	}
+
+	static std::string ret;
+	if (CallConditionHook(L, content, ret))
+	{
+		buf << "  -- " << ret << "\r\n";
+	}
+	else
+	{
+		buf << "\r\n";
 	}
 }

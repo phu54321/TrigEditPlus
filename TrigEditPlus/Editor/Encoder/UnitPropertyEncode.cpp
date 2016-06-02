@@ -23,7 +23,7 @@
 #include <map>
 #include <vector>
 
-#include "Lua/lua.hpp"
+#include "../Lua/lib/lua.hpp"
 #include "../UnitProp.h"
 
 int LuaErrorf(lua_State* L, const char* format, ...);
@@ -54,7 +54,7 @@ char* GetUPRPChunkData() {
 }
 
 
-int LuaParseProperty(lua_State* L) {
+int LuaEncodeUPRP(lua_State* L) {
 	if(lua_isnumber(L, -1)) return 1; // return as-is;
 
 	if(!lua_istable(L, -1)) {
@@ -115,7 +115,7 @@ int LuaParseProperty(lua_State* L) {
 	// Check for duplicates
 	auto it = _uprpmap.find(uprpd);
 	if(it != _uprpmap.end()) {
-		lua_pushnumber(L, it->second);
+		lua_pushinteger(L, it->second);
 		return 1;
 	}
 
@@ -129,7 +129,7 @@ int LuaParseProperty(lua_State* L) {
 	int prpindex = _uprpmap.size() + 1;
 	_uprpmap.insert(std::make_pair(uprpd, prpindex));
 	_uprpvec.push_back(uprpd);
-	lua_pushnumber(L, prpindex);
+	lua_pushinteger(L, prpindex);
 	return 1;
 }
 
