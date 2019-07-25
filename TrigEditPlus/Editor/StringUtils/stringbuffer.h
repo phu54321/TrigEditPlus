@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <list>
+#include <string>
+
 #define STRINGBUFFER_NODE_SIZE 4096
 
 // Someone says that stringstream is slow. So I made one.

@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2014 trgk(phu54321@naver.com)
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -43,8 +43,7 @@ const char* const_autocomplete_list[][40] = {
 	{ "Set", "Cleared" }, //SwitchState
 };
 
-struct AIScriptEntry
-{
+struct AIScriptEntry {
 	DWORD aidw;
 	const char* str;
 };
@@ -52,17 +51,15 @@ struct AIScriptEntry
 extern AIScriptEntry AIScriptList[];
 
 // DBCS-safe version. maybe.
-inline wchar_t dbcs_tolower(wchar_t ch)
-{
-	if('A' <= ch && ch <= 'Z') return ch + ('a' - 'A');
+inline wchar_t dbcs_tolower(wchar_t ch) {
+	if ('A' <= ch && ch <= 'Z') return ch + ('a' - 'A');
 	else return ch;
 }
 
 // Simple similarity ranker. Inspired from Sublime Text Fuzzy String Matching algorithm.
 // Independently developed, though.
 
-int CalculateStringAcceptance(const std::wstring& keyword, const std::wstring& matched_text)
-{
+int CalculateStringAcceptance(const std::wstring& keyword, const std::wstring& matched_text) {
 
 	const int max_prioritized_char_dist = 3;
 	const int max_prioritized_wordstart_dist = 4;
@@ -71,38 +68,33 @@ int CalculateStringAcceptance(const std::wstring& keyword, const std::wstring& m
 	int rank = 0;
 	const int match_maxidx = matched_text.size();
 
-	for(wchar_t ch : keyword)
-	{
+	for (wchar_t ch : keyword) {
 		int previndex = index;
 
 		// Find matching index
-		while(dbcs_tolower(matched_text[index]) != dbcs_tolower(ch))
-		{
+		while (dbcs_tolower(matched_text[index]) != dbcs_tolower(ch)) {
 			index++;
-			if(index >= match_maxidx) return -1;  // Match failed
+			if (index >= match_maxidx) return -1;  // Match failed
 		}
 
 		// Value smaller distance between match characters
 		int chdist = index - previndex, chd_mul;
-		if(chdist >= max_prioritized_char_dist) chd_mul = 1;
+		if (chdist >= max_prioritized_char_dist) chd_mul = 1;
 		else chd_mul = max_prioritized_char_dist - chdist;
 
 		// Value smaller distance between word start and matched character
 		int wsindex = index;  // Word start position
-		while(wsindex >= 0)
-		{
+		while (wsindex >= 0) {
 			wchar_t wsi_ch = matched_text[wsindex];
 			// Space can be seperator
-			if(wsi_ch == ' ')
-			{
+			if (wsi_ch == ' ') {
 				wsindex++;
 				break;
-			}
-			else if(!('a' <= wsi_ch && wsi_ch <= 'z')) break;  // Capical character can be word start
+			} else if (!('a' <= wsi_ch && wsi_ch <= 'z')) break;  // Capical character can be word start
 			wsindex--;
 		}
 		int wsdist = index - wsindex, wsd_mul;
-		if(wsdist >= max_prioritized_wordstart_dist) wsd_mul = 1;
+		if (wsdist >= max_prioritized_wordstart_dist) wsd_mul = 1;
 		else wsd_mul = max_prioritized_wordstart_dist - wsdist;
 
 		rank += 100 * chd_mul * wsd_mul;
@@ -113,7 +105,7 @@ int CalculateStringAcceptance(const std::wstring& keyword, const std::wstring& m
 	// If two string has same length (maybe rank was determined in common prefix)
 	// shorter string should have more rank.
 	int slen = matched_text.size();
-	if(slen < 100) rank += 100 - slen;
+	if (slen < 100) rank += 100 - slen;
 
 	return rank;
 }
@@ -123,11 +115,10 @@ int CalculateStringAcceptance(const std::wstring& keyword, const std::wstring& m
 // -----------------------------------
 
 
-static std::wstring s2ws(const std::string& s)
-{
-	size_t buflen = MultiByteToWideChar(CP_OEMCP, 0, s.c_str(), -1, 0, 0);
+static std::wstring s2ws(const std::string& s) {
+	size_t buflen = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, 0, 0);
 	std::wstring ws(buflen, 0);
-	MultiByteToWideChar(CP_OEMCP, 0, s.data(), s.size(), const_cast<wchar_t*>(ws.data()), ws.size());
+	MultiByteToWideChar(CP_UTF8, 0, s.data(), s.size(), const_cast<wchar_t*>(ws.data()), ws.size());
 	ws.resize(ws.size() - 1);  // Kill '\0';
 	return ws;
 }
@@ -135,30 +126,26 @@ static std::wstring s2ws(const std::string& s)
 std::wstring unpack_hangeul(const std::wstring& in);
 
 
-bool isAutocompletionSet(TriggerEditor* te)
-{
+bool isAutocompletionSet(TriggerEditor* te) {
 	return !!te->SendSciMessage(SCI_AUTOCACTIVE, 0, 0);
 }
 
-void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
-{
+void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext) {
 	// trim inputtext
 	int slen = strlen(inputtext);
 	int trimstart = -1, trimend = slen;
-	while(trimstart < slen && isspace(static_cast<unsigned char>(inputtext[++trimstart])));
+	while (trimstart < slen && isspace(static_cast<unsigned char>(inputtext[++trimstart])));
 	while (trimend >= 0 && isspace(static_cast<unsigned char>(inputtext[--trimend])));
 	trimend++;
 
 	std::string _keyword; // default initialized to empty string
-	if(trimstart == slen); // empty string
+	if (trimstart == slen); // empty string
 	else _keyword.assign(inputtext + trimstart, inputtext + trimend);
 	std::wstring keyword = s2ws(_keyword);
 
 	// Nothing inputted yet -> no autocomplete
-	if(keyword.size() == 0)
-	{
-		if(isAutocompletionSet(te))
-		{
+	if (keyword.size() == 0) {
+		if (isAutocompletionSet(te)) {
 			te->SendSciMessage(SCI_AUTOCCANCEL, 0, 0);
 		}
 		return;
@@ -167,94 +154,77 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 	// Get list of available arguments for field type
 	std::vector<std::string> stringlist;
 
-	if(ft == FIELDTYPE_NONE)
-	{
+	if (ft == FIELDTYPE_NONE) {
 		stringlist = GetLuaKeywords();
-	}
-	else if(ft == FIELDTYPE_NUMBER);
-	else if(ft < FIELDTYPE_SWITCHSTATE)
-	{
+	} else if (ft == FIELDTYPE_NUMBER);
+	else if (ft < FIELDTYPE_SWITCHSTATE) {
 		const char** autocompletionlist = const_autocomplete_list[ft];
-		for(const char** p = autocompletionlist; *p != NULL; p++)
-		{
+		for (const char** p = autocompletionlist; *p != NULL; p++) {
 			stringlist.push_back(*p);
 		}
 	}
 
-	else if(ft == FIELDTYPE_AISCRIPT)
-	{
-		for(AIScriptEntry* p = AIScriptList; p->str != NULL; p++)
-		{
+	else if (ft == FIELDTYPE_AISCRIPT) {
+		for (AIScriptEntry* p = AIScriptList; p->str != NULL; p++) {
 			stringlist.push_back(p->str);
 		}
 	}
 
-	else if(ft == FIELDTYPE_UNIT)
-	{
-		for(int i = 0; i < 233; i++)
-		{
+	else if (ft == FIELDTYPE_UNIT) {
+		for (int i = 0; i < 233; i++) {
 			stringlist.push_back(te->DecodeUnit(i).c_str());
 		}
 	}
 
-	else if(ft == FIELDTYPE_LOCATION)
-	{
-		for(int i = 1; i <= 255; i++)
-		{
+	else if (ft == FIELDTYPE_LOCATION) {
+		for (int i = 1; i <= 255; i++) {
 			stringlist.push_back(te->DecodeLocation(i).c_str());
 		}
 	}
 
-	else if(ft == FIELDTYPE_SWITCHNAME)
-	{
-		for(int i = 0; i < 256; i++)
-		{
+	else if (ft == FIELDTYPE_SWITCHNAME) {
+		for (int i = 0; i < 256; i++) {
 			stringlist.push_back(te->DecodeSwitchName(i).c_str());
 		}
 	}
 
 	// Sort them with ranks
 	std::vector<std::pair<
-		int, 
+		int,
 		std::shared_ptr<std::string>>
-	> autocomplete_list;
+		> autocomplete_list;
 	std::wstring unpacked_keyword = unpack_hangeul(keyword);
-	for(const std::string& s : stringlist)
-	{
+	for (const std::string& s : stringlist) {
 		int rank = CalculateStringAcceptance(unpacked_keyword, unpack_hangeul(s2ws(s)));
-		if(rank > 0)
-		{
+		if (rank > 0) {
 			autocomplete_list.push_back(std::make_pair(
 				rank,
 				std::make_shared<std::string>(s)
 			));
 		}
 	}
-	
+
 	// Some trick
 	// _isAutocompleteWorking was true -> it becomes false
 	// _isAutocompleteWorking wav false -> it becomes true
 	// if autocomplete happens, it is set to true
 	// -- goto (*)
 	bool shouldAutocompletePersist = !isAutocompletionSet(te);
-	if(!autocomplete_list.empty() && autocomplete_list.size() < 300)
-	{
+	if (!autocomplete_list.empty() && autocomplete_list.size() < 300) {
 		// Update listbox
 		std::stable_sort(autocomplete_list.begin(), autocomplete_list.end());
 		std::reverse(autocomplete_list.begin(), autocomplete_list.end());
-		
+
 		// Create string for scintilla autocompletion.
 		int scsize = 0;
-		for(const auto& it : autocomplete_list)
-		{
+		for (const auto& it : autocomplete_list) {
 			scsize += 1 + it.second->size();
 		}
-		if(scsize <= 65536)  // Too long
+		if (scsize <= 65536)  // Too long
 		{
 			// Join function names to string.
-			char *aclists = new char[scsize], *p = aclists;
-			for(const auto& it : autocomplete_list)
-			{
+			char* aclists = new char[scsize], * p = aclists;
+			for (const auto& it : autocomplete_list) {
 				strcpy(p, it.second->c_str());
 				p += it.second->size();
 				*p++ = -1;
@@ -271,8 +241,7 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 	//   - isAutocompletionSet(te) was true
 	//   - Autocompletion list failed to build
 	// So, autocomplete list shoud disappear!
-	if(!shouldAutocompletePersist)
-	{
+	if (!shouldAutocompletePersist) {
 		te->SendSciMessage(SCI_AUTOCCANCEL, 0, 0);
 	}
 
@@ -281,7 +250,6 @@ void SetAutocompleteList(TriggerEditor* te, FieldType ft, const char* inputtext)
 }
 
 
-void ApplyAutocomplete(TriggerEditor* te)
-{
+void ApplyAutocomplete(TriggerEditor* te) {
 	te->SendSciMessage(SCI_AUTOCCOMPLETE, 0, 0);
 }

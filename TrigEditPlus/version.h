@@ -22,6 +22,6 @@
 
 #pragma once
 
-#define VERSION "0.084.1"
+#define VERSION "0.086"
 // #define VERSION_BETA
 

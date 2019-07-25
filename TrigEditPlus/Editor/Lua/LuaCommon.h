@@ -24,6 +24,7 @@
 
 #include "lib/lua.hpp"
 #include <vector>
+#include <string>
 
 int LuaErrorf(lua_State* L, const char* format, ...);
 void LuaCheckTableEntry(lua_State* L, std::vector<std::string> accepted);

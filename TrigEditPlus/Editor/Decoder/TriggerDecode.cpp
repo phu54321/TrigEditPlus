@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2014 trgk(phu54321@naver.com)
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,14 +24,13 @@
 #include "../TriggerEncDec.h"
 #include "../StringUtils/StringCast.h"
 
-DWORD crc32(const void *buf2, size_t len);
+DWORD crc32(const void* buf2, size_t len);
 void LuaAutoRequireLibs(lua_State* L);
 bool DecodeSpecialData(StringBuffer& buf, const Trig& trg);
 
 // Decode part
 
-int lPanic(lua_State* L)
-{
+int lPanic(lua_State* L) {
 	MessageBox(NULL, lua_tostring(L, -1), "Error", MB_OK);
 	abort();
 }
@@ -75,6 +74,7 @@ std::string TriggerEditor::DecodeTriggers(CChunkData* Triggers) const {
 
 	std::string ret = decode_out.str();
 	decode_out.clear();
+
 	return ret;
 }
 
@@ -87,10 +87,10 @@ void TriggerEditor::DecodeTrigger(lua_State* L, StringBuffer& buf, const Trig& c
 	int totstrn = StringTable_GetTotalStringNum(_editordata->EngineData->MapStrings);
 
 	// If trigger isn't executed by any of the players, then special-decode that trigger.
-	for(i = 0 ; i < 27 ; i++) {
-		if(content.effplayer[i]) break;
+	for (i = 0; i < 27; i++) {
+		if (content.effplayer[i]) break;
 	}
-	if(i == 27) {
+	if (i == 27) {
 		// Ignore that trigger.
 		return;
 	}
@@ -98,34 +98,34 @@ void TriggerEditor::DecodeTrigger(lua_State* L, StringBuffer& buf, const Trig& c
 
 
 	// 1. Write trigger header
-	
+
 	// print comment & header of trigger
 	bool comment_singleline = false;
-	for(i = 0 ; i < 64 ; i++) {
-		if(content.act[i].acttype == 0) { // no comment
+	for (i = 0; i < 64; i++) {
+		if (content.act[i].acttype == 0) { // no comment
 			buf << "Trigger { -- No comment (" << trigCRC32 << ")\r\n";
 			break;
 		}
 
-		else if(content.act[i].acttype == COMMENT) {
+		else if (content.act[i].acttype == COMMENT) {
 			int strid = content.act[i].strid;
-			if(strid < 0 || strid > totstrn) break;
+			if (strid < 0 || strid > totstrn) break;
 			const char* rawcomment0 = StringTable_GetString(_editordata->EngineData->MapStrings, strid);
-			if(rawcomment0 == NULL) break;
-			if(strchr(rawcomment0, '\n') == NULL) comment_singleline = true;
+			if (rawcomment0 == NULL) break;
+			if (strchr(rawcomment0, '\n') == NULL) comment_singleline = true;
 			else comment_singleline = false;
 
 			// Decode string to lua comments
 			std::string rawcomment = rawcomment0;
 
-			char *comment = (char*)alloca(rawcomment.size() * 5 + 4);
+			char* comment = (char*)alloca(rawcomment.size() * 5 + 4);
 			strcpy(comment, "-- ");
-			char *p = comment + 3;
+			char* p = comment + 3;
 
-			for(char ch : rawcomment) {
-				/**/ if(ch == '\t') *p++ = '\t';
-				else if(ch == '\r');
-				else if(ch == '\n') {
+			for (char ch : rawcomment) {
+				/**/ if (ch == '\t')* p++ = '\t';
+				else if (ch == '\r');
+				else if (ch == '\n') {
 					*p++ = '\r';
 					*p++ = '\n';
 					*p++ = '-';
@@ -133,31 +133,30 @@ void TriggerEditor::DecodeTrigger(lua_State* L, StringBuffer& buf, const Trig& c
 					*p++ = ' ';
 				}
 
-				else if(1 <= ch && ch <= 31) continue;
+				else if (1 <= ch && ch <= 31) continue;
 				else *p++ = ch;
 			}
 
 			*p = '\0';
-			
-			if(comment_singleline) {
+
+			if (comment_singleline) {
 				buf << "Trigger { " << comment << "\r\n";
-			}
-			else {
+			} else {
 				buf << comment << "\n\nTrigger {\r\n";
 			}
 			break;
 		}
 	}
-	if(i == 64) buf << "Trigger { -- No comment (" << trigCRC32 << ")\r\n"; // no comment, 64 actions all used.
+	if (i == 64) buf << "Trigger { -- No comment (" << trigCRC32 << ")\r\n"; // no comment, 64 actions all used.
 
 
 	// 2. Write player fields
 	buf << "\tplayers = {";
 
 	bool firstplayer = true;
-	for(int i = 0 ; i < 27 ; i++) {
-		if(content.effplayer[i]) {
-			if(!firstplayer) buf << ", ";
+	for (int i = 0; i < 27; i++) {
+		if (content.effplayer[i]) {
+			if (!firstplayer) buf << ", ";
 			else firstplayer = false;
 			buf << DecodePlayer(i);
 		}
@@ -165,11 +164,11 @@ void TriggerEditor::DecodeTrigger(lua_State* L, StringBuffer& buf, const Trig& c
 	buf << "},\r\n";
 
 	// 2. Write conditions.
-	if(content.cond[0].condtype != 0) { // There is at least one condition.
+	if (content.cond[0].condtype != 0) { // There is at least one condition.
 		buf << "\tconditions = {\r\n";
 
-		for(i = 0 ; i < 16 ; i++) {
-			if(content.cond[i].condtype == 0) break;
+		for (i = 0; i < 16; i++) {
+			if (content.cond[i].condtype == 0) break;
 			DecodeCondition(L, buf, content.cond[i]);
 		}
 
@@ -178,33 +177,33 @@ void TriggerEditor::DecodeTrigger(lua_State* L, StringBuffer& buf, const Trig& c
 
 
 	// 3. Write actions.
-	if(content.act[0].acttype != 0) { // There is at least one action.
+	if (content.act[0].acttype != 0) { // There is at least one action.
 		buf << "\tactions = {\r\n";
 
-		for(i = 0 ; i < 64 ; i++) {
-			if(content.act[i].acttype == 0) break;
+		for (i = 0; i < 64; i++) {
+			if (content.act[i].acttype == 0) break;
 			DecodeAction(L, buf, content.act[i]);
 		}
-		
+
 		buf << "\t},\r\n";
 	}
 
 	// 4. Print auxilarry informations
 	std::vector<const char*> auxinfo;
-	if(content.flag & 1) auxinfo.push_back("actexec");
-	if(content.flag & 4) auxinfo.push_back("preserved");
-	if(content.flag & 8) auxinfo.push_back("disabled");
+	if (content.flag & 1) auxinfo.push_back("actexec");
+	if (content.flag & 4) auxinfo.push_back("preserved");
+	if (content.flag & 8) auxinfo.push_back("disabled");
 
-	if(!auxinfo.empty()) {
+	if (!auxinfo.empty()) {
 		buf << "\tflag = {" << auxinfo[0];
-		for(i = 1 ; i < auxinfo.size() ; i++) {
+		for (i = 1; i < auxinfo.size(); i++) {
 			buf << ", " << auxinfo[i];
 		}
 		buf << "},\r\n";
 	}
 
 	// 5. Print starting condition
-	if(content.current_action != 0) {
+	if (content.current_action != 0) {
 		buf << "\tstarting_action = " << content.current_action << ",\r\n";
 	}
 

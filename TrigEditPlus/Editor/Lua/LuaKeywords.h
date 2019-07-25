@@ -24,6 +24,7 @@
 
 #include "lib/lua.hpp"
 #include <vector>
+#include <string>
 
 void UpdateLuaKeywords(lua_State* L);
 const std::vector<std::string>& GetLuaKeywords();

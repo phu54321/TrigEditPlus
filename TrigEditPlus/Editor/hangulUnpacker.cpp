@@ -22,6 +22,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 const std::map<wchar_t, const wchar_t*> jamo_table = {
 	{ 0x3131, L"r" },
